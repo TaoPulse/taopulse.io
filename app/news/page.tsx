@@ -65,10 +65,8 @@ async function fetchRedditNews(): Promise<NewsItem[]> {
 }
 
 async function fetchCryptoNews(): Promise<NewsItem[]> {
-  const res = await fetch("/api/news/crypto");
-  if (!res.ok) throw new Error("Crypto news API fetch failed");
-  const json: ApiNewsItem[] = await res.json();
-  return json.map((item) => ({ ...item, date: new Date(item.date) }));
+  // Consolidated into reddit route (Google News + Reddit)
+  return [];
 }
 
 export default function NewsPage() {
@@ -383,26 +381,12 @@ export default function NewsPage() {
               </h2>
               <ul className="space-y-2 text-xs text-gray-400">
                 <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-teal-400 shrink-0" />
-                  Bittensor Blog RSS
+                  <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
+                  Google News (Bittensor)
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-orange-400 shrink-0" />
                   r/bittensor_ (Reddit)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-red-400 shrink-0" />
-                  r/TAO (Reddit)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
-                  News: "bg-blue-500/20 text-blue-400",
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-yellow-400 shrink-0" />
                 </li>
               </ul>
             </div>
