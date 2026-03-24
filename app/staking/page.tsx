@@ -31,9 +31,9 @@ interface Validator {
 }
 
 const FALLBACK_VALIDATORS: Validator[] = [
-  { name: "Taostats", fee: "9.0%", apr: "17.1%", stake: "767,381", nominators: 6691, hotkey: "" },
-  { name: "Foundry", fee: "0.0%", apr: "17.1%", stake: "500,000", nominators: 3000, hotkey: "" },
-  { name: "Opentensor", fee: "18.0%", apr: "15.0%", stake: "312,000", nominators: 2500, hotkey: "" },
+  { name: "Taostats", fee: "9.0%", apr: "~17%", stake: "~800,000", nominators: 7000, hotkey: "" },
+  { name: "Foundry", fee: "0.0%", apr: "~17%", stake: "~500,000", nominators: 3200, hotkey: "" },
+  { name: "Opentensor", fee: "18.0%", apr: "~15%", stake: "~300,000", nominators: 2500, hotkey: "" },
 ];
 
 async function fetchValidators(): Promise<Validator[]> {

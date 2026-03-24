@@ -115,7 +115,7 @@ export default async function HomePage() {
   } catch {}
 
   const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$3.0B";
-  const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "$308";
+  const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "$314";
   const change24h = taoPrice?.usd_24h_change ?? null;
 
   const circulatingValue = networkStats?.circulatingSupply

@@ -188,22 +188,35 @@ function CellValue({ value, check, partial }: { value: string; check?: boolean; 
 
 export default async function WhatIsTaoPage() {
   let taoPrice: { usd: number; usd_market_cap: number } | null = null;
+  let networkStats: { activeSubnets: number | null; stakedPct: number | null; circulatingSupply: number | null } | null = null;
   try {
-    const res = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true",
-      { next: { revalidate: 60 }, signal: AbortSignal.timeout(5000) }
-    );
-    if (res.ok) taoPrice = (await res.json()).bittensor;
+    const [priceRes, statsRes] = await Promise.all([
+      fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true",
+        { next: { revalidate: 60 }, signal: AbortSignal.timeout(5000) }
+      ),
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://taopulse.io"}/api/network-stats`,
+        { next: { revalidate: 300 }, signal: AbortSignal.timeout(8000) }
+      ).catch(() => null),
+    ]);
+    if (priceRes.ok) taoPrice = (await priceRes.json()).bittensor;
+    if (statsRes?.ok) networkStats = await statsRes.json();
   } catch {}
 
   const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$3.0B";
+  const circulatingValue = networkStats?.circulatingSupply
+    ? `${(networkStats.circulatingSupply / 1e6).toFixed(1)}M`
+    : "9.6M";
+  const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}+` : "129+";
+  const stakedValue = networkStats?.stakedPct ? `${networkStats.stakedPct}%` : "—";
 
   const stats = [
     { value: marketCapValue, label: "Market Cap" },
     { value: "21M", label: "Max Supply" },
-    { value: "9.6M", label: "Circulating" },
-    { value: "128+", label: "Active Subnets" },
-    { value: "76%", label: "Supply Staked" },
+    { value: circulatingValue, label: "Circulating" },
+    { value: subnetValue, label: "Active Subnets" },
+    { value: stakedValue, label: "Supply Staked" },
   ];
 
   return (
