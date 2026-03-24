@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 
 export const revalidate = 60;
@@ -108,11 +109,7 @@ export default async function HomePage() {
   const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "$308";
   const change24h = taoPrice?.usd_24h_change ?? null;
 
-  const STATS = [
-    { label: "Active Subnets", value: "128+" },
-    { label: "TAO Staked", value: "76%" },
-    { label: "Daily Emissions", value: "7,200 TAO" },
-    { label: "Market Cap", value: marketCapValue },
+  const STATS: { label: string; value: React.ReactNode; badge?: React.ReactNode; href?: string }[] = [
     {
       label: "TAO Price",
       value: priceValue,
@@ -122,6 +119,12 @@ export default async function HomePage() {
         </span>
       ) : null,
     },
+    { label: "Market Cap", value: marketCapValue },
+    { label: "Max Supply", value: "21M TAO" },
+    { label: "Circulating", value: "9.6M TAO" },
+    { label: "Daily Emissions", value: "7,200 TAO" },
+    { label: "TAO Staked", value: "76%" },
+    { label: "Active Subnets", value: "128+", href: "/subnets" },
   ];
 
   return (
@@ -183,16 +186,29 @@ export default async function HomePage() {
       {/* Stats bar */}
       <section className="bg-[#0f1623] border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white mb-1 flex items-center justify-center flex-wrap gap-1">
-                  {stat.value}
-                  {"badge" in stat && stat.badge}
-                </p>
-                <p className="text-xs text-gray-500 uppercase tracking-wider">{stat.label}</p>
-              </div>
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-6">
+            {STATS.map((stat) => {
+              const inner = (
+                <>
+                  <p className="text-xl sm:text-2xl font-bold text-white mb-1 flex items-center justify-center flex-wrap gap-1">
+                    {stat.value}
+                    {stat.badge}
+                  </p>
+                  <p className={`text-xs uppercase tracking-wider ${stat.href ? "text-purple-400 group-hover:text-purple-300" : "text-gray-500"}`}>
+                    {stat.label}{stat.href && " →"}
+                  </p>
+                </>
+              );
+              return stat.href ? (
+                <Link key={stat.label} href={stat.href} className="text-center group transition-opacity hover:opacity-80">
+                  {inner}
+                </Link>
+              ) : (
+                <div key={stat.label} className="text-center">
+                  {inner}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
