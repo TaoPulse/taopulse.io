@@ -81,6 +81,57 @@ const whySpecial = [
   { title: "Featured on All-In Podcast", body: "Chamath Palihapitiya and Jensen Huang (Nvidia CEO) discussed Bittensor in 2026. First major mainstream tech validation.", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
 ];
 
+const whatisBittensor = [
+  {
+    num: "01",
+    title: "The Core Idea",
+    body: "What if AI models had to compete in an open market — and the best ones got paid in cryptocurrency? That's Bittensor. A decentralized network where intelligence is rewarded, not monopolized.",
+    color: "text-purple-400",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/20",
+  },
+  {
+    num: "02",
+    title: "The Problem",
+    body: "All the best AI is locked inside a few companies — OpenAI, Google, Anthropic. They decide what it costs, what it can do, and who gets access. No competition. No transparency. No alternatives.",
+    color: "text-red-400",
+    bg: "bg-red-500/10",
+    border: "border-red-500/20",
+  },
+  {
+    num: "03",
+    title: "How Bittensor Fixes It",
+    body: "Thousands of AI models (\"miners\") compete to answer questions as accurately as possible. Other AI models called \"validators\" score their answers. The better your AI performs, the more TAO you earn. Think of it as a global AI Olympics running 24/7.",
+    color: "text-blue-400",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/20",
+  },
+  {
+    num: "04",
+    title: "The Incentive",
+    body: "Miners run AI models and get paid TAO for quality outputs. Validators stake TAO to score the work fairly. Subnet owners create specialized competitions — trading signals, image generation, data analysis, anything. Nobody controls it. The code runs the rules.",
+    color: "text-emerald-400",
+    bg: "bg-emerald-500/10",
+    border: "border-emerald-500/20",
+  },
+  {
+    num: "05",
+    title: "Why TAO Has Value",
+    body: "Hard cap of 21 million — like Bitcoin, no printing more. You need TAO to participate in the network. The more useful the network becomes, the more demand for TAO. Halvings every ~4 years reduce new supply over time.",
+    color: "text-amber-400",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
+  },
+  {
+    num: "06",
+    title: "The Big Vision",
+    body: "The founders believe AI will be the most valuable thing humanity ever builds. Their bet: the network that fairly rewards AI intelligence — rather than capturing it inside one company — will win long term. Not one AI. A whole ecosystem of competing, improving intelligence.",
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/10",
+    border: "border-cyan-500/20",
+  },
+];
+
 const comparison = [
   { feature: "Decentralized", tao: { value: "Fully", check: true }, openai: { value: "No", check: false }, google: { value: "No", check: false }, eth: { value: "Partial", partial: true } },
   { feature: "Fixed supply", tao: { value: "21M max", check: true }, openai: { value: "No token", check: false }, google: { value: "No token", check: false }, eth: { value: "Inflationary", check: false } },
@@ -231,6 +282,25 @@ export default async function HomePage() {
                 Think of it as a stock market for artificial intelligence.
               </span>
             </p>
+          </div>
+        </section>
+
+        {/* What Bittensor Actually Is */}
+        <section>
+          <h2 className="text-2xl font-bold text-white mb-2">What Bittensor Actually Is</h2>
+          <p className="text-gray-400 mb-6">The full picture, broken down into six parts</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {whatisBittensor.map((item) => (
+              <div key={item.num} className={`rounded-xl border p-6 ${item.bg} ${item.border} hover:scale-[1.01] transition-transform`}>
+                <div className="flex items-start gap-3">
+                  <span className={`text-xs font-bold ${item.color} opacity-60 shrink-0 pt-0.5`}>{item.num}</span>
+                  <div>
+                    <h3 className={`text-sm font-semibold ${item.color} mb-2`}>{item.title}</h3>
+                    <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
