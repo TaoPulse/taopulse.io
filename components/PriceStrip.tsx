@@ -10,16 +10,14 @@ interface CoinPrice {
 interface PriceData {
   bittensor?: CoinPrice;
   bitcoin?: CoinPrice;
-  ethereum?: CoinPrice;
 }
 
 const COIN_LABELS: Record<string, string> = {
   bittensor: "TAO",
   bitcoin: "BTC",
-  ethereum: "ETH",
 };
 
-const COIN_ORDER = ["bittensor", "bitcoin", "ethereum"];
+const COIN_ORDER = ["bittensor", "bitcoin"];
 
 export default function PriceStrip() {
   const [prices, setPrices] = useState<PriceData>({});
@@ -29,7 +27,7 @@ export default function PriceStrip() {
   const fetchPrices = async () => {
     try {
       const res = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor,bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true",
+        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor,bitcoin&vs_currencies=usd&include_24hr_change=true",
         { next: { revalidate: 0 } }
       );
       if (!res.ok) throw new Error("Failed to fetch");
