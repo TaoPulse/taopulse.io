@@ -297,6 +297,50 @@ export default async function WhatIsTaoPage() {
           </div>
         </section>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is Bittensor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Bittensor is a decentralized AI network where participants earn TAO tokens for contributing AI compute, storage, and intelligence through competitive subnets."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is TAO?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "TAO (τ) is the native token of Bittensor. It is used to incentivize miners, validators, and stakers across the network's 128+ subnets."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I buy TAO?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You can buy TAO on exchanges like Kraken (US), Binance (international), Gate.io, and MEXC. See our buy TAO guide for step-by-step instructions."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What is TAO staking?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "TAO staking means delegating your TAO to a validator on the Bittensor network. You earn a share of the validator's emissions as passive yield, typically 15-20% APY."
+                }
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }

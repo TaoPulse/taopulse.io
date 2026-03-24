@@ -2,24 +2,23 @@ import EmissionsChart from "@/components/EmissionsChart";
 import HalvingCountdown from "@/components/HalvingCountdown";
 
 export const metadata = {
-  title: "TAO Halving Countdown — Next Bittensor Halving Clock",
+  title: "TAO Halving Countdown 2029 — Bittensor Emission Schedule",
   description:
-    "Live countdown to the next TAO halving in 2029. Track emissions, supply milestones, and what the halving means for TAO price and staking.",
-  keywords:
-    "TAO halving, Bittensor halving, TAO halving countdown, TAO emissions, Bittensor 2029",
+    "Live countdown to the next TAO halving in December 2029. Track blocks remaining, current emissions (3,600 TAO/day), post-halving supply, and Bittensor's full emission schedule.",
+  keywords: ["TAO halving", "Bittensor halving", "TAO emission schedule", "TAO supply", "Bittensor 2029"],
   openGraph: {
-    title: "TAO Halving Countdown — Next Bittensor Halving Clock",
+    title: "TAO Halving Countdown 2029 — Bittensor Emission Schedule",
     description:
-      "Live countdown to the next TAO halving in 2029. Track emissions, supply milestones, and what the halving means for TAO price and staking.",
+      "Live countdown to the next TAO halving in December 2029. Track blocks remaining, current emissions (3,600 TAO/day), post-halving supply, and Bittensor's full emission schedule.",
     url: "https://taopulse.io/halving",
     siteName: "TaoPulse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TAO Halving Countdown — Next Bittensor Halving Clock",
+    title: "TAO Halving Countdown 2029 — Bittensor Emission Schedule",
     description:
-      "Live countdown to the next TAO halving in 2029. Track emissions, supply milestones, and what the halving means for TAO price and staking.",
+      "Live countdown to the next TAO halving in December 2029. Track blocks remaining, current emissions (3,600 TAO/day), post-halving supply, and Bittensor's full emission schedule.",
   },
   alternates: { canonical: "https://taopulse.io/halving" },
 };

@@ -4,13 +4,12 @@ import TableOfContents from "@/components/TableOfContents";
 export const metadata = {
   title: "How TAO Emissions Work — Bittensor Emission Model Explained",
   description:
-    "Learn how TAO emissions work on the Bittensor network. Covers the ~3,600 TAO/day emission schedule, the Taoflow model, subnet distribution via Yuma Consensus, and what stakers actually earn.",
-  keywords:
-    "TAO emissions, Bittensor emissions, Taoflow, Yuma Consensus, TAO staking rewards, subnet emissions, TAO per block",
+    "Understand how Bittensor distributes 3,600 TAO per day across subnets. Learn the Taoflow model, subnet emission shares, and how stakers earn yield from validator emissions.",
+  keywords: ["TAO emissions", "Bittensor emissions", "Taoflow", "subnet emissions", "TAO staking yield"],
   openGraph: {
     title: "How TAO Emissions Work — Bittensor Emission Model Explained",
     description:
-      "Learn how TAO emissions work on Bittensor. ~3,600 TAO/day, Taoflow model, Yuma Consensus distribution, and staker earnings explained.",
+      "Understand how Bittensor distributes 3,600 TAO per day across subnets. Learn the Taoflow model, subnet emission shares, and how stakers earn yield from validator emissions.",
     url: "https://taopulse.io/emissions",
     siteName: "TaoPulse",
     type: "website",
@@ -19,7 +18,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "How TAO Emissions Work — Bittensor Emission Model Explained",
     description:
-      "Learn how TAO emissions work on Bittensor. ~3,600 TAO/day, Taoflow model, Yuma Consensus distribution, and staker earnings explained.",
+      "Understand how Bittensor distributes 3,600 TAO per day across subnets. Learn the Taoflow model, subnet emission shares, and how stakers earn yield from validator emissions.",
   },
   alternates: { canonical: "https://taopulse.io/emissions" },
 };

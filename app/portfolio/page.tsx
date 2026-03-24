@@ -4,27 +4,26 @@ import PortfolioClient from "./PortfolioClient";
 export const metadata: Metadata = {
   title: "TAO Portfolio Tracker — Track Your Bittensor Holdings",
   description:
-    "Track your TAO holdings, see live P&L, and estimate staking rewards. No signup required.",
+    "Track the current value of your TAO holdings with live price data. Add multiple positions, see total value in USD, and estimate annual yield.",
   keywords: [
-    "TAO portfolio",
-    "Bittensor portfolio tracker",
-    "TAO P&L",
-    "TAO staking rewards",
-    "Bittensor holdings",
+    "TAO portfolio tracker",
+    "Bittensor portfolio",
+    "TAO price",
+    "track TAO holdings",
   ],
   openGraph: {
     title: "TAO Portfolio Tracker — Track Your Bittensor Holdings",
     description:
-      "Track your TAO holdings, see live P&L, and estimate staking rewards. No signup required.",
+      "Track the current value of your TAO holdings with live price data. Add multiple positions, see total value in USD, and estimate annual yield.",
     url: "https://taopulse.io/portfolio",
     siteName: "TaoPulse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TAO Portfolio Tracker",
+    title: "TAO Portfolio Tracker — Track Your Bittensor Holdings",
     description:
-      "Track your TAO holdings with live P&L and staking estimates. No signup required.",
+      "Track the current value of your TAO holdings with live price data. Add multiple positions, see total value in USD, and estimate annual yield.",
   },
   alternates: { canonical: "https://taopulse.io/portfolio" },
 };

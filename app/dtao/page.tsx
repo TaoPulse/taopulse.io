@@ -2,24 +2,23 @@ import Link from "next/link";
 import TableOfContents from "@/components/TableOfContents";
 
 export const metadata = {
-  title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Token Staking Explained",
+  title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Tokens Explained",
   description:
-    "Learn what Dynamic TAO (dTAO) is, how alpha tokens work, the difference between classic root staking and dTAO subnet staking, and the risks involved.",
-  keywords:
-    "dynamic TAO, dTAO, alpha token, Bittensor dTAO, subnet staking, TAO alpha, dTAO vs classic staking, impermanent loss TAO",
+    "Dynamic TAO (dTAO) gives every Bittensor subnet its own alpha token. Learn how dTAO works, how it differs from classic staking, and the risks of impermanent loss.",
+  keywords: ["dynamic TAO", "dTAO", "alpha token", "Bittensor dTAO", "TAO subnet staking", "impermanent loss"],
   openGraph: {
-    title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Token Staking Explained",
+    title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Tokens Explained",
     description:
-      "Learn what Dynamic TAO (dTAO) is, how alpha tokens work, the difference between classic root staking and dTAO subnet staking, and the risks involved.",
+      "Dynamic TAO (dTAO) gives every Bittensor subnet its own alpha token. Learn how dTAO works, how it differs from classic staking, and the risks of impermanent loss.",
     url: "https://taopulse.io/dtao",
     siteName: "TaoPulse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Token Staking Explained",
+    title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Tokens Explained",
     description:
-      "Learn what Dynamic TAO (dTAO) is, how alpha tokens work, the difference vs classic staking, and the risks.",
+      "Dynamic TAO (dTAO) gives every Bittensor subnet its own alpha token. Learn how dTAO works, how it differs from classic staking, and the risks of impermanent loss.",
   },
   alternates: { canonical: "https://taopulse.io/dtao" },
 };

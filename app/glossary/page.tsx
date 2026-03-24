@@ -1,24 +1,23 @@
 import GlossaryClient from "./GlossaryClient";
 
 export const metadata = {
-  title: "TAO & Bittensor Glossary — Plain English Definitions",
+  title: "Bittensor & TAO Glossary — Key Terms Explained",
   description:
-    "Plain English definitions for every Bittensor and TAO term you need to know: alpha tokens, dTAO, emissions, Yuma Consensus, validator take, Taoflow, and more.",
-  keywords:
-    "Bittensor glossary, TAO glossary, dTAO definition, alpha token, Yuma Consensus, Taoflow, validator take, TAO staking terms",
+    "Plain-English definitions for every Bittensor term: TAO, alpha tokens, Yuma Consensus, tempo, dTAO, emissions, validators, miners, Subtensor, and more.",
+  keywords: ["Bittensor glossary", "TAO terms", "what is TAO", "Bittensor definitions", "crypto glossary"],
   openGraph: {
-    title: "TAO & Bittensor Glossary — Plain English Definitions",
+    title: "Bittensor & TAO Glossary — Key Terms Explained",
     description:
-      "Plain English definitions for every Bittensor and TAO term: alpha tokens, dTAO, emissions, Yuma Consensus, Taoflow, and more.",
+      "Plain-English definitions for every Bittensor term: TAO, alpha tokens, Yuma Consensus, tempo, dTAO, emissions, validators, miners, Subtensor, and more.",
     url: "https://taopulse.io/glossary",
     siteName: "TaoPulse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TAO & Bittensor Glossary — Plain English Definitions",
+    title: "Bittensor & TAO Glossary — Key Terms Explained",
     description:
-      "Plain English definitions for every Bittensor and TAO term: alpha tokens, dTAO, emissions, Yuma Consensus, and more.",
+      "Plain-English definitions for every Bittensor term: TAO, alpha tokens, Yuma Consensus, tempo, dTAO, emissions, validators, miners, Subtensor, and more.",
   },
   alternates: { canonical: "https://taopulse.io/glossary" },
 };

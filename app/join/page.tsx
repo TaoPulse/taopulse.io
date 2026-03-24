@@ -2,8 +2,21 @@ import { Metadata } from "next";
 import EmailSignupForm from "@/components/EmailSignupForm";
 
 export const metadata: Metadata = {
-  title: "Join the TaoPulse Waitlist — TAO & Bittensor Insights",
-  description: "Sign up for early access to live TAO staking data, validator rankings, subnet alerts, and TAO market insights from TaoPulse.",
+  title: "Join TaoPulse — Get Early Access to TAO Analytics",
+  description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join.",
+  keywords: ["TaoPulse waitlist", "TAO analytics", "Bittensor tools", "TAO alerts"],
+  openGraph: {
+    title: "Join TaoPulse — Get Early Access to TAO Analytics",
+    description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join.",
+    url: "https://taopulse.io/join",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Join TaoPulse — Get Early Access to TAO Analytics",
+    description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join.",
+  },
   alternates: { canonical: "https://taopulse.io/join" },
 };
 

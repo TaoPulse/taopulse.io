@@ -2,29 +2,29 @@ import type { Metadata } from "next";
 import ValidatorCalculatorClient from "./ValidatorCalculatorClient";
 
 export const metadata: Metadata = {
-  title: "Validator Take Calculator — TAO Staking Yield Estimator",
+  title: "TAO Validator Calculator — Estimate Your Staking Yield",
   description:
-    "Calculate your exact TAO staking yield after validator take. Adjust stake, validator take %, and subnet emissions — results update live.",
+    "Calculate your TAO staking yield after validator take. Input your stake, validator share, and emission rate to see daily, monthly, and annual TAO rewards and APY.",
   keywords: [
     "TAO staking calculator",
-    "validator take calculator",
-    "Bittensor staking yield",
+    "validator take",
+    "Bittensor yield calculator",
     "TAO APY",
-    "Bittensor validator",
+    "staking rewards",
   ],
   openGraph: {
-    title: "Validator Take Calculator — TAO Staking Yield Estimator",
+    title: "TAO Validator Calculator — Estimate Your Staking Yield",
     description:
-      "Calculate your exact TAO staking yield after validator take. Adjust stake, validator take %, and subnet emissions — results update live.",
+      "Calculate your TAO staking yield after validator take. Input your stake, validator share, and emission rate to see daily, monthly, and annual TAO rewards and APY.",
     url: "https://taopulse.io/validator-calculator",
     siteName: "TaoPulse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Validator Take Calculator — TAO Staking Yield",
+    title: "TAO Validator Calculator — Estimate Your Staking Yield",
     description:
-      "Calculate your TAO staking yield after validator take. Live interactive calculator.",
+      "Calculate your TAO staking yield after validator take. Input your stake, validator share, and emission rate to see daily, monthly, and annual TAO rewards and APY.",
   },
   alternates: { canonical: "https://taopulse.io/validator-calculator" },
 };
