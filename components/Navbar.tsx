@@ -17,6 +17,7 @@ const moreLinks = [
   { href: "/buy-tao", label: "Buy TAO" },
   { href: "/wallets", label: "Wallets" },
   { href: "/portfolio", label: "Portfolio" },
+  { href: "/validator-calculator", label: "Validator Calc" },
   { href: "/subnets/directory", label: "Directory" },
 ];
 
