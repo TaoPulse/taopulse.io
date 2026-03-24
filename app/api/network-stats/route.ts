@@ -35,9 +35,8 @@ export async function GET() {
   const validatorData = results[1].status === "fulfilled" ? results[1].value : null;
   const geckoData = results[2].status === "fulfilled" ? results[2].value : null;
 
-  // Active subnets count + current block
+  // Active subnets count
   const activeSubnets = subnetData?.pagination?.total_items ?? null;
-  const currentBlock: number | null = subnetData?.data?.[0]?.block_number ?? null;
 
   // Total staked TAO (sum all validators)
   let stakedTao: number | null = null;
@@ -61,7 +60,6 @@ export async function GET() {
   return NextResponse.json(
     {
       activeSubnets,
-      currentBlock,
       stakedTao: stakedTao ? Math.round(stakedTao) : null,
       stakedPct: stakedPct ? parseFloat(stakedPct.toFixed(1)) : null,
       circulatingSupply: circulatingSupply ? Math.round(circulatingSupply) : null,
