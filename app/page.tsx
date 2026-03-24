@@ -1,4 +1,23 @@
 import Link from "next/link";
+
+export const metadata = {
+  title: "TaoPulse — Bittensor TAO Analytics, Staking & Subnet Explorer",
+  description: "Your guide to Bittensor and TAO. Track live subnet emissions, compare validators, learn how to stake TAO, and explore the decentralized AI network.",
+  keywords: "Bittensor, TAO, TAO staking, Bittensor subnets, TAO price, Bittensor analytics, decentralized AI",
+  openGraph: {
+    title: "TaoPulse — Bittensor TAO Analytics & Education",
+    description: "Track live Bittensor subnets, compare validators, learn to stake TAO.",
+    url: "https://taopulse.io",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TaoPulse — Bittensor TAO Analytics",
+    description: "Track live Bittensor subnets, compare validators, learn to stake TAO.",
+  },
+  alternates: { canonical: "https://taopulse.io" },
+};
 import PriceStrip from "@/components/PriceStrip";
 import StakingCalculator from "@/components/StakingCalculator";
 import HeroPrice from "@/components/HeroPrice";
@@ -17,7 +36,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 const topSubnets = subnets.slice(0, 5);
 
 const STATS = [
-  { label: "Active Subnets", value: "65+", icon: "grid" },
+  { label: "Active Subnets", value: "128+", icon: "grid" },
   { label: "TAO Staked", value: "76%", icon: "lock" },
   { label: "Daily Emissions", value: "7,200 TAO", icon: "zap" },
   { label: "Market Cap", value: "$2.8B", icon: "chart" },
@@ -47,7 +66,7 @@ const WHY_TAO = [
   {
     title: "Growing Ecosystem",
     description:
-      "With 65+ specialized subnets spanning language models, image generation, financial data, and security — the Bittensor ecosystem is expanding rapidly with new use cases every month.",
+      "With 128+ specialized subnets spanning language models, image generation, financial data, and security — the Bittensor ecosystem is expanding rapidly with new use cases every month.",
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
