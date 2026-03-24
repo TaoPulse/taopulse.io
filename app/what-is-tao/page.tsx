@@ -1,4 +1,7 @@
 import Link from "next/link";
+import TaoPriceChart from "@/components/TaoPriceChart";
+import EmissionsChart from "@/components/EmissionsChart";
+import SupplyChart from "@/components/SupplyChart";
 
 export const metadata = {
   title: "What is TAO? Bittensor Explained for Beginners",
@@ -190,6 +193,19 @@ export default async function WhatIsTaoPage() {
                 Think of it as a stock market for artificial intelligence.
               </span>
             </p>
+          </div>
+        </section>
+
+        {/* Charts */}
+        <section>
+          <h2 className="text-2xl font-bold text-white mb-2">Live Data</h2>
+          <p className="text-gray-400 mb-6">Price history, emission schedule, and supply trajectory</p>
+          <div className="space-y-4">
+            <TaoPriceChart />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <EmissionsChart />
+              <SupplyChart />
+            </div>
           </div>
         </section>
 
