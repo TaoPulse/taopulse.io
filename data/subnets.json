@@ -13,7 +13,7 @@
   },
   {
     "id": 2,
-    "name": "Omron",
+    "name": "omron",
     "category": "Inference",
     "description": "Omron delivers decentralized AI inference with verifiable computation proofs, enabling trustless execution of neural network workloads on commodity hardware across a global peer network.",
     "emission": 0.008,
@@ -25,7 +25,7 @@
   },
   {
     "id": 3,
-    "name": "Templar",
+    "name": "templar",
     "category": "Training",
     "description": "Templar powers distributed pre-training of large language models across thousands of nodes, featured on the All-In Podcast. Miners contribute gradient updates that collectively train foundation models at scale.",
     "emission": 0.028,
@@ -61,7 +61,7 @@
   },
   {
     "id": 6,
-    "name": "Nous Hermes",
+    "name": "Infinite Games",
     "category": "LLM/Text",
     "description": "Nous Hermes subnet fine-tunes and serves aligned open-source language models at scale. Miners compete to produce the best fine-tuned variants of foundation models as scored by human-feedback validators.",
     "emission": 0.007,
@@ -73,7 +73,7 @@
   },
   {
     "id": 7,
-    "name": "Subvortex",
+    "name": "SubVortex",
     "category": "Compute/GPU",
     "description": "Subvortex provides decentralized GPU compute infrastructure, routing workloads to verified miners worldwide. It serves as a backbone layer for compute-intensive tasks across the Bittensor network.",
     "emission": 0.011,
@@ -85,7 +85,7 @@
   },
   {
     "id": 8,
-    "name": "Taoshi PTN",
+    "name": "Proprietary Trading Network",
     "category": "Finance/Quant",
     "description": "Taoshi's Proprietary Trading Network collects AI-generated trading signals for crypto markets. Miners submit predictions and signal strategies that are scored by live market performance.",
     "emission": 0.015,
@@ -97,7 +97,7 @@
   },
   {
     "id": 9,
-    "name": "Pretraining",
+    "name": "Pretrain",
     "category": "Training",
     "description": "The Pretraining subnet incentivizes competitive training of base language models from scratch. Miners upload model checkpoints that validators evaluate on perplexity and downstream task performance.",
     "emission": 0.022,
@@ -109,7 +109,7 @@
   },
   {
     "id": 10,
-    "name": "Sturdy Finance",
+    "name": "Sturdy",
     "category": "Finance/Quant",
     "description": "Sturdy Finance subnet optimizes yield strategies for DeFi lending protocols. Miners submit allocation strategies across pools, and the best risk-adjusted returns earn TAO emissions.",
     "emission": 0.006,
@@ -121,7 +121,7 @@
   },
   {
     "id": 11,
-    "name": "Celium",
+    "name": "Dippy",
     "category": "Compute/GPU",
     "description": "Celium decentralizes GPU compute rental, connecting AI workload providers with miners offering verified hardware. It enables permissionless access to global GPU capacity at competitive rates.",
     "emission": 0.013,
@@ -133,7 +133,7 @@
   },
   {
     "id": 12,
-    "name": "Horde",
+    "name": "Compute Horde",
     "category": "LLM/Text",
     "description": "Horde aggregates open-source LLM inference across volunteer GPU nodes, providing a decentralized AI Horde compatible API layer. Miners serve model completions and are rewarded by throughput.",
     "emission": 0.005,
@@ -145,7 +145,7 @@
   },
   {
     "id": 13,
-    "name": "Dataverse",
+    "name": "Data Universe",
     "category": "Data",
     "description": "Dataverse creates a decentralized marketplace for high-quality AI training datasets. Miners curate, clean, and verify datasets while validators assess quality and uniqueness.",
     "emission": 0.007,
@@ -157,7 +157,7 @@
   },
   {
     "id": 14,
-    "name": "LLM Defender",
+    "name": "Vector-Store",
     "category": "Other",
     "description": "LLM Defender subnet builds decentralized adversarial defenses for large language models. Miners develop red-teaming pipelines and jailbreak detectors validated against emerging attack vectors.",
     "emission": 0.004,
@@ -169,7 +169,7 @@
   },
   {
     "id": 15,
-    "name": "Blockchain Insights",
+    "name": "de_val",
     "category": "Data",
     "description": "Blockchain Insights indexes on-chain data across multiple networks, producing structured analytics feeds. Miners run indexing nodes and submit data quality is scored by validators against reference datasets.",
     "emission": 0.005,
@@ -193,7 +193,7 @@
   },
   {
     "id": 17,
-    "name": "3D Generation",
+    "name": "404\u2014GEN",
     "category": "Vision",
     "description": "SN17 generates 3D assets and environments from text and image prompts using decentralized AI. Miners run 3D synthesis models and compete on quality metrics for mesh fidelity and prompt adherence.",
     "emission": 0.006,
@@ -205,7 +205,7 @@
   },
   {
     "id": 18,
-    "name": "Cortex.t",
+    "name": "Zeus",
     "category": "Inference",
     "description": "Cortex.t provides a unified decentralized API gateway for AI inference, routing requests to specialized miners across text, image, and embedding tasks. It powers external developer integrations.",
     "emission": 0.012,
@@ -217,7 +217,7 @@
   },
   {
     "id": 19,
-    "name": "Vision",
+    "name": "Nineteen.ai",
     "category": "Vision",
     "description": "Vision subnet incentivizes decentralized image understanding and classification tasks. Miners run computer vision models and are scored on accuracy across a diverse benchmark of visual tasks.",
     "emission": 0.007,
@@ -229,7 +229,7 @@
   },
   {
     "id": 20,
-    "name": "BitAgent",
+    "name": "BitAgent - Rizzo",
     "category": "Agents",
     "description": "BitAgent coordinates autonomous AI agents across the Bittensor network. Miners deploy task-solving agents that validators evaluate on multi-step reasoning, tool use, and goal completion.",
     "emission": 0.009,
@@ -241,7 +241,7 @@
   },
   {
     "id": 21,
-    "name": "FileTAO",
+    "name": "OMEGA Any-to-Any",
     "category": "Storage",
     "description": "FileTAO provides decentralized file storage with cryptographic proof-of-storage, offering a TAO-incentivized alternative to centralized cloud storage for AI artifacts and datasets.",
     "emission": 0.008,
@@ -253,7 +253,7 @@
   },
   {
     "id": 22,
-    "name": "Meta Search",
+    "name": "Desearch",
     "category": "Data",
     "description": "Meta Search builds a decentralized search index for the open web. Miners crawl and rank web pages using AI relevance scoring, competing to provide the best results for validator queries.",
     "emission": 0.005,
@@ -265,7 +265,7 @@
   },
   {
     "id": 23,
-    "name": "NicheImage",
+    "name": "Zuvu",
     "category": "Vision",
     "description": "NicheImage specializes in high-quality niche image generation covering art styles, photography, and domain-specific visuals. Miners serve Stable Diffusion and custom-tuned model completions.",
     "emission": 0.006,
@@ -277,7 +277,7 @@
   },
   {
     "id": 24,
-    "name": "Omega Labs",
+    "name": "OMEGA Labs",
     "category": "Data",
     "description": "Omega Labs collects and curates multimodal training data including video, audio, and text pairs. Miners gather diverse internet-scale data and validators score quality and uniqueness.",
     "emission": 0.009,
@@ -289,7 +289,7 @@
   },
   {
     "id": 25,
-    "name": "Hivemind",
+    "name": "Folding",
     "category": "Training",
     "description": "Hivemind enables collaborative distributed training with gradient sharing across a swarm of nodes. Miners contribute compute to jointly train foundation models using the Hivemind optimizer protocol.",
     "emission": 0.01,
@@ -301,7 +301,7 @@
   },
   {
     "id": 26,
-    "name": "Tensor Alchemy",
+    "name": "Storb",
     "category": "Vision",
     "description": "Tensor Alchemy provides decentralized AI image generation with an emphasis on artistic and creative outputs. Miners serve high-fidelity image generations ranked by aesthetic quality.",
     "emission": 0.005,
@@ -313,7 +313,7 @@
   },
   {
     "id": 27,
-    "name": "Compute",
+    "name": "NI Compute",
     "category": "Compute/GPU",
     "description": "SN27 is a general-purpose compute subnet matching AI workload providers with GPU miners. It supports a wide range of ML inference and training tasks through a standardized job protocol.",
     "emission": 0.01,
@@ -325,7 +325,7 @@
   },
   {
     "id": 28,
-    "name": "Foundry S&P500 Oracle",
+    "name": "Unknown",
     "category": "Finance/Quant",
     "description": "Foundry provides decentralized price oracles for traditional financial assets including the S&P500, commodities, and FX pairs. Miners submit price feeds validated against consensus.",
     "emission": 0.005,
@@ -349,7 +349,7 @@
   },
   {
     "id": 30,
-    "name": "Bittensor Swarms",
+    "name": "Bettensor",
     "category": "Agents",
     "description": "Bittensor Swarms orchestrates multi-agent systems where specialized AI agents collaborate on complex tasks. Miners deploy agent microservices that coordinate to solve multi-step problems.",
     "emission": 0.007,
@@ -361,7 +361,7 @@
   },
   {
     "id": 31,
-    "name": "NAS Chain",
+    "name": "NullUntilBoot",
     "category": "Other",
     "description": "NAS Chain performs neural architecture search on the Bittensor network, discovering efficient model architectures through decentralized evolutionary algorithms.",
     "emission": 0.003,
@@ -373,7 +373,7 @@
   },
   {
     "id": 32,
-    "name": "It AI",
+    "name": "ItsAI",
     "category": "Agents",
     "description": "It AI develops autonomous task automation agents for enterprise workflows. Miners deploy agents that handle customer service, data entry, and process automation evaluated on real task benchmarks.",
     "emission": 0.006,
@@ -385,7 +385,7 @@
   },
   {
     "id": 33,
-    "name": "Ready AI",
+    "name": "ReadyAI",
     "category": "Vision",
     "description": "Ready AI focuses on video generation and editing using decentralized AI compute. Miners serve text-to-video and video enhancement requests evaluated on quality and coherence.",
     "emission": 0.007,
@@ -409,7 +409,7 @@
   },
   {
     "id": 35,
-    "name": "Logic Net",
+    "name": "LogicNet",
     "category": "LLM/Text",
     "description": "Logic Net specializes in logical reasoning and mathematical problem-solving capabilities for AI models. Miners serve specialized reasoning models evaluated on formal logic and math benchmarks.",
     "emission": 0.005,
@@ -421,7 +421,7 @@
   },
   {
     "id": 36,
-    "name": "Human Intelligence",
+    "name": "web-agents",
     "category": "Data",
     "description": "Human Intelligence coordinates human annotators in a decentralized labeling marketplace. Miners (human workers) complete labeling tasks and are rewarded for quality and speed.",
     "emission": 0.005,
@@ -433,7 +433,7 @@
   },
   {
     "id": 37,
-    "name": "FHE.org",
+    "name": "Finetuning",
     "category": "Other",
     "description": "FHE.org builds privacy-preserving AI inference using Fully Homomorphic Encryption. Miners provide FHE compute capacity, enabling encrypted model inference without data exposure.",
     "emission": 0.004,
@@ -457,7 +457,7 @@
   },
   {
     "id": 39,
-    "name": "EdgeMaxxing",
+    "name": "w.ai (Parked)",
     "category": "Compute/GPU",
     "description": "EdgeMaxxing optimizes and benchmarks AI models for edge deployment. Miners run model compression and quantization pipelines producing efficient models validated on edge hardware metrics.",
     "emission": 0.005,
@@ -481,7 +481,7 @@
   },
   {
     "id": 41,
-    "name": "Sport Prediction",
+    "name": "SPORTSTENSOR",
     "category": "Finance/Quant",
     "description": "Sport Prediction builds decentralized sports outcome forecasting models. Miners submit probability distributions for game outcomes evaluated against actual results over rolling time windows.",
     "emission": 0.005,
@@ -493,7 +493,7 @@
   },
   {
     "id": 42,
-    "name": "Score Predict",
+    "name": "Real-Time Data by Masa",
     "category": "Finance/Quant",
     "description": "Score Predict specializes in exact-score prediction for sports and events. Miners compete to generate precise outcome distributions rather than binary win/loss predictions.",
     "emission": 0.004,
@@ -505,7 +505,7 @@
   },
   {
     "id": 43,
-    "name": "Text2Image",
+    "name": "Graphite",
     "category": "Vision",
     "description": "Text2Image subnet runs a decentralized text-to-image generation market. Miners serve high-quality image synthesis from natural language prompts, competing on aesthetic scores and CLIP alignment.",
     "emission": 0.006,
@@ -517,7 +517,7 @@
   },
   {
     "id": 44,
-    "name": "Dojo",
+    "name": "Score",
     "category": "Training",
     "description": "Dojo collects human preference data for RLHF training at scale. Miners coordinate human raters to produce comparison data that trains reward models for future LLM alignment.",
     "emission": 0.008,
@@ -529,7 +529,7 @@
   },
   {
     "id": 45,
-    "name": "Gen42",
+    "name": "SWE - Rizzo",
     "category": "Vision",
     "description": "Gen42 focuses on generating synthetic training data for computer vision tasks. Miners produce diverse, annotated synthetic images that validators assess for realism and annotation quality.",
     "emission": 0.005,
@@ -541,7 +541,7 @@
   },
   {
     "id": 46,
-    "name": "Nakamoto",
+    "name": "Neural3D",
     "category": "Other",
     "description": "Nakamoto subnet implements advanced consensus mechanisms and cryptoeconomic experiments inspired by Bitcoin's Nakamoto consensus. Miners validate novel protocol designs.",
     "emission": 0.003,
@@ -553,7 +553,7 @@
   },
   {
     "id": 47,
-    "name": "Condense AI",
+    "name": "Condenses.ai",
     "category": "Data",
     "description": "Condense AI builds decentralized document summarization and information compression services. Miners compete to produce the most informative summaries evaluated on coverage and faithfulness.",
     "emission": 0.005,
@@ -577,7 +577,7 @@
   },
   {
     "id": 49,
-    "name": "AutoML",
+    "name": "polaris",
     "category": "Training",
     "description": "AutoML automates machine learning pipeline design through decentralized hyperparameter search and architecture optimization. Miners run AutoML trials and submit best-performing configurations.",
     "emission": 0.005,
@@ -589,7 +589,7 @@
   },
   {
     "id": 50,
-    "name": "Contradiction",
+    "name": "Synth",
     "category": "LLM/Text",
     "description": "Contradiction subnet trains and evaluates models for natural language inference and contradiction detection. Miners fine-tune NLI models evaluated on entailment benchmarks.",
     "emission": 0.003,
@@ -601,7 +601,7 @@
   },
   {
     "id": 51,
-    "name": "lium.io",
+    "name": "Celium",
     "category": "Inference",
     "description": "lium.io provides decentralized LLM inference for external API consumers. Miners serve high-performance inference endpoints with competitive latency, forming a marketplace for AI API access.",
     "emission": 0.008,
@@ -613,7 +613,7 @@
   },
   {
     "id": 52,
-    "name": "SN52 Subnet",
+    "name": "Dojo",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -625,7 +625,7 @@
   },
   {
     "id": 53,
-    "name": "SN53 Subnet",
+    "name": "EfficientFrontier",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -637,7 +637,7 @@
   },
   {
     "id": 54,
-    "name": "SN54 Subnet",
+    "name": "WebGenieAI",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -649,7 +649,7 @@
   },
   {
     "id": 55,
-    "name": "SN55 Subnet",
+    "name": "Precog",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -661,7 +661,7 @@
   },
   {
     "id": 56,
-    "name": "SN56 Subnet",
+    "name": "Gradients",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -673,7 +673,7 @@
   },
   {
     "id": 57,
-    "name": "SN57 Subnet",
+    "name": "Gaia",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -685,7 +685,7 @@
   },
   {
     "id": 58,
-    "name": "SN58 Subnet",
+    "name": "Dippy Speech",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -697,7 +697,7 @@
   },
   {
     "id": 59,
-    "name": "SN59 Subnet",
+    "name": "Agent Arena by Masa",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -709,7 +709,7 @@
   },
   {
     "id": 60,
-    "name": "SN60 Subnet",
+    "name": "Bitsec.ai",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -721,7 +721,7 @@
   },
   {
     "id": 61,
-    "name": "SN61 Subnet",
+    "name": "RedTeam",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -733,7 +733,7 @@
   },
   {
     "id": 62,
-    "name": "SN62 Subnet",
+    "name": "Agentao",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -745,7 +745,7 @@
   },
   {
     "id": 63,
-    "name": "SN63 Subnet",
+    "name": "Alpha Trader Exchange (ATX)",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -769,7 +769,7 @@
   },
   {
     "id": 65,
-    "name": "SN65 Subnet",
+    "name": "Tensor Private Network (TPN)",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -781,7 +781,7 @@
   },
   {
     "id": 66,
-    "name": "SN66 Subnet",
+    "name": "FakeNews",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -793,7 +793,7 @@
   },
   {
     "id": 67,
-    "name": "SN67 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -805,7 +805,7 @@
   },
   {
     "id": 68,
-    "name": "SN68 Subnet",
+    "name": "NOVA",
     "category": "Compute/GPU",
     "description": "One of the highest-emission Bittensor subnets at ~4.3%. This compute-focused subnet allocates the largest share of daily TAO emissions among all active subnets, attracting significant miner interest.",
     "emission": 0.043,
@@ -817,7 +817,7 @@
   },
   {
     "id": 69,
-    "name": "SN69 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -829,7 +829,7 @@
   },
   {
     "id": 70,
-    "name": "SN70 Subnet",
+    "name": "Vericore",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -841,7 +841,7 @@
   },
   {
     "id": 71,
-    "name": "SN71 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -853,7 +853,7 @@
   },
   {
     "id": 72,
-    "name": "SN72 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -865,7 +865,7 @@
   },
   {
     "id": 73,
-    "name": "SN73 Subnet",
+    "name": "f(x)InTegral",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -877,7 +877,7 @@
   },
   {
     "id": 74,
-    "name": "SN74 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -889,7 +889,7 @@
   },
   {
     "id": 75,
-    "name": "SN75 Subnet",
+    "name": "Hippius",
     "category": "Inference",
     "description": "SN75 is a high-emission inference subnet capturing ~1.4% of total TAO daily emissions. It provides specialized AI inference services with a growing miner community.",
     "emission": 0.014,
@@ -901,7 +901,7 @@
   },
   {
     "id": 76,
-    "name": "SN76 Subnet",
+    "name": "Safe Scan",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -913,7 +913,7 @@
   },
   {
     "id": 77,
-    "name": "SN77 Subnet",
+    "name": "Liquidity",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -925,7 +925,7 @@
   },
   {
     "id": 78,
-    "name": "SN78 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -937,7 +937,7 @@
   },
   {
     "id": 79,
-    "name": "SN79 Subnet",
+    "name": "taos",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -949,7 +949,7 @@
   },
   {
     "id": 80,
-    "name": "SN80 Subnet",
+    "name": "AI Factory",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -961,7 +961,7 @@
   },
   {
     "id": 81,
-    "name": "SN81 Subnet",
+    "name": "Patrol (TAO.com)",
     "category": "Training",
     "description": "SN81 is a high-emission training subnet at ~3.4% of total TAO daily emissions, attracting significant GPU compute resources for large-scale model training tasks.",
     "emission": 0.034,
@@ -973,7 +973,7 @@
   },
   {
     "id": 82,
-    "name": "SN82 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -985,7 +985,7 @@
   },
   {
     "id": 83,
-    "name": "SN83 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -997,7 +997,7 @@
   },
   {
     "id": 84,
-    "name": "SN84 Subnet",
+    "name": "Docs-Insights (Tatsu)",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1009,7 +1009,7 @@
   },
   {
     "id": 85,
-    "name": "SN85 Subnet",
+    "name": "Vidaio",
     "category": "LLM/Text",
     "description": "SN85 is a high-emission LLM subnet at ~1.9% of total TAO daily emissions, focused on advanced language model capabilities with strong validator participation.",
     "emission": 0.019,
@@ -1021,7 +1021,7 @@
   },
   {
     "id": 86,
-    "name": "SN86 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1033,7 +1033,7 @@
   },
   {
     "id": 87,
-    "name": "SN87 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1045,7 +1045,7 @@
   },
   {
     "id": 88,
-    "name": "SN88 Subnet",
+    "name": "St\u03b1king",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1057,7 +1057,7 @@
   },
   {
     "id": 89,
-    "name": "SN89 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1069,7 +1069,7 @@
   },
   {
     "id": 90,
-    "name": "SN90 Subnet",
+    "name": "brain",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1081,7 +1081,7 @@
   },
   {
     "id": 91,
-    "name": "SN91 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1093,7 +1093,7 @@
   },
   {
     "id": 92,
-    "name": "SN92 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1105,7 +1105,7 @@
   },
   {
     "id": 93,
-    "name": "SN93 Subnet",
+    "name": "Unknown",
     "category": "Agents",
     "description": "SN93 is a high-emission agents subnet at ~1.85% of total TAO daily emissions, incentivizing the development and deployment of autonomous AI agents for real-world task completion.",
     "emission": 0.0185,
@@ -1117,7 +1117,7 @@
   },
   {
     "id": 94,
-    "name": "SN94 Subnet",
+    "name": "Eastworld",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1129,7 +1129,7 @@
   },
   {
     "id": 95,
-    "name": "SN95 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1141,7 +1141,7 @@
   },
   {
     "id": 96,
-    "name": "SN96 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1153,7 +1153,7 @@
   },
   {
     "id": 97,
-    "name": "SN97 Subnet",
+    "name": "LOADING",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1165,7 +1165,7 @@
   },
   {
     "id": 98,
-    "name": "SN98 Subnet",
+    "name": "Creator",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1177,7 +1177,7 @@
   },
   {
     "id": 99,
-    "name": "SN99 Subnet",
+    "name": "Algo",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1189,7 +1189,7 @@
   },
   {
     "id": 100,
-    "name": "SN100 Subnet",
+    "name": "Signal",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1201,7 +1201,7 @@
   },
   {
     "id": 101,
-    "name": "SN101 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1213,7 +1213,7 @@
   },
   {
     "id": 102,
-    "name": "SN102 Subnet",
+    "name": "zen",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1225,7 +1225,7 @@
   },
   {
     "id": 103,
-    "name": "SN103 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1237,7 +1237,7 @@
   },
   {
     "id": 104,
-    "name": "SN104 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1249,7 +1249,7 @@
   },
   {
     "id": 105,
-    "name": "SN105 Subnet",
+    "name": "SoundsRight",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1261,7 +1261,7 @@
   },
   {
     "id": 106,
-    "name": "SN106 Subnet",
+    "name": "Liquidity Provisioning",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1273,7 +1273,7 @@
   },
   {
     "id": 107,
-    "name": "SN107 Subnet",
+    "name": "Tiger Alpha",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1285,7 +1285,7 @@
   },
   {
     "id": 108,
-    "name": "SN108 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1297,7 +1297,7 @@
   },
   {
     "id": 109,
-    "name": "SN109 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1309,7 +1309,7 @@
   },
   {
     "id": 110,
-    "name": "SN110 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1321,7 +1321,7 @@
   },
   {
     "id": 111,
-    "name": "SN111 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1333,7 +1333,7 @@
   },
   {
     "id": 112,
-    "name": "SN112 Subnet",
+    "name": "TopSecret",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1345,7 +1345,7 @@
   },
   {
     "id": 113,
-    "name": "SN113 Subnet",
+    "name": "taonado",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1357,7 +1357,7 @@
   },
   {
     "id": 114,
-    "name": "SN114 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1369,7 +1369,7 @@
   },
   {
     "id": 115,
-    "name": "SN115 Subnet",
+    "name": "Cognify",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1381,7 +1381,7 @@
   },
   {
     "id": 116,
-    "name": "SN116 Subnet",
+    "name": "SolMev",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1393,7 +1393,7 @@
   },
   {
     "id": 117,
-    "name": "SN117 Subnet",
+    "name": "RNA",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1405,7 +1405,7 @@
   },
   {
     "id": 118,
-    "name": "SN118 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1417,7 +1417,7 @@
   },
   {
     "id": 119,
-    "name": "SN119 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1429,7 +1429,7 @@
   },
   {
     "id": 120,
-    "name": "SN120 Subnet",
+    "name": "affine",
     "category": "Data",
     "description": "SN120 is a high-emission data subnet at ~1.7% of total TAO daily emissions, building a decentralized data infrastructure layer for AI training pipelines.",
     "emission": 0.017,
@@ -1441,7 +1441,7 @@
   },
   {
     "id": 121,
-    "name": "SN121 Subnet",
+    "name": "sundae_bar",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1453,7 +1453,7 @@
   },
   {
     "id": 122,
-    "name": "SN122 Subnet",
+    "name": "Bitrecs",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.002,
@@ -1465,7 +1465,7 @@
   },
   {
     "id": 123,
-    "name": "SN123 Subnet",
+    "name": "MANTIS",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1477,7 +1477,7 @@
   },
   {
     "id": 124,
-    "name": "SN124 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1489,7 +1489,7 @@
   },
   {
     "id": 125,
-    "name": "SN125 Subnet",
+    "name": "Unknown",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1501,7 +1501,7 @@
   },
   {
     "id": 126,
-    "name": "SN126 Subnet",
+    "name": "Tiger Beta",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1513,7 +1513,7 @@
   },
   {
     "id": 127,
-    "name": "SN127 Subnet",
+    "name": "Cel AI",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
@@ -1525,7 +1525,7 @@
   },
   {
     "id": 128,
-    "name": "SN128 Subnet",
+    "name": "ByteLeap",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
