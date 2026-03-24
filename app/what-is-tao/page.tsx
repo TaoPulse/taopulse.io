@@ -2,6 +2,28 @@ import Link from "next/link";
 
 export const revalidate = 60;
 
+// Halving constants
+const HALVING_BLOCK = 10_500_000;
+const BLOCK_TIME_SECS = 12;
+const DAILY_EMISSIONS_NOW = 7200; // 1 TAO/block × 7200 blocks/day
+
+function computeHalving(currentBlock: number) {
+  const blocksRemaining = Math.max(0, HALVING_BLOCK - currentBlock);
+  const secondsRemaining = blocksRemaining * BLOCK_TIME_SECS;
+  const daysRemaining = secondsRemaining / 86400;
+  const estimatedDate = new Date(Date.now() + secondsRemaining * 1000);
+  const monthName = estimatedDate.toLocaleString("en-US", { month: "long", year: "numeric" });
+  const pctComplete = Math.min(100, (currentBlock / HALVING_BLOCK) * 100);
+  return {
+    blocksRemaining,
+    daysRemaining: Math.round(daysRemaining),
+    estimatedDate: monthName,
+    pctComplete: parseFloat(pctComplete.toFixed(1)),
+    halvingBlock: HALVING_BLOCK,
+    currentBlock,
+  };
+}
+
 export const metadata = {
   title: "What is TAO? Bittensor Explained for Beginners",
   description: "Learn what TAO and Bittensor are: a decentralized AI network rewarding machine learning with cryptocurrency. Why TAO is unique, how it works, and why investors are paying attention.",
@@ -188,7 +210,7 @@ function CellValue({ value, check, partial }: { value: string; check?: boolean; 
 
 export default async function WhatIsTaoPage() {
   let taoPrice: { usd: number; usd_market_cap: number } | null = null;
-  let networkStats: { activeSubnets: number | null; stakedPct: number | null; circulatingSupply: number | null } | null = null;
+  let networkStats: { activeSubnets: number | null; stakedPct: number | null; circulatingSupply: number | null; currentBlock?: number | null } | null = null;
   try {
     const [priceRes, statsRes] = await Promise.all([
       fetch(
@@ -210,6 +232,10 @@ export default async function WhatIsTaoPage() {
     : "9.6M";
   const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}+` : "129+";
   const stakedValue = networkStats?.stakedPct ? `${networkStats.stakedPct}%` : "—";
+
+  // Halving countdown — use live block if available, otherwise estimate from known data
+  const currentBlock = networkStats?.currentBlock ?? 7_817_190;
+  const halving = computeHalving(currentBlock);
 
   const stats = [
     { value: marketCapValue, label: "Market Cap" },
@@ -329,6 +355,95 @@ export default async function WhatIsTaoPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* TAO Halving */}
+        <section>
+          <h2 className="text-2xl font-bold text-white mb-2">TAO Halving</h2>
+          <p className="text-gray-400 mb-6">Like Bitcoin, TAO emissions are cut in half every ~10.5 million blocks (~4 years)</p>
+
+          <div className="space-y-4">
+
+            {/* 1 — Scarcity */}
+            <div className="bg-[#0f1623] rounded-xl border border-orange-500/20 p-6">
+              <div className="flex items-start gap-4">
+                <div className="shrink-0 w-9 h-9 rounded-full bg-orange-500/15 text-orange-400 flex items-center justify-center text-sm font-bold">1</div>
+                <div>
+                  <h3 className="text-base font-semibold text-white mb-1">Scarcity increases over time</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    TAO has a hard cap of <span className="text-white font-medium">21 million</span> — identical to Bitcoin. After each halving, fewer new TAO enter circulation every day. As demand grows and supply growth slows, the economics tilt toward scarcity. This is a deliberate design choice: unlike inflationary AI tokens that can be printed indefinitely, TAO becomes structurally harder to acquire after each halving.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 2 — Miners and validators earn less */}
+            <div className="bg-[#0f1623] rounded-xl border border-amber-500/20 p-6">
+              <div className="flex items-start gap-4">
+                <div className="shrink-0 w-9 h-9 rounded-full bg-amber-500/15 text-amber-400 flex items-center justify-center text-sm font-bold">2</div>
+                <div>
+                  <h3 className="text-base font-semibold text-white mb-1">Miners and validators earn less per block</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-3">
+                    Currently, ~<span className="text-white font-medium">{DAILY_EMISSIONS_NOW.toLocaleString()} TAO</span> is emitted daily across all subnets. After the next halving, this drops to <span className="text-white font-medium">{(DAILY_EMISSIONS_NOW / 2).toLocaleString()} TAO/day</span>. Miners competing for AI rewards and validators securing the network will receive half the TAO per block. This mirrors Bitcoin&apos;s miner dynamic — if price doesn&apos;t compensate, weaker participants exit, strengthening those who remain.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="rounded-lg bg-white/5 border border-white/10 p-3 text-center">
+                      <p className="text-xl font-bold text-white">{DAILY_EMISSIONS_NOW.toLocaleString()}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">TAO/day now</p>
+                    </div>
+                    <div className="rounded-lg bg-orange-500/10 border border-orange-500/20 p-3 text-center">
+                      <p className="text-xl font-bold text-orange-400">{(DAILY_EMISSIONS_NOW / 2).toLocaleString()}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">TAO/day post-halving</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3 — Staking yield + next halving */}
+            <div className="bg-[#0f1623] rounded-xl border border-purple-500/20 p-6">
+              <div className="flex items-start gap-4">
+                <div className="shrink-0 w-9 h-9 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold">3</div>
+                <div className="flex-1">
+                  <h3 className="text-base font-semibold text-white mb-1">Staking yield &amp; next halving</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                    Staking rewards are funded by emissions. After the halving, nominal APY in TAO terms will compress. However, if TAO price rises (as it historically has around halvings), the USD value of rewards can remain stable or increase. Smart stakers pay attention to the halving schedule — it&apos;s one of the most predictable catalysts in the TAO calendar.
+                  </p>
+
+                  {/* Countdown */}
+                  <div className="rounded-xl bg-[#080d14] border border-purple-600/30 p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Next Halving</p>
+                        <p className="text-lg font-bold text-white">Block {halving.halvingBlock.toLocaleString()}</p>
+                        <p className="text-sm text-purple-400">Est. {halving.estimatedDate}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">Time Remaining</p>
+                        <p className="text-lg font-bold text-white">~{halving.daysRemaining} days</p>
+                        <p className="text-sm text-gray-400">{halving.blocksRemaining.toLocaleString()} blocks</p>
+                      </div>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="mt-1">
+                      <div className="flex justify-between text-xs text-gray-500 mb-1.5">
+                        <span>Block 0</span>
+                        <span className="text-purple-400">{halving.pctComplete}% complete</span>
+                        <span>Block {halving.halvingBlock.toLocaleString()}</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400"
+                          style={{ width: `${halving.pctComplete}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </section>
 
