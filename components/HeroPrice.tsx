@@ -1,36 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-interface TaoPrice {
-  usd: number;
-  usd_24h_change: number;
-}
+import { useTaoPrice } from "@/hooks/useTaoPrice";
 
 export default function HeroPrice() {
-  const [price, setPrice] = useState<TaoPrice | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPrice = async () => {
-      try {
-        const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_24hr_change=true"
-        );
-        if (!res.ok) throw new Error("fetch failed");
-        const data = await res.json();
-        setPrice(data.bittensor);
-      } catch {
-        // Leave as null — will show fallback
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrice();
-    const interval = setInterval(fetchPrice, 30_000);
-    return () => clearInterval(interval);
-  }, []);
+  const { price, loading } = useTaoPrice();
 
   if (loading) {
     return (
