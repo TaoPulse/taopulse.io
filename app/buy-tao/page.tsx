@@ -1,5 +1,24 @@
 import Link from "next/link";
 
+export const metadata = {
+  title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
+  description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Coinbase and OKX. Step-by-step guide for US and international buyers.",
+  keywords: "buy TAO, buy Bittensor, TAO exchange, how to buy TAO, TAO Kraken, TAO Coinbase",
+  openGraph: {
+    title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
+    description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Coinbase and OKX.",
+    url: "https://taopulse.io/buy-tao",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
+    description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Coinbase and OKX.",
+  },
+  alternates: { canonical: "https://taopulse.io/buy-tao" },
+};
+
 type Exchange = {
   name: string;
   badge?: string;

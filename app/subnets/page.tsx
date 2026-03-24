@@ -3,9 +3,22 @@ import HeroPrice from "@/components/HeroPrice";
 import staticSubnets from "@/data/subnets.json";
 
 export const metadata = {
-  title: "Bittensor Subnet Explorer | TaoPulse",
-  description:
-    "Explore all 128 Bittensor subnets. Filter by category, sort by emission, miners, or ID. Discover how to mine each subnet.",
+  title: "Bittensor Subnet Explorer — All 128+ Subnets with Live Emission Data",
+  description: "Explore all Bittensor subnets with live emission percentages, active miners, and validator counts. Find the best subnets for staking and discover the AI capabilities of each subnet.",
+  keywords: "Bittensor subnets, TAO subnets, Bittensor subnet explorer, subnet emission, dTAO subnets, Bittensor AI subnets",
+  openGraph: {
+    title: "Bittensor Subnet Explorer — All 128+ Subnets with Live Emission Data",
+    description: "Explore all Bittensor subnets with live emission percentages, active miners, and validator counts.",
+    url: "https://taopulse.io/subnets",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bittensor Subnet Explorer — All 128+ Subnets with Live Emission Data",
+    description: "Explore all Bittensor subnets with live emission percentages, active miners, and validator counts.",
+  },
+  alternates: { canonical: "https://taopulse.io/subnets" },
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

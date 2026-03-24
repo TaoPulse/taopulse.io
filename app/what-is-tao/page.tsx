@@ -1,5 +1,24 @@
 import Link from "next/link";
 
+export const metadata = {
+  title: "What is TAO? Bittensor Explained for Beginners",
+  description: "Learn what TAO and Bittensor are: a decentralized AI network rewarding machine learning with cryptocurrency. Why TAO is unique, how it works, and why investors are paying attention.",
+  keywords: "what is TAO, what is Bittensor, TAO explained, Bittensor beginner guide, decentralized AI",
+  openGraph: {
+    title: "What is TAO? Bittensor Explained for Beginners",
+    description: "Learn what TAO and Bittensor are: a decentralized AI network rewarding machine learning with cryptocurrency.",
+    url: "https://taopulse.io/what-is-tao",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "What is TAO? Bittensor Explained for Beginners",
+    description: "Learn what TAO and Bittensor are: a decentralized AI network rewarding machine learning with cryptocurrency.",
+  },
+  alternates: { canonical: "https://taopulse.io/what-is-tao" },
+};
+
 const stats = [
   { value: "$2.8B", label: "Market Cap" },
   { value: "21M", label: "Max Supply" },

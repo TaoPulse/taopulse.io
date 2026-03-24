@@ -3,9 +3,22 @@ import StakingMethodTabs from "@/components/StakingMethodTabs";
 import TableOfContents from "@/components/TableOfContents";
 
 export const metadata = {
-  title: "How to Stake TAO | TaoPulse",
-  description:
-    "Complete guide to staking TAO on the Bittensor network — wallet apps, CLI, classic vs dTAO staking, emission explained, risk table, and staking calculator.",
+  title: "How to Stake TAO — Beginner's Guide to Bittensor Staking",
+  description: "Step-by-step guide to staking TAO on the Bittensor network. Learn the difference between classic root staking and dTAO subnet staking, how to choose a validator, and how to earn 15-20% APY.",
+  keywords: "stake TAO, TAO staking, Bittensor staking, TAO APY, dTAO staking, Bittensor validator, TAO yield",
+  openGraph: {
+    title: "How to Stake TAO — Beginner's Guide to Bittensor Staking",
+    description: "Step-by-step guide to staking TAO. Learn classic vs dTAO staking, how to choose a validator, and how to earn 15-20% APY.",
+    url: "https://taopulse.io/staking",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How to Stake TAO — Beginner's Guide to Bittensor Staking",
+    description: "Step-by-step guide to staking TAO. Learn classic vs dTAO staking, how to choose a validator, and how to earn 15-20% APY.",
+  },
+  alternates: { canonical: "https://taopulse.io/staking" },
 };
 
 interface Validator {

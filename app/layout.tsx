@@ -11,16 +11,32 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TaoPulse | TAO & Bittensor Analytics",
-  description:
-    "TaoPulse is the leading analytics platform for TAO and the Bittensor ecosystem. Track subnets, validators, staking yields, and real-time prices across the decentralized AI network.",
-  keywords: ["TAO", "Bittensor", "analytics", "subnets", "staking", "crypto", "AI"],
+  metadataBase: new URL("https://taopulse.io"),
+  title: {
+    default: "TaoPulse — Bittensor TAO Analytics",
+    template: "%s | TaoPulse",
+  },
+  description: "Your guide to Bittensor and TAO. Track live subnet emissions, compare validators, learn to stake TAO.",
+  keywords: ["Bittensor", "TAO", "TAO staking", "decentralized AI", "Bittensor subnets"],
+  authors: [{ name: "TaoPulse" }],
+  creator: "TaoPulse",
   openGraph: {
-    title: "TaoPulse | TAO & Bittensor Analytics",
-    description:
-      "Track TAO prices, subnet performance, staking yields, and validator data across the Bittensor network.",
     type: "website",
+    locale: "en_US",
     url: "https://taopulse.io",
+    siteName: "TaoPulse",
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@taopulseio",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 

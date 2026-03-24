@@ -2,9 +2,22 @@ import TableOfContents from "@/components/TableOfContents";
 import WalletCategoryTabs from "@/components/WalletCategoryTabs";
 
 export const metadata = {
-  title: "TAO Wallets | TaoPulse",
-  description:
-    "Compare the best wallets for storing and staking TAO. Find the right wallet for your needs — beginner, holder, staker, or security-focused user.",
+  title: "Best TAO Wallets 2025 — Browser, Mobile & Hardware",
+  description: "Compare the best wallets for storing and staking TAO. Talisman, Crucible, TAO.com, Nova Wallet, Zengo, Ledger — verified reviews with direct download links.",
+  keywords: "TAO wallet, Bittensor wallet, Talisman TAO, best TAO wallet, TAO staking wallet, Ledger Bittensor",
+  openGraph: {
+    title: "Best TAO Wallets 2025 — Browser, Mobile & Hardware",
+    description: "Compare the best wallets for storing and staking TAO. Verified reviews with direct download links.",
+    url: "https://taopulse.io/wallets",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Best TAO Wallets 2025 — Browser, Mobile & Hardware",
+    description: "Compare the best wallets for storing and staking TAO. Verified reviews with direct download links.",
+  },
+  alternates: { canonical: "https://taopulse.io/wallets" },
 };
 
 const BEST_FOR_YOU = [
