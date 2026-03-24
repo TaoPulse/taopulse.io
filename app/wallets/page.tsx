@@ -1,5 +1,6 @@
 import TableOfContents from "@/components/TableOfContents";
 import WalletCategoryTabs from "@/components/WalletCategoryTabs";
+import { AFFILIATE_LINKS } from "@/lib/affiliate";
 
 export const metadata = {
   title: "Best TAO Wallets 2025 — Browser, Mobile & Hardware",
@@ -199,7 +200,11 @@ export default function WalletsPage() {
           {/* Disclaimer */}
           <div className="mt-10 p-4 rounded-lg bg-amber-500/5 border border-amber-500/20">
             <p className="text-xs text-amber-400">
-              TaoPulse is not affiliated with any wallet provider and does not earn commissions. Information was verified at time of writing but may change — always check official sources. Never share your seed phrase with anyone.
+              {(AFFILIATE_LINKS.ledger.hasAffiliate || AFFILIATE_LINKS.talisman.hasAffiliate || AFFILIATE_LINKS.crucible.hasAffiliate)
+                ? "Some links on this page are affiliate links — TaoPulse may earn a commission if you make a purchase at no extra cost to you. Our rankings are not influenced by affiliate relationships."
+                : "TaoPulse is not affiliated with any wallet provider and does not earn commissions."
+              }{" "}
+              Information was verified at time of writing but may change — always check official sources. Never share your seed phrase with anyone.
             </p>
           </div>
 

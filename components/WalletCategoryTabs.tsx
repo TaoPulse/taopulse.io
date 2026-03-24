@@ -191,7 +191,7 @@ const CATEGORIES: { id: string; emoji: string; label: string; wallets: Wallet[] 
         description:
           "The gold standard for securing large crypto holdings. Your private keys never leave the device. Note: you cannot see your TAO balance in Ledger Live directly — connect your Ledger to Talisman or Crucible to manage TAO with full hardware security.",
         bestFor: "Best for: Anyone holding significant TAO ($1,000+) long-term",
-        url: "https://shop.ledger.com/products/ledger-nano-s-plus",
+        url: "https://shop.ledger.com/products/ledger-nano-s-plus", // swap with affiliate URL once you have it: https://shop.ledger.com/products/ledger-nano-s-plus?r=YOUR_CODE
         urlLabel: "Buy Ledger Nano S Plus ($79)",
         setupNote:
           "Setup: Buy Ledger → Install Talisman browser extension → Connect Ledger to Talisman → Manage TAO securely",

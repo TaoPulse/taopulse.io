@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AFFILIATE_LINKS } from "@/lib/affiliate";
 
 export const metadata = {
   title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
@@ -29,6 +30,7 @@ type Exchange = {
   available: string;
   pairs: string[];
   highlight?: boolean;
+  affiliate?: boolean;
 };
 
 const exchanges: Exchange[] = [
@@ -43,10 +45,11 @@ const exchanges: Exchange[] = [
       "Best choice for US residents",
     ],
     cons: ["Higher fees than some alternatives"],
-    href: "https://www.kraken.com",
+    href: AFFILIATE_LINKS.kraken.url,
     available: "US, Europe, globally (except some countries)",
     pairs: ["TAO/USD", "TAO/EUR"],
     highlight: true,
+    affiliate: AFFILIATE_LINKS.kraken.hasAffiliate,
   },
   {
     name: "Binance",
@@ -58,9 +61,10 @@ const exchanges: Exchange[] = [
       "Many TAO trading pairs",
     ],
     cons: ["Not available in USA", "Complex for beginners"],
-    href: "https://www.binance.com",
+    href: AFFILIATE_LINKS.binance.url,
     available: "Most countries (NOT USA)",
     pairs: ["TAO/USDT"],
+    affiliate: AFFILIATE_LINKS.binance.hasAffiliate,
   },
   {
     name: "Gate.io",
@@ -69,17 +73,19 @@ const exchanges: Exchange[] = [
       "Good TAO liquidity",
     ],
     cons: ["Less well-known", "Higher risk than Kraken/Binance"],
-    href: "https://www.gate.io",
+    href: AFFILIATE_LINKS.gateio.url,
     available: "Most countries",
     pairs: ["TAO/USDT"],
+    affiliate: AFFILIATE_LINKS.gateio.hasAffiliate,
   },
   {
     name: "MEXC",
     pros: ["Available widely", "TAO support"],
     cons: ["Less regulated"],
-    href: "https://www.mexc.com",
+    href: AFFILIATE_LINKS.mexc.url,
     available: "Most countries",
     pairs: ["TAO/USDT"],
+    affiliate: AFFILIATE_LINKS.mexc.hasAffiliate,
   },
 ];
 
@@ -195,17 +201,22 @@ export default function BuyTaoPage() {
                       ))}
                     </div>
                   </div>
-                  <a
-                    href={ex.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-300 hover:text-white transition-colors"
-                  >
-                    Visit
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <a
+                      href={ex.href}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-300 hover:text-white transition-colors"
+                    >
+                      Visit
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                    {ex.affiliate && (
+                      <span className="text-[10px] text-gray-600">affiliate link</span>
+                    )}
+                  </div>
                 </div>
 
                 <p className="text-xs text-gray-500 mb-4">Available: {ex.available}</p>
@@ -343,6 +354,13 @@ export default function BuyTaoPage() {
             Store TAO Safely →
           </Link>
         </section>
+
+        {/* Affiliate Disclosure */}
+        <div className="rounded-lg border border-white/5 bg-white/[0.02] px-5 py-4">
+          <p className="text-xs text-gray-600 leading-relaxed">
+            <strong className="text-gray-500">Disclosure:</strong> Some links on this page may be affiliate links. If you sign up through them, TaoPulse may earn a commission at no extra cost to you. We only list exchanges we&apos;d genuinely recommend. Our editorial rankings are not influenced by affiliate relationships.
+          </p>
+        </div>
       </div>
     </div>
   );
