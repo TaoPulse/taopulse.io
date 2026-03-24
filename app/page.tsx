@@ -313,7 +313,7 @@ export default async function HomePage() {
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
           <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step — click any step to learn more</p>
-          <HowItWorks />
+          <HowItWorks activeSubnets={networkStats?.activeSubnets ?? null} />
         </section>
 
         {/* The Halving */}

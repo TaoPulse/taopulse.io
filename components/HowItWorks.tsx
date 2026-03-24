@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 
-const steps = [
+function getSteps(activeSubnets: number | null) {
+  const subnetCount = activeSubnets ? `${activeSubnets}+` : "129+";
+  return [
   {
     step: 1,
     title: "Anyone creates a subnet",
     body: "A specialized AI competition — e.g. \"build the best trading signals\"",
-    detail: "Subnet owners stake TAO to register a new subnet and define its task — what kind of AI outputs miners must produce. Anyone can create a subnet: researchers, companies, or individuals. The subnet owner sets the evaluation criteria and earns a share of the emissions their subnet generates. Popular subnets attract more miners and validators, driving up quality.",
+    detail: `A subnet is a specialized AI marketplace with one job. A creator registers it by locking TAO as collateral, then defines what miners must produce — financial predictions, protein folding, text generation, anything. The creator earns 18% of all TAO emissions their subnet generates, so there's strong incentive to build subnets the network finds valuable. There are currently ${subnetCount} active subnets on the network.`,
   },
   {
     step: 2,
@@ -33,10 +35,11 @@ const steps = [
     body: "Subnets with useful AI get more TAO allocated to them",
     detail: "TAO holders can stake their tokens toward any subnet they believe in — effectively voting with capital on which AI tasks deserve more resources. Subnets producing genuinely useful outputs attract more stake, which means more TAO emissions, which attracts better miners. It's a decentralized market for AI utility — no central committee decides what matters, the market does.",
   },
-];
+];}
 
-export default function HowItWorks() {
+export default function HowItWorks({ activeSubnets }: { activeSubnets: number | null }) {
   const [open, setOpen] = useState<number | null>(null);
+  const steps = getSteps(activeSubnets);
 
   return (
     <div className="space-y-3">
