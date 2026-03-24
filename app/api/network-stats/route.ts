@@ -57,6 +57,10 @@ export async function GET() {
     stakedPct = (stakedTao / circulatingSupply) * 100;
   }
 
+  const currentBlock =
+    10_500_000 + Math.floor((Date.now() - new Date("2025-12-14T00:00:00Z").getTime()) / 12000);
+  const blocksToNextHalving = Math.max(0, 21_000_000 - currentBlock);
+
   return NextResponse.json(
     {
       activeSubnets,
@@ -64,6 +68,8 @@ export async function GET() {
       stakedPct: stakedPct ? parseFloat(stakedPct.toFixed(1)) : null,
       circulatingSupply: circulatingSupply ? Math.round(circulatingSupply) : null,
       marketCap,
+      currentBlock,
+      blocksToNextHalving,
     },
     {
       headers: {

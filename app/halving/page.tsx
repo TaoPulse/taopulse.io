@@ -41,7 +41,7 @@ const halvingHistory = [
   },
   {
     label: "Halving 2",
-    date: "~Jun 2029",
+    date: "~Dec 2029",
     emissions: "1,800 TAO/day",
     status: "next",
     description: "Next halving. Emissions drop to 1,800 TAO/day as scarcity deepens.",
@@ -117,7 +117,12 @@ export default async function HalvingPage() {
   const supplyPct =
     circulatingSupply != null
       ? ((circulatingSupply / 21_000_000) * 100).toFixed(1)
-      : "45.7";
+      : null;
+
+  const currentBlock =
+    10_500_000 + Math.floor((Date.now() - Date.UTC(2025, 11, 14)) / 12000);
+  const blocksRemaining = Math.max(0, 21_000_000 - currentBlock);
+  const blocksRemainingDisplay = "~" + blocksRemaining.toLocaleString("en-US");
 
   const stats = [
     {
@@ -130,21 +135,21 @@ export default async function HalvingPage() {
     {
       label: "After Next Halving",
       value: "1,800 TAO",
-      sub: "~Jun 2029 target",
+      sub: "~Dec 2029 target",
       color: "text-orange-400",
       border: "border-orange-500/20",
     },
     {
       label: "Blocks Until Halving",
-      value: "~10,512,000",
-      sub: "at 12 sec / block",
+      value: blocksRemainingDisplay,
+      sub: "est. based on 12s/block",
       color: "text-purple-400",
       border: "border-purple-500/20",
     },
     {
       label: "% of Max Supply Minted",
-      value: `${supplyPct}%`,
-      sub: "of 21M TAO",
+      value: supplyPct != null ? `${supplyPct}%` : "—",
+      sub: supplyPct != null ? "of 21M TAO" : "data unavailable",
       color: "text-emerald-400",
       border: "border-emerald-500/20",
     },
@@ -174,7 +179,7 @@ export default async function HalvingPage() {
           </h1>
           <p className="text-base sm:text-lg text-gray-400 mb-8 max-w-xl">
             Bittensor emissions halve again around{" "}
-            <span className="text-amber-400 font-semibold">June 2029</span> —
+            <span className="text-amber-400 font-semibold">December 2029</span> —
             dropping from 3,600 to 1,800 TAO/day.
           </p>
 
@@ -182,7 +187,7 @@ export default async function HalvingPage() {
           <HalvingCountdown />
 
           <p className="text-xs text-gray-600 mt-4 text-center">
-            Target date: ~June 1, 2029 · Updates every second
+            Target date: ~Dec 11, 2029 · Updates every second
           </p>
         </div>
       </section>

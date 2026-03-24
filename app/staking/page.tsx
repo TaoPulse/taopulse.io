@@ -30,21 +30,15 @@ interface Validator {
   hotkey: string;
 }
 
-const FALLBACK_VALIDATORS: Validator[] = [
-  { name: "Taostats", fee: "9.0%", apr: "~17%", stake: "~800,000", nominators: 7000, hotkey: "" },
-  { name: "Foundry", fee: "0.0%", apr: "~17%", stake: "~500,000", nominators: 3200, hotkey: "" },
-  { name: "Opentensor", fee: "18.0%", apr: "~15%", stake: "~300,000", nominators: 2500, hotkey: "" },
-];
-
-async function fetchValidators(): Promise<Validator[]> {
+async function fetchValidators(): Promise<Validator[] | null> {
   try {
     const apiKey = process.env.TAOSTATS_API_KEY;
-    if (!apiKey) return FALLBACK_VALIDATORS;
+    if (!apiKey) return null;
     const res = await fetch("https://api.taostats.io/api/validator/latest/v1?limit=20", {
       headers: { Authorization: apiKey },
       next: { revalidate: 300 },
     });
-    if (!res.ok) return FALLBACK_VALIDATORS;
+    if (!res.ok) return null;
     const json = await res.json();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (json.data ?? []).slice(0, 10).map((v: any) => ({
@@ -56,7 +50,7 @@ async function fetchValidators(): Promise<Validator[]> {
       hotkey: v.hotkey?.ss58 ?? "",
     }));
   } catch {
-    return FALLBACK_VALIDATORS;
+    return null;
   }
 }
 
@@ -131,7 +125,7 @@ function CodeBlock({ children }: { children: React.ReactNode }) {
 }
 
 export default async function StakingPage() {
-  const validators = await fetchValidators();
+  const validators: Validator[] | null = await fetchValidators();
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex gap-12">
@@ -372,48 +366,59 @@ export default async function StakingPage() {
               <p className="text-sm text-gray-400">
                 Validators are nodes that secure the Bittensor network. Pick one with a low fee and high uptime.
               </p>
-              <div className="overflow-x-auto rounded-lg border border-white/10">
-                <div className="flex items-center justify-between px-3 py-2 bg-[#080d14] border-b border-white/10">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Top Validators by Stake</span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-                    Live
-                  </span>
+              {validators === null ? (
+                <div className="rounded-lg border border-white/10 bg-[#0f1623] px-4 py-6 text-center text-sm text-gray-500">
+                  Validator data temporarily unavailable. View live validators at{" "}
+                  <a href="https://taostats.io/validators" target="_blank" rel="noopener noreferrer" className="text-purple-400 underline hover:text-purple-300">
+                    taostats.io/validators
+                  </a>.
                 </div>
-                <table className="w-full text-xs">
-                  <thead>
-                    <tr className="bg-[#080d14] border-b border-white/10">
-                      <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase tracking-wider">Validator</th>
-                      <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider">Fee</th>
-                      <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider">APR</th>
-                      <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Stake (TAO)</th>
-                      <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Nominators</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {validators.map((v, i) => (
-                      <tr key={v.hotkey || i} className="hover:bg-purple-600/5 transition-colors">
-                        <td className="px-3 py-2.5 font-medium text-white">{v.name}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-300">{v.fee}</td>
-                        <td className="px-3 py-2.5 text-right">
-                          <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400">
-                            {v.apr}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5 text-right text-gray-400 hidden sm:table-cell">{v.stake}</td>
-                        <td className="px-3 py-2.5 text-right text-gray-400 hidden md:table-cell">{v.nominators.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-xs text-gray-600">
-                Data from taostats.io, refreshed every 5 minutes. Copy a validator&apos;s hotkey from{" "}
-                <a href="https://taostats.io/validators" target="_blank" rel="noopener noreferrer" className="text-purple-400 underline hover:text-purple-300">
-                  taostats.io/validators
-                </a>{" "}
-                — you will need it for the CLI method.
-              </p>
+              ) : (
+                <>
+                  <div className="overflow-x-auto rounded-lg border border-white/10">
+                    <div className="flex items-center justify-between px-3 py-2 bg-[#080d14] border-b border-white/10">
+                      <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Top Validators by Stake</span>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                        Live
+                      </span>
+                    </div>
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="bg-[#080d14] border-b border-white/10">
+                          <th className="px-3 py-2 text-left font-semibold text-gray-500 uppercase tracking-wider">Validator</th>
+                          <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider">Fee</th>
+                          <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider">APR</th>
+                          <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Stake (TAO)</th>
+                          <th className="px-3 py-2 text-right font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Nominators</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5">
+                        {validators.map((v, i) => (
+                          <tr key={v.hotkey || i} className="hover:bg-purple-600/5 transition-colors">
+                            <td className="px-3 py-2.5 font-medium text-white">{v.name}</td>
+                            <td className="px-3 py-2.5 text-right text-gray-300">{v.fee}</td>
+                            <td className="px-3 py-2.5 text-right">
+                              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-400/10 text-emerald-400">
+                                {v.apr}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2.5 text-right text-gray-400 hidden sm:table-cell">{v.stake}</td>
+                            <td className="px-3 py-2.5 text-right text-gray-400 hidden md:table-cell">{v.nominators.toLocaleString()}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <p className="text-xs text-gray-600">
+                    Data from taostats.io, refreshed every 5 minutes. Copy a validator&apos;s hotkey from{" "}
+                    <a href="https://taostats.io/validators" target="_blank" rel="noopener noreferrer" className="text-purple-400 underline hover:text-purple-300">
+                      taostats.io/validators
+                    </a>{" "}
+                    — you will need it for the CLI method.
+                  </p>
+                </>
+              )}
             </section>
 
             {/* How to Unstake */}
