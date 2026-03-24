@@ -333,51 +333,34 @@ export default async function WhatIsTaoPage() {
         </section>
 
         {/* TAO Halving */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-2">TAO Halving</h2>
-          <p className="text-gray-400 mb-6">On December 14, 2025, Bittensor completed its first halving — permanently cutting daily emissions in half</p>
-
-          <div className="space-y-4">
-
-            {/* 1 — Scarcity */}
-            <div className="bg-[#0f1623] rounded-xl border border-orange-500/20 p-6">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-orange-500/15 text-orange-400 flex items-center justify-center text-sm font-bold">1</div>
-                <div>
-                  <h3 className="text-base font-semibold text-white mb-1">Scarcity accelerates</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    TAO has a hard cap of <span className="text-white font-medium">21 million</span> — identical to Bitcoin. After the first halving, the network now takes twice as long to mint the same amount of TAO. Unlike inflationary AI tokens that can be printed indefinitely, TAO becomes structurally harder to acquire with every passing block. The next halving (~2029) will cut emissions to 1,800 TAO/day.
-                  </p>
+        <section id="halving">
+          <h2 className="text-2xl font-bold text-white mb-2">The Halving: TAO&apos;s Supply Milestone</h2>
+          <p className="text-gray-400 mb-6">On December 14, 2025, Bittensor completed its first halving — permanently cutting daily TAO emissions in half</p>
+          <div className="bg-[#0f1623] rounded-xl border border-amber-500/20 p-6 sm:p-8 space-y-4">
+            <p className="text-gray-300 leading-relaxed">
+              Like Bitcoin, Bittensor was designed with a fixed maximum supply of{" "}
+              <span className="text-white font-semibold">21 million TAO</span> and halving events roughly every 4 years. The first halving marks a structural shift: the rate at which new TAO enters circulation is now half what it was — dropping from 7,200 to{" "}
+              <span className="text-white font-semibold">3,600 TAO/day</span> — while demand for the network continues to grow.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {[
+                { label: "Miners & validators earn less per block", body: "Only the most competitive subnets survive — weaker participants exit, strengthening the network." },
+                { label: "Staking yields compress", body: "APY naturally tightens as emission rewards shrink. Price appreciation can offset this." },
+                { label: "Scarcity accelerates", body: "It now takes twice as long to mint the same amount of TAO. The pace of dilution has been permanently halved." },
+                { label: "Next halving: ~2029", body: "At that point emissions drop to 1,800 TAO/day — and the cycle of scarcity deepens further." },
+              ].map((item) => (
+                <div key={item.label} className="flex items-start gap-3 bg-white/5 rounded-lg border border-white/10 p-4">
+                  <span className="text-amber-400 mt-0.5 shrink-0">→</span>
+                  <div>
+                    <p className="text-sm font-semibold text-white mb-0.5">{item.label}</p>
+                    <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-
-            {/* 2 — Miners and validators earn less */}
-            <div className="bg-[#0f1623] rounded-xl border border-amber-500/20 p-6">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-amber-500/15 text-amber-400 flex items-center justify-center text-sm font-bold">2</div>
-                <div>
-                  <h3 className="text-base font-semibold text-white mb-1">Miners and validators earn less per block</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    Daily emissions dropped from 7,200 to <span className="text-white font-medium">3,600 TAO/day</span> after the December 2025 halving. Miners competing for AI rewards and validators securing the network now receive half the TAO per block. This mirrors Bitcoin&apos;s miner dynamic — if price doesn&apos;t compensate, weaker participants exit, strengthening those who remain.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 3 — Staking yield + next halving */}
-            <div className="bg-[#0f1623] rounded-xl border border-purple-500/20 p-6">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold">3</div>
-                <div>
-                  <h3 className="text-base font-semibold text-white mb-1">Staking yield &amp; the next halving</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    Staking rewards are funded by emissions. With the halving now in effect, nominal APY in TAO terms has compressed. However, if TAO price rises — as it historically has around halvings — the USD value of rewards can remain stable or increase. The next halving is expected around <span className="text-white font-medium">2029</span>, when emissions drop to 1,800 TAO/day. Smart stakers treat halvings as one of the most predictable catalysts in the TAO calendar.
-                  </p>
-                </div>
-              </div>
-            </div>
-
+            <p className="text-sm text-gray-400 leading-relaxed pt-1">
+              The halving doesn&apos;t reduce the value of existing TAO — it reduces the pace of dilution. Historically in Bitcoin, each halving preceded a significant price appreciation as the market repriced the new supply reality.
+            </p>
           </div>
         </section>
 
