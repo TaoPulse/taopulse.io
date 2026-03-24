@@ -128,7 +128,7 @@ export default async function HomePage() {
     { label: "Market Cap", value: marketCapValue },
     { label: "Max Supply", value: "21M TAO" },
     { label: "Circulating", value: circulatingValue },
-    { label: "Daily Emissions", value: "3,600 TAO" },
+    { label: "Daily Emissions", value: "3,600 TAO", href: "#halving" },
     { label: "TAO Staked", value: stakedValue },
     { label: "Active Subnets", value: subnetValue, href: "/subnets" },
   ];
@@ -251,25 +251,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* How It Works */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
-          <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step</p>
-          <div className="space-y-3">
-            {howItWorks.map((step) => (
-              <div key={step.step} className="flex items-start gap-4 bg-[#0f1623] rounded-xl border border-white/10 p-5 hover:border-purple-600/20 transition-colors">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-bold">
-                  {step.step}
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold text-white mb-1">{step.title}</h3>
-                  <p className="text-sm text-gray-400">{step.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Why TAO is Special */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">Why TAO is Special</h2>
@@ -289,8 +270,27 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* The Halving */}
+        {/* How It Works */}
         <section>
+          <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
+          <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step</p>
+          <div className="space-y-3">
+            {howItWorks.map((step) => (
+              <div key={step.step} className="flex items-start gap-4 bg-[#0f1623] rounded-xl border border-white/10 p-5 hover:border-purple-600/20 transition-colors">
+                <div className="shrink-0 w-9 h-9 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-bold">
+                  {step.step}
+                </div>
+                <div>
+                  <h3 className="text-base font-semibold text-white mb-1">{step.title}</h3>
+                  <p className="text-sm text-gray-400">{step.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* The Halving */}
+        <section id="halving">
           <h2 className="text-2xl font-bold text-white mb-2">The Halving: TAO&apos;s Supply Milestone</h2>
           <p className="text-gray-400 mb-6">On December 14, 2025, Bittensor completed its first halving — permanently cutting daily TAO emissions in half</p>
           <div className="bg-[#0f1623] rounded-xl border border-amber-500/20 p-6 sm:p-8 space-y-4">
