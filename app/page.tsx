@@ -97,17 +97,32 @@ function CellValue({ value, check, partial }: { value: string; check?: boolean; 
 
 export default async function HomePage() {
   let taoPrice: { usd: number; usd_market_cap: number; usd_24h_change: number } | null = null;
+  let networkStats: { activeSubnets: number | null; stakedPct: number | null; circulatingSupply: number | null } | null = null;
+
   try {
-    const res = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true&include_24hr_change=true",
-      { next: { revalidate: 60 }, signal: AbortSignal.timeout(5000) }
-    );
-    if (res.ok) taoPrice = (await res.json()).bittensor;
+    const [priceRes, statsRes] = await Promise.all([
+      fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true&include_24hr_change=true",
+        { next: { revalidate: 60 }, signal: AbortSignal.timeout(5000) }
+      ),
+      fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://taopulse.io"}/api/network-stats`,
+        { next: { revalidate: 300 }, signal: AbortSignal.timeout(8000) }
+      ).catch(() => null),
+    ]);
+    if (priceRes.ok) taoPrice = (await priceRes.json()).bittensor;
+    if (statsRes?.ok) networkStats = await statsRes.json();
   } catch {}
 
   const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$3.0B";
   const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "$308";
   const change24h = taoPrice?.usd_24h_change ?? null;
+
+  const circulatingValue = networkStats?.circulatingSupply
+    ? `${(networkStats.circulatingSupply / 1e6).toFixed(1)}M TAO`
+    : "9.6M TAO";
+  const stakedValue = networkStats?.stakedPct ? `${networkStats.stakedPct}%` : "—";
+  const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}` : "129";
 
   const STATS: { label: string; value: React.ReactNode; badge?: React.ReactNode; href?: string }[] = [
     {
@@ -121,10 +136,10 @@ export default async function HomePage() {
     },
     { label: "Market Cap", value: marketCapValue },
     { label: "Max Supply", value: "21M TAO" },
-    { label: "Circulating", value: "9.6M TAO" },
+    { label: "Circulating", value: circulatingValue },
     { label: "Daily Emissions", value: "7,200 TAO" },
-    { label: "TAO Staked", value: "76%" },
-    { label: "Active Subnets", value: "128+", href: "/subnets" },
+    { label: "TAO Staked", value: stakedValue },
+    { label: "Active Subnets", value: subnetValue, href: "/subnets" },
   ];
 
   return (
