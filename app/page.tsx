@@ -81,7 +81,8 @@ const whatisBittensor = [
   {
     num: "04",
     title: "The Incentive",
-    body: "Miners run AI models and get paid TAO for quality outputs. Validators stake TAO to score the work fairly. Subnet owners create specialized competitions — trading signals, image generation, data analysis, anything. Nobody controls it. The code runs the rules.",
+    body: "",
+    bullets: ["Miners run AI models and get paid TAO for quality outputs", "Validators stake TAO to score the work fairly", "Subnet owners create specialized competitions — trading signals, image generation, data analysis, anything", "Nobody controls it. The code runs the rules."],
     color: "text-emerald-400",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/20",
@@ -275,7 +276,18 @@ export default async function HomePage() {
                   <span className={`text-xs font-bold ${item.color} opacity-60 shrink-0 pt-0.5`}>{item.num}</span>
                   <div>
                     <h3 className={`text-sm font-semibold ${item.color} mb-2`}>{item.title}</h3>
-                    <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
+                    {item.bullets ? (
+                      <ul className="space-y-1.5">
+                        {item.bullets.map((b) => (
+                          <li key={b} className="flex items-start gap-1.5 text-xs text-gray-400 leading-relaxed">
+                            <span className={`${item.color} opacity-70 shrink-0 mt-0.5`}>•</span>
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
+                    )}
                   </div>
                 </div>
               </div>
