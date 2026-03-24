@@ -9,31 +9,31 @@ function getSteps(activeSubnets: number | null) {
     step: 1,
     title: "Anyone creates a subnet",
     body: "A specialized AI competition — e.g. \"build the best trading signals\"",
-    detail: `A subnet is a specialized AI marketplace with one job. A creator registers it by locking TAO as collateral, then defines what miners must produce — financial predictions, protein folding, text generation, anything. The creator earns 18% of all TAO emissions their subnet generates, so there's strong incentive to build subnets the network finds valuable. There are currently ${subnetCount} active subnets on the network.`,
+    detail: `A subnet is a specialized AI marketplace with one job. A creator registers it by locking TAO as collateral, then defines what miners must produce — could be financial predictions, protein folding, text generation, anything. The creator earns 18% of all TAO emissions their subnet generates, so there's strong incentive to build subnets the network finds valuable. There are currently ${subnetCount} active subnets on the network.`,
   },
   {
     step: 2,
     title: "Miners compete",
     body: "Running AI models to produce the best outputs for that subnet",
-    detail: "Miners are the workers of the network. They run AI models on their own hardware and respond to requests from validators. To join a subnet, miners pay a registration fee in TAO. If their performance drops below the subnet's threshold, they get deregistered and lose their spot — keeping the network competitive. Anyone can be a miner, but you need capital (TAO) and compute (usually a GPU) to be effective.",
+    detail: "Miners are AI providers. They register on a subnet by paying a fee (burned TAO), then run models that respond to validator queries. Each subnet can hold a limited number of miners — if you underperform, you get replaced by someone better. You need: a GPU (or cloud compute), TAO to register, and a model good enough to beat the competition. The barrier is real but the rewards scale with quality.",
   },
   {
     step: 3,
     title: "Validators score miners",
     body: "Fairly and objectively evaluating performance across the network",
-    detail: "Validators stake TAO to participate in scoring. They query miners with challenges and evaluate the quality of responses based on the subnet's rules. Their stake gives them voting power — the more TAO staked, the more weight their scores carry. Validators are incentivized to score accurately: dishonest validators lose their stake over time through the network's consensus mechanism.",
+    detail: "Validators are the judges. They query miners, evaluate responses against the subnet's scoring rules, and submit scores to the chain. To become a validator you stake TAO — your stake determines how much weight your votes carry. The network cross-checks validators against each other; if you game scores to favor yourself, your weight gets slashed. Honest scoring = more TAO earned.",
   },
   {
     step: 4,
     title: "TAO flows to winners",
     body: "Better AI = more TAO rewards. The incentive drives quality.",
-    detail: "Every block, newly minted TAO is distributed across all active subnets based on how much stake they attract. Within each subnet, TAO flows to miners and validators proportionally to their scores. The best-performing miners earn the most. This creates a self-reinforcing loop: better AI → more TAO → more resources to improve AI further.",
+    detail: "Every ~12 seconds a new block is produced. TAO emissions split: 41% to miners, 41% to validators, 18% to the subnet owner. Your share depends on your rank — top miners and validators earn exponentially more. Poor performers earn near zero. This creates constant pressure to improve, keeping the network at the frontier of AI quality.",
   },
   {
     step: 5,
     title: "The market decides value",
     body: "Subnets with useful AI get more TAO allocated to them",
-    detail: "TAO holders can stake their tokens toward any subnet they believe in — effectively voting with capital on which AI tasks deserve more resources. Subnets producing genuinely useful outputs attract more stake, which means more TAO emissions, which attracts better miners. It's a decentralized market for AI utility — no central committee decides what matters, the market does.",
+    detail: "TAO holders can delegate their stake to any subnet — essentially betting that subnet produces useful AI. More delegated stake = more TAO emissions allocated to that subnet = more miner competition = better outputs. It's a capital market for AI utility. No committee, no governance vote — just money flowing toward what works.",
   },
 ];}
 
