@@ -39,14 +39,7 @@ function formatPrice(p: number): string {
 
 
 
-const whySpecial = [
-  { title: "Fixed supply like Bitcoin", body: "Only 21 million TAO will ever exist", color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
-  { title: "Bitcoin-style halvings", body: "Emissions cut in half every ~4 years, making TAO more scarce over time", color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
-  { title: "No VC investors", body: "Founders self-funded. No institutional dump pressure.", color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-  { title: "Real utility", body: "TAO is used to run subnets, pay miners, and secure the network. Not just speculation.", color: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-  { title: "Decentralized AI", body: "The only major network where AI development happens in the open, rewarded by the market", color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-  { title: "Featured on All-In Podcast", body: "Chamath Palihapitiya and Jensen Huang (Nvidia CEO) discussed Bittensor in 2026. First major mainstream tech validation.", color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
-];
+
 
 const whatisBittensor = [
   {
@@ -290,62 +283,11 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Why TAO is Special */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-2">Why TAO is Special</h2>
-          <p className="text-gray-400 mb-6">Six key properties that differentiate TAO from other crypto and AI projects</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {whySpecial.map((item, i) => (
-              <div key={item.title} className={`rounded-xl border p-5 ${item.bg} ${item.border} hover:scale-[1.01] transition-transform`}>
-                <div className="flex items-start gap-3">
-                  <span className={`text-xs font-bold ${item.color} opacity-60`}>{String(i + 1).padStart(2, "0")}</span>
-                  <div>
-                    <h3 className={`text-sm font-semibold ${item.color} mb-1.5`}>{item.title}</h3>
-                    <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* How It Works */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
           <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step — click any step to learn more</p>
           <HowItWorks activeSubnets={networkStats?.activeSubnets ?? null} />
-        </section>
-
-        {/* The Halving */}
-        <section id="halving">
-          <h2 className="text-2xl font-bold text-white mb-2">The Halving: TAO&apos;s Supply Milestone</h2>
-          <p className="text-gray-400 mb-6">On December 14, 2025, Bittensor completed its first halving — permanently cutting daily TAO emissions in half</p>
-          <div className="bg-[#0f1623] rounded-xl border border-amber-500/20 p-6 sm:p-8 space-y-4">
-            <p className="text-gray-300 leading-relaxed">
-              Like Bitcoin, Bittensor was designed with a fixed maximum supply of{" "}
-              <span className="text-white font-semibold">21 million TAO</span> and halving events roughly every 4 years. The first halving marks a structural shift: the rate at which new TAO enters circulation is now half what it was — dropping from 7,200 to{" "}
-              <span className="text-white font-semibold">3,600 TAO/day</span> — while demand for the network continues to grow.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-              {[
-                { label: "Miners & validators earn less per block", body: "Only the most competitive subnets survive — weaker participants exit, strengthening the network." },
-                { label: "Staking yields compress", body: "APY naturally tightens as emission rewards shrink. Price appreciation can offset this." },
-                { label: "Scarcity accelerates", body: "It now takes twice as long to mint the same amount of TAO. The pace of dilution has been permanently halved." },
-                { label: "Next halving: ~2029", body: "At that point emissions drop to 1,800 TAO/day — and the cycle of scarcity deepens further." },
-              ].map((item) => (
-                <div key={item.label} className="flex items-start gap-3 bg-white/5 rounded-lg border border-white/10 p-4">
-                  <span className="text-amber-400 mt-0.5 shrink-0">→</span>
-                  <div>
-                    <p className="text-sm font-semibold text-white mb-0.5">{item.label}</p>
-                    <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="text-sm text-gray-400 leading-relaxed pt-1">
-              The halving doesn&apos;t reduce the value of existing TAO — it reduces the pace of dilution. Historically in Bitcoin, each halving preceded a significant price appreciation as the market repriced the new supply reality.
-            </p>
-          </div>
         </section>
 
         {/* Comparison Table */}
