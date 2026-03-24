@@ -19,6 +19,8 @@ interface Wallet {
   bestFor: string;
   url: string;
   urlLabel: string;
+  url2?: string;
+  url2Label?: string;
   setupNote?: string;
 }
 
@@ -45,8 +47,8 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
         description:
           'The "gold standard" for the Bittensor ecosystem. Talisman is open-source, multi-chain (Polkadot, Ethereum, Solana), with dedicated TAO support, built-in staking, and Ledger hardware wallet integration. The go-to choice for desktop users who want the full TAO feature set.',
         bestFor: "Best for: Desktop users wanting full TAO features",
-        url: "https://talisman.xyz",
-        urlLabel: "talisman.xyz",
+        url: "https://talisman.xyz/download",
+        urlLabel: "Install Extension",
       },
       {
         name: "Crucible",
@@ -69,7 +71,7 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
           "Specialized Bittensor wallet with a standout feature: the Smart Allocator automatically rebalances your stake across the most productive subnets to optimize yield. Supports Ledger integration. No install required — just open in your browser.",
         bestFor: "Best for: Investors who want automated staking optimization",
         url: "https://crucible.wtf",
-        urlLabel: "crucible.wtf",
+        urlLabel: "Open App",
       },
       {
         name: "Bittensor Wallet",
@@ -89,8 +91,8 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
         description:
           'Native non-custodial Chrome extension from the Tensora Group. Supports transfers, dynamic staking, and viewing subnet performance charts directly in-wallet. Find it on the Chrome Web Store by searching "Bittensor Wallet by Tensora".',
         bestFor: "Best for: Active users who want to monitor subnet performance",
-        url: "https://chromewebstore.google.com",
-        urlLabel: "Chrome Web Store",
+        url: "https://chromewebstore.google.com/search/bittensor%20wallet",
+        urlLabel: "Install Extension",
       },
     ],
   },
@@ -116,8 +118,10 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
         description:
           "Evolved from the original Opentensor Foundation wallet. Highly beginner-friendly with biometric security (Face ID), a built-in fiat on-ramp to buy TAO directly in-app, and a clean modern interface. The easiest way to get started with TAO on mobile.",
         bestFor: "Best for: Complete beginners and mobile-first users",
-        url: "https://tao.com",
-        urlLabel: "tao.com",
+        url: "https://apps.apple.com/app/tao-bittensor-wallet/id6479912342",
+        urlLabel: "iOS App Store",
+        url2: "https://play.google.com/store/search?q=tao+bittensor+wallet",
+        url2Label: "Google Play",
       },
       {
         name: "Nova Wallet",
@@ -133,8 +137,8 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
         description:
           "Powerful mobile option for users who want more control. Nova Wallet supports Ledger over Bluetooth — hardware-level security without a desktop. Stake TAO via the built-in browser connecting to Taostats.io.",
         bestFor: "Best for: Mobile users who want Ledger security without a desktop",
-        url: "https://novawallet.io",
-        urlLabel: "novawallet.io",
+        url: "https://apps.apple.com/app/nova-polkadot-kusama-wallet/id1597119769",
+        urlLabel: "App Store / Google Play",
       },
       {
         name: "Zengo",
@@ -156,8 +160,8 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
         description:
           "Uses MPC (Multi-Party Computation) instead of a traditional 12-word seed phrase. Your private key is split between you and Zengo — no single point of failure. A strong choice if you are worried about losing your recovery phrase.",
         bestFor: "Best for: Users who are nervous about managing a seed phrase",
-        url: "https://zengo.com",
-        urlLabel: "zengo.com",
+        url: "https://zengo.com/get-zengo/",
+        urlLabel: "Download App",
       },
     ],
   },
@@ -185,8 +189,8 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
         description:
           "The gold standard for securing large crypto holdings. Your private keys never leave the device. Note: you cannot see your TAO balance in Ledger Live directly — connect your Ledger to Talisman or Crucible to manage TAO with full hardware security.",
         bestFor: "Best for: Anyone holding significant TAO ($1,000+) long-term",
-        url: "https://ledger.com",
-        urlLabel: "ledger.com",
+        url: "https://shop.ledger.com/products/ledger-nano-s-plus",
+        urlLabel: "Buy Ledger Nano S Plus ($79)",
         setupNote:
           "Setup: Buy Ledger → Install Talisman browser extension → Connect Ledger to Talisman → Manage TAO securely",
       },
@@ -213,8 +217,8 @@ const CATEGORIES: { emoji: string; label: string; wallets: Wallet[] }[] = [
           "Turn an old offline smartphone into a cold-storage hardware wallet. Signs transactions via QR codes — the device never connects to the internet. Maximum security with zero hardware cost, but requires technical setup and a spare phone.",
         bestFor:
           "Best for: Security experts who want maximum protection without spending money",
-        url: "https://paritytech.github.io/parity-signer/",
-        urlLabel: "paritytech.github.io",
+        url: "https://github.com/paritytech/parity-signer/releases",
+        urlLabel: "Download on GitHub",
       },
     ],
   },
@@ -430,15 +434,26 @@ export default function WalletsPage() {
                         <span className="text-xs text-gray-500">{wallet.type}</span>
                         <span className="text-gray-700">·</span>
                         <StarRating rating={wallet.rating} />
-                        <span className="text-gray-700">·</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mt-2">
                         <a
                           href={wallet.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/15 border border-purple-600/30 text-purple-400 text-xs font-medium hover:bg-purple-600/25 transition-colors"
                         >
                           {wallet.urlLabel} →
                         </a>
+                        {wallet.url2 && wallet.url2Label && (
+                          <a
+                            href={wallet.url2}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/15 border border-purple-600/30 text-purple-400 text-xs font-medium hover:bg-purple-600/25 transition-colors"
+                          >
+                            {wallet.url2Label} →
+                          </a>
+                        )}
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-1">

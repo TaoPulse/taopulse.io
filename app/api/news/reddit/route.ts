@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+const REDDIT_UA =
+  "Bittensor:TaoPulse:v1.0 (by /u/taopulse)";
 
 interface NewsItem {
   title: string;
@@ -22,38 +24,6 @@ function isRelevant(title: string, selftext: string): boolean {
   );
 }
 
-async function fetchSubreddit(
-  url: string,
-  source: "Reddit" | "Community"
-): Promise<NewsItem[]> {
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": BROWSER_UA },
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) return [];
-    const json = await res.json();
-    if (!json?.data?.children) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.data.children
-      .map((child: any) => ({
-        title: child.data.title,
-        url: `https://reddit.com${child.data.permalink}`,
-        source,
-        date: new Date(child.data.created_utc * 1000).toISOString(),
-        summary: child.data.selftext?.slice(0, 150) || undefined,
-        score: child.data.score,
-        _selftext: child.data.selftext || "",
-      }))
-      .filter((item: NewsItem & { _selftext: string }) =>
-        isRelevant(item.title, item._selftext)
-      )
-      .map(({ _selftext: _s, ...rest }: { _selftext: string } & NewsItem) => rest);
-  } catch {
-    return [];
-  }
-}
-
 async function fetchCryptoPanic(): Promise<NewsItem[]> {
   try {
     const res = await fetch(
@@ -63,20 +33,28 @@ async function fetchCryptoPanic(): Promise<NewsItem[]> {
         signal: AbortSignal.timeout(8000),
       }
     );
+    console.log("[news/reddit] CryptoPanic status:", res.status);
     if (!res.ok) return [];
     const json = await res.json();
-    if (!Array.isArray(json?.results)) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.results.map((item: any) => ({
-      title: item.title,
-      url: item.url,
-      source: "CryptoPanic" as const,
-      date: item.published_at
-        ? new Date(item.published_at).toISOString()
-        : new Date().toISOString(),
-      summary: item.source?.title || undefined,
-    }));
-  } catch {
+    if (!Array.isArray(json?.results)) {
+      console.log("[news/reddit] CryptoPanic: unexpected response shape");
+      return [];
+    }
+    const items = json.results
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((item: any) => ({
+        title: item.title,
+        url: item.url,
+        source: "CryptoPanic" as const,
+        date: item.published_at
+          ? new Date(item.published_at).toISOString()
+          : new Date().toISOString(),
+        summary: item.source?.title || undefined,
+      }));
+    console.log("[news/reddit] CryptoPanic returned", items.length, "items");
+    return items;
+  } catch (e) {
+    console.log("[news/reddit] CryptoPanic error:", e);
     return [];
   }
 }
@@ -95,6 +73,7 @@ async function fetchBlogRss(url: string): Promise<NewsItem[]> {
       headers: { "User-Agent": BROWSER_UA },
       signal: AbortSignal.timeout(8000),
     });
+    console.log("[news/reddit] Blog RSS", url, "status:", res.status);
     if (!res.ok) return [];
     const xml = await res.text();
     const items: NewsItem[] = [];
@@ -118,61 +97,80 @@ async function fetchBlogRss(url: string): Promise<NewsItem[]> {
         summary: desc || undefined,
       });
     }
+    console.log("[news/reddit] Blog RSS returned", items.length, "items");
     return items;
-  } catch {
+  } catch (e) {
+    console.log("[news/reddit] Blog RSS error:", e);
+    return [];
+  }
+}
+
+async function fetchSubreddit(
+  url: string,
+  source: "Reddit" | "Community"
+): Promise<NewsItem[]> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": REDDIT_UA },
+      signal: AbortSignal.timeout(8000),
+    });
+    console.log("[news/reddit] Reddit", url, "status:", res.status);
+    if (!res.ok) return [];
+    const json = await res.json();
+    if (!json?.data?.children) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const items = json.data.children
+      .map((child: any) => ({
+        title: child.data.title,
+        url: `https://reddit.com${child.data.permalink}`,
+        source,
+        date: new Date(child.data.created_utc * 1000).toISOString(),
+        summary: child.data.selftext?.slice(0, 150) || undefined,
+        score: child.data.score,
+        _selftext: child.data.selftext || "",
+      }))
+      .filter((item: NewsItem & { _selftext: string }) =>
+        isRelevant(item.title, item._selftext)
+      )
+      .map(({ _selftext: _s, ...rest }: { _selftext: string } & NewsItem) => rest);
+    console.log("[news/reddit] Reddit returned", items.length, "items from", url);
+    return items;
+  } catch (e) {
+    console.log("[news/reddit] Reddit fetch error:", e);
     return [];
   }
 }
 
 export async function GET() {
-  // Try multiple Reddit endpoints in parallel
-  const [bittensorNew, bittensorSub, taoSub, redditSearch] =
+  // Fetch all sources in parallel — CryptoPanic + blog are primary (not Vercel-blocked)
+  const [cryptoPanic, bittensorBlog, bittensorNew, taoSub] =
     await Promise.allSettled([
+      fetchCryptoPanic(),
+      fetchBlogRss("https://bittensor.com/feed"),
       fetchSubreddit(
         "https://www.reddit.com/r/bittensor_/new.json?limit=25",
-        "Reddit"
-      ),
-      fetchSubreddit(
-        "https://www.reddit.com/r/bittensor_.json?limit=25&sort=new",
         "Reddit"
       ),
       fetchSubreddit(
         "https://www.reddit.com/r/TAO.json?limit=10&sort=new",
         "Community"
       ),
-      fetchSubreddit(
-        "https://www.reddit.com/search.json?q=bittensor+tao&sort=new&limit=25",
-        "Reddit"
-      ),
     ]);
 
-  const redditItems: NewsItem[] = [];
-  for (const result of [bittensorNew, bittensorSub, taoSub, redditSearch]) {
-    if (result.status === "fulfilled") redditItems.push(...result.value);
+  const allItems: NewsItem[] = [];
+  for (const result of [cryptoPanic, bittensorBlog, bittensorNew, taoSub]) {
+    if (result.status === "fulfilled") allItems.push(...result.value);
   }
 
   // Deduplicate by URL
   const seen = new Set<string>();
-  const dedupedReddit = redditItems.filter((item) => {
-    if (seen.has(item.url)) return false;
+  const items = allItems.filter((item) => {
+    if (!item.url || seen.has(item.url)) return false;
     seen.add(item.url);
     return true;
   });
 
-  // If Reddit returned nothing, fall back to blog RSS + CryptoPanic
-  let items: NewsItem[];
-  if (dedupedReddit.length === 0) {
-    const [cryptoPanic, bittensorBlog] = await Promise.allSettled([
-      fetchCryptoPanic(),
-      fetchBlogRss("https://bittensor.com/feed"),
-    ]);
-    items = [
-      ...(cryptoPanic.status === "fulfilled" ? cryptoPanic.value : []),
-      ...(bittensorBlog.status === "fulfilled" ? bittensorBlog.value : []),
-    ];
-  } else {
-    items = dedupedReddit;
-  }
+  console.log("[news/reddit] Total unique items:", items.length);
 
   return NextResponse.json(items, {
     headers: {
