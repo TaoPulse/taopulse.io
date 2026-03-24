@@ -11,7 +11,10 @@ const navLinks = [
   { href: "/wallets", label: "Wallets" },
   { href: "/staking", label: "Staking" },
   { href: "/subnets", label: "Subnets" },
+  { href: "/subnets/directory", label: "Directory" },
   { href: "/news", label: "News" },
+  { href: "/portfolio", label: "Portfolio" },
+  { href: "/halving", label: "Halving" },
 ];
 
 export default function Navbar() {
