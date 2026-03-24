@@ -71,15 +71,16 @@ function StepCard({
 const TABS = [
   { id: "wallet" as const, label: "📱 Wallet App (Recommended)" },
   { id: "cli" as const, label: "⌨️ CLI (Advanced)" },
+  { id: "crucible" as const, label: "🧠 Crucible (Smart Staking)" },
 ];
 
 export default function StakingMethodTabs() {
-  const [active, setActive] = useState<"wallet" | "cli">("wallet");
+  const [active, setActive] = useState<"wallet" | "cli" | "crucible">("wallet");
 
   return (
     <div>
       <p className="text-sm text-gray-400 mb-4">
-        New to TAO? Start with the Wallet App — no terminal needed.
+        New to TAO? Start with the Wallet App. Want automated yield optimization? Try Crucible.
       </p>
 
       {/* Tab bar */}
@@ -173,6 +174,86 @@ export default function StakingMethodTabs() {
               are on the Bittensor network when staking.
             </InfoBox>
           </div>
+        </div>
+      )}
+
+      {/* Crucible tab */}
+      {active === "crucible" && (
+        <div className="space-y-5">
+          <StepCard number={1} title="Install Crucible Wallet">
+            <p>
+              Install the Crucible Wallet Chrome extension from the Chrome Web Store. It&apos;s
+              built specifically for Bittensor — TAO-native, independently audited, and the only
+              TAO wallet with a built-in Smart Allocator.
+            </p>
+            <p>
+              <a
+                href="https://chromewebstore.google.com/detail/crucible-wallet/capjnhbneiilplogojhmhepiocnjpgee"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-purple-400 underline hover:text-purple-300"
+              >
+                Install from Chrome Web Store
+              </a>
+            </p>
+          </StepCard>
+
+          <StepCard number={2} title="Create or Import Wallet">
+            <p>
+              Open the extension and click <strong className="text-white">Create Wallet</strong> to
+              generate a new wallet, or{" "}
+              <strong className="text-white">Import Wallet</strong> if you already have a seed
+              phrase. Set a Master Password — this protects all wallets stored in the extension.
+            </p>
+            <DangerBox>
+              ⚠️ Write down your 12-word seed phrase and store it offline. Anyone with your seed
+              phrase can access your funds.
+            </DangerBox>
+          </StepCard>
+
+          <StepCard number={3} title="Send TAO to Your Wallet">
+            <p>
+              Copy your TAO address from the extension and send TAO from your exchange (Kraken,
+              Coinbase, OKX, etc.). For the Smart Allocator to work efficiently, stake 20+ TAO —
+              smaller amounts work but take longer to generate visible subnet rewards.
+            </p>
+          </StepCard>
+
+          <StepCard number={4} title="Stake to Root Network">
+            <p>
+              Click <strong className="text-white">Stake</strong> in the extension, choose a
+              validator, enter your amount, and confirm. Your TAO is now staked to Root and begins
+              earning rewards. Standard network transaction fee applies (~0.001 TAO).
+            </p>
+          </StepCard>
+
+          <StepCard number={5} title="Enable Smart Allocator">
+            <p>
+              Navigate to the <strong className="text-white">Smart Allocator</strong> tab and click{" "}
+              <strong className="text-white">Enable</strong>. Crucible creates a secure proxy wallet
+              on-chain (one-time ~0.1 TAO deposit, refunded when you close it). Once active, your
+              ROOT staking rewards are automatically deployed across the top 20 subnets daily — no
+              manual management needed. Your principal stays at Root; only earned rewards are
+              deployed.
+            </p>
+            <InfoBox>
+              Smart Allocator uses a proxy key that can only stake — it cannot transfer your funds.
+              Your coldkey (original balance) is never at risk.
+            </InfoBox>
+          </StepCard>
+
+          <StepCard number={6} title="Monitor Your Portfolio">
+            <p>
+              Use the <strong className="text-white">PnL tab</strong> for real-time profit/loss
+              tracking across your full portfolio. Transaction History shows every stake, reward, and
+              transfer. Subnet positions appear after ~1 week as rewards accumulate and get deployed.
+              Allocations rebalance automatically as subnet rankings shift.
+            </p>
+          </StepCard>
+
+          <p className="text-xs text-gray-600 text-center pt-2">
+            Staking powered by Crucible Wallet by Crucible Labs
+          </p>
         </div>
       )}
 
