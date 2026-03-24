@@ -23,7 +23,7 @@ const stats = [
   { value: "$2.8B", label: "Market Cap" },
   { value: "21M", label: "Max Supply" },
   { value: "9.6M", label: "Circulating" },
-  { value: "65+", label: "Active Subnets" },
+  { value: "128+", label: "Active Subnets" },
   { value: "76%", label: "Supply Staked" },
 ];
 

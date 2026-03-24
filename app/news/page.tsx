@@ -64,11 +64,6 @@ async function fetchRedditNews(): Promise<NewsItem[]> {
   return json.map((item) => ({ ...item, date: new Date(item.date) }));
 }
 
-async function fetchCryptoNews(): Promise<NewsItem[]> {
-  // Consolidated into reddit route (Google News + Reddit)
-  return [];
-}
-
 export default function NewsPage() {
   const [items, setItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +78,6 @@ export default function NewsPage() {
     setLoading(true);
     const results = await Promise.allSettled([
       fetchRedditNews(),
-      fetchCryptoNews(),
     ]);
 
     const allItems: NewsItem[] = [];

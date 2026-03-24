@@ -324,7 +324,7 @@ export default function BuyTaoPage() {
             <div className="bg-[#0f1623] rounded-xl border border-purple-500/20 p-5">
               <div className="text-purple-400 text-xl mb-3">✅</div>
               <h3 className="text-sm font-semibold text-white mb-1.5">Learn about subnets</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">Explore the 65+ specialized AI competitions on the network.</p>
+              <p className="text-xs text-gray-400 leading-relaxed">Explore the 128+ specialized AI competitions on the network.</p>
               <Link href="/subnets" className="inline-flex items-center gap-1 mt-3 text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors">
                 Browse subnets →
               </Link>

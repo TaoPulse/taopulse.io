@@ -113,7 +113,7 @@ export default function Footer() {
 
         <div className="mt-10 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-500">
-            &copy; 2025 TaoPulse.io &mdash; Not financial advice
+            &copy; 2026 TaoPulse.io &mdash; Not financial advice
           </p>
           <p className="text-xs text-gray-600">
             Data sourced from public APIs. All figures are approximate.

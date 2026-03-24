@@ -137,7 +137,9 @@ const CATEGORIES: { id: string; emoji: string; label: string; wallets: Wallet[] 
           "Powerful mobile option for users who want more control. Nova Wallet supports Ledger over Bluetooth — hardware-level security without a desktop. Stake TAO via the built-in browser connecting to Taostats.io.",
         bestFor: "Best for: Mobile users who want Ledger security without a desktop",
         url: "https://apps.apple.com/app/nova-polkadot-kusama-wallet/id1597119769",
-        urlLabel: "App Store / Google Play",
+        urlLabel: "iOS App Store",
+        url2: "https://play.google.com/store/search?q=nova+polkadot+kusama+wallet",
+        url2Label: "Google Play",
       },
       {
         name: "Zengo",
