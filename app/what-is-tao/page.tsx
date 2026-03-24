@@ -55,33 +55,7 @@ const problems = [
   },
 ];
 
-const howItWorks = [
-  {
-    step: 1,
-    title: "Anyone creates a subnet",
-    body: "A specialized AI competition — e.g. \"build the best trading signals\"",
-  },
-  {
-    step: 2,
-    title: "Miners compete",
-    body: "Running AI models to produce the best outputs for that subnet",
-  },
-  {
-    step: 3,
-    title: "Validators score miners",
-    body: "Fairly and objectively evaluating performance across the network",
-  },
-  {
-    step: 4,
-    title: "TAO flows to winners",
-    body: "Better AI = more TAO rewards. The incentive drives quality.",
-  },
-  {
-    step: 5,
-    title: "The market decides value",
-    body: "Subnets with useful AI get more TAO allocated to them",
-  },
-];
+
 
 const whySpecial = [
   {
@@ -128,61 +102,7 @@ const whySpecial = [
   },
 ];
 
-const comparison = [
-  {
-    feature: "Decentralized",
-    tao: { value: "Fully", check: true },
-    openai: { value: "No", check: false },
-    google: { value: "No", check: false },
-    eth: { value: "Partial", partial: true },
-  },
-  {
-    feature: "Fixed supply",
-    tao: { value: "21M max", check: true },
-    openai: { value: "No token", check: false },
-    google: { value: "No token", check: false },
-    eth: { value: "Inflationary", check: false },
-  },
-  {
-    feature: "Open source AI",
-    tao: { value: "Yes", check: true },
-    openai: { value: "Closed", check: false },
-    google: { value: "Closed", check: false },
-    eth: { value: "Partial", partial: true },
-  },
-  {
-    feature: "VC-free",
-    tao: { value: "Yes", check: true },
-    openai: { value: "$11B raised", check: false },
-    google: { value: "Google", check: false },
-    eth: { value: "VC-backed", check: false },
-  },
-  {
-    feature: "Earning potential",
-    tao: { value: "Mine/Stake", check: true },
-    openai: { value: "No", check: false },
-    google: { value: "No", check: false },
-    eth: { value: "Limited", partial: true },
-  },
-];
 
-function CellValue({ value, check, partial }: { value: string; check?: boolean; partial?: boolean }) {
-  if (check) {
-    return (
-      <span className="inline-flex items-center gap-1.5 text-emerald-400 font-medium">
-        <span className="text-emerald-400">✅</span> {value}
-      </span>
-    );
-  }
-  if (partial) {
-    return <span className="text-amber-400 font-medium">{value}</span>;
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 text-gray-500">
-      <span>❌</span> {value}
-    </span>
-  );
-}
 
 export default async function WhatIsTaoPage() {
   let taoPrice: { usd: number; usd_market_cap: number } | null = null;
@@ -290,29 +210,6 @@ export default async function WhatIsTaoPage() {
           </div>
         </section>
 
-        {/* How It Works */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
-          <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step</p>
-          <div className="space-y-3">
-            {howItWorks.map((step) => (
-              <div key={step.step} className="flex items-start gap-4 bg-[#0f1623] rounded-xl border border-white/10 p-5 hover:border-purple-600/20 transition-colors">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-bold">
-                  {step.step}
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold text-white mb-1">
-                    {step.title.split("**").map((part, i) =>
-                      i % 2 === 1 ? <strong key={i} className="text-purple-400">{part}</strong> : part
-                    )}
-                  </h3>
-                  <p className="text-sm text-gray-400">{step.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Why TAO is Special */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">Why TAO is Special</h2>
@@ -361,46 +258,6 @@ export default async function WhatIsTaoPage() {
             <p className="text-sm text-gray-400 leading-relaxed pt-1">
               The halving doesn&apos;t reduce the value of existing TAO — it reduces the pace of dilution. Historically in Bitcoin, each halving preceded a significant price appreciation as the market repriced the new supply reality.
             </p>
-          </div>
-        </section>
-
-        {/* Comparison Table */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-2">TAO vs Competitors</h2>
-          <p className="text-gray-400 mb-6">How Bittensor stacks up against centralized AI alternatives</p>
-          <div className="rounded-xl border border-white/10 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-[#0a0f1a] border-b border-white/10">
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Feature</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-purple-400">TAO</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">OpenAI</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Google AI</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Ethereum AI</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparison.map((row, idx) => (
-                    <tr key={row.feature} className={idx % 2 === 0 ? "bg-[#0f1623]" : "bg-[#0b1019]"}>
-                      <td className="px-5 py-3.5 text-sm font-medium text-white">{row.feature}</td>
-                      <td className="px-5 py-3.5 text-sm">
-                        <CellValue {...row.tao} />
-                      </td>
-                      <td className="px-5 py-3.5 text-sm">
-                        <CellValue {...row.openai} />
-                      </td>
-                      <td className="px-5 py-3.5 text-sm">
-                        <CellValue {...row.google} />
-                      </td>
-                      <td className="px-5 py-3.5 text-sm">
-                        <CellValue {...row.eth} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
         </section>
 
