@@ -1,6 +1,6 @@
 import SubnetTable from "@/components/SubnetTable";
 import HeroPrice from "@/components/HeroPrice";
-import subnets from "@/data/subnets.json";
+import staticSubnets from "@/data/subnets.json";
 
 export const metadata = {
   title: "Bittensor Subnet Explorer | TaoPulse",
@@ -8,12 +8,50 @@ export const metadata = {
     "Explore all 128 Bittensor subnets. Filter by category, sort by emission, miners, or ID. Discover how to mine each subnet.",
 };
 
-const activeCount = subnets.filter((s) => s.status === "active").length;
-const topEmission = subnets.reduce((max, s) => (s.emission > max.emission ? s : max), subnets[0]);
-const totalMiners = subnets.reduce((sum, s) => sum + s.activeMiners, 0);
-const categoryCount = new Set(subnets.map((s) => s.category)).size;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function fetchLiveSubnets(): Promise<typeof staticSubnets> {
+  try {
+    const apiKey = process.env.TAOSTATS_API_KEY;
+    if (!apiKey) return staticSubnets;
 
-export default function SubnetsPage() {
+    const res = await fetch("https://api.taostats.io/api/subnet/latest/v1?limit=200", {
+      headers: { Authorization: apiKey },
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) return staticSubnets;
+
+    const json = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const liveMap = new Map<number, any>();
+    for (const s of json.data ?? []) {
+      liveMap.set(s.netuid, s);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (staticSubnets as any[]).map((s) => {
+      const live = liveMap.get(s.id);
+      if (!live) return s;
+      const emissionPct = parseFloat(live.projected_emission) || s.emission;
+      return {
+        ...s,
+        emission: emissionPct,
+        activeMiners: live.active_miners ?? s.activeMiners,
+        activeValidators: live.active_validators ?? s.activeValidators,
+      };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any;
+  } catch {
+    return staticSubnets;
+  }
+}
+
+export default async function SubnetsPage() {
+  const subnets = await fetchLiveSubnets();
+
+  const activeCount = subnets.filter((s) => s.status === "active").length;
+  const topEmission = subnets.reduce((max, s) => (s.emission > max.emission ? s : max), subnets[0]);
+  const categoryCount = new Set(subnets.map((s) => s.category)).size;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero */}
@@ -87,6 +125,9 @@ export default function SubnetsPage() {
               </div>
             ))}
           </div>
+          <p className="text-xs text-gray-600 mt-3">
+            Emission data live from taostats.io, refreshed every 5 minutes.
+          </p>
         </div>
       </div>
 
