@@ -9,6 +9,9 @@ interface NewsItem {
   source: "Reddit" | "Community" | "News" | "Blog";
   date: string;
   summary?: string;
+  score?: number;
+  comments?: number;
+  rank?: number;
 }
 
 function extractRssField(block: string, tag: string): string {
@@ -74,9 +77,53 @@ async function fetchReddit(subreddit: string): Promise<NewsItem[]> {
       source: "Reddit" as const,
       date: new Date(child.data.created_utc * 1000).toISOString(),
       summary: child.data.selftext?.slice(0, 150) || undefined,
+      score: child.data.score ?? 0,
+      comments: child.data.num_comments ?? 0,
     }));
   } catch {
     return [];
+  }
+}
+
+// High-authority news sources get a boost
+const SOURCE_AUTHORITY: Record<string, number> = {
+  coindesk: 40,
+  cointelegraph: 35,
+  decrypt: 35,
+  theblock: 35,
+  blockworks: 30,
+  forbes: 30,
+  bloomberg: 40,
+  reuters: 40,
+  wired: 25,
+  techcrunch: 25,
+  coinbase: 20,
+  binance: 20,
+  beincrypto: 15,
+  cryptoslate: 15,
+  cryptonews: 15,
+};
+
+function getSourceBonus(summary?: string): number {
+  if (!summary) return 5;
+  const s = summary.toLowerCase();
+  for (const [key, val] of Object.entries(SOURCE_AUTHORITY)) {
+    if (s.includes(key)) return val;
+  }
+  return 5;
+}
+
+function rankScore(item: NewsItem): number {
+  const ageHours = (Date.now() - new Date(item.date).getTime()) / 3_600_000;
+  // Recency decay: score halves every 12 hours
+  const recencyMultiplier = Math.pow(0.5, ageHours / 12);
+
+  if (item.source === "Reddit") {
+    const engagement = (item.score ?? 0) + (item.comments ?? 0) * 2;
+    return (engagement + 5) * recencyMultiplier;
+  } else {
+    const authority = getSourceBonus(item.summary);
+    return (authority + 10) * recencyMultiplier;
   }
 }
 
@@ -121,19 +168,14 @@ export async function GET() {
     }
   }
 
-  // Interleave: roughly 2 news : 1 reddit to ensure Reddit is always represented
-  const merged: NewsItem[] = [];
-  const gSorted = googleItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const rSorted = redditItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  // Combine, rank, and sort
+  const all = [...googleItems, ...redditItems];
+  all.sort((a, b) => rankScore(b) - rankScore(a));
 
-  let gi = 0, ri = 0;
-  while (gi < gSorted.length || ri < rSorted.length) {
-    if (gi < gSorted.length) merged.push(gSorted[gi++]);
-    if (gi < gSorted.length) merged.push(gSorted[gi++]);
-    if (ri < rSorted.length) merged.push(rSorted[ri++]);
-  }
+  // Add rank field
+  const ranked = all.slice(0, 40).map((item, i) => ({ ...item, rank: i + 1 }));
 
-  return NextResponse.json(merged.slice(0, 40), {
+  return NextResponse.json(ranked, {
     headers: {
       "Cache-Control": "s-maxage=300, stale-while-revalidate=60",
     },

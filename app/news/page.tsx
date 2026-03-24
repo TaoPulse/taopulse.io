@@ -9,6 +9,8 @@ interface NewsItem {
   date: Date;
   summary?: string;
   score?: number;
+  comments?: number;
+  rank?: number;
 }
 
 type FilterTab = "All" | "Reddit" | "News" | "Community" | "Blog";
@@ -55,6 +57,8 @@ interface ApiNewsItem {
   date: string;
   summary?: string;
   score?: number;
+  comments?: number;
+  rank?: number;
 }
 
 async function fetchRedditNews(): Promise<NewsItem[]> {
@@ -254,6 +258,15 @@ export default function NewsPage() {
                     className="group bg-white/5 hover:bg-white/10 border border-white/5 hover:border-purple-500/30 rounded-xl p-5 transition-all flex flex-col gap-3"
                   >
                     <div className="flex items-center gap-2">
+                      {item.rank && item.rank <= 3 && (
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                          item.rank === 1 ? "bg-yellow-500/20 text-yellow-400" :
+                          item.rank === 2 ? "bg-gray-400/20 text-gray-300" :
+                          "bg-orange-700/20 text-orange-400"
+                        }`}>
+                          #{item.rank}
+                        </span>
+                      )}
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                           BADGE_STYLES[item.source]
@@ -273,10 +286,11 @@ export default function NewsPage() {
                         {item.summary}
                       </p>
                     )}
-                    <div className="mt-auto flex items-center justify-between">
-                      {item.score != null && (
-                        <span className="text-xs text-gray-600">
-                          {item.score} pts
+                    <div className="mt-auto flex items-center gap-3">
+                      {item.source === "Reddit" && item.score != null && (
+                        <span className="text-xs text-gray-500 flex items-center gap-1">
+                          ▲ {item.score}
+                          {item.comments != null && <> · 💬 {item.comments}</>}
                         </span>
                       )}
                       <span className="text-xs text-purple-400 group-hover:text-purple-300 ml-auto">
