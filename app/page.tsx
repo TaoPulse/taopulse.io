@@ -287,8 +287,15 @@ export default async function HomePage() {
 
         {/* What Bittensor Actually Is */}
         <section>
-          <h2 className="text-2xl font-bold text-white mb-2">What Bittensor Actually Is</h2>
-          <p className="text-gray-400 mb-6">The full picture, broken down into six parts</p>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-white">What Bittensor Actually Is</h2>
+            <a href="https://bittensor.com/whitepaper" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm text-purple-400 hover:text-purple-300 transition-colors">
+              Whitepaper
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {whatisBittensor.map((item) => (
               <div key={item.num} className={`rounded-xl border p-6 ${item.bg} ${item.border} hover:scale-[1.01] transition-transform`}>
