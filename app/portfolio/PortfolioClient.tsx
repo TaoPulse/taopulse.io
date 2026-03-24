@@ -16,7 +16,7 @@ interface PriceData {
 }
 
 const STORAGE_KEY = "tao-portfolio-positions";
-const STAKING_APY = 0.08;
+const STAKING_APY = 0.17;
 
 function fmt(n: number) {
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -215,7 +215,10 @@ export default function PortfolioClient() {
               {annualYieldUsd != null ? fmt(annualYieldUsd) : "—"}
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {fmtTao(annualYieldTao)} @ 8% APY
+              {fmtTao(annualYieldTao)} ~17% APY (classic staking est.)
+            </p>
+            <p className="text-xs text-gray-600 mt-1" title="APY estimate based on current network emissions. Actual returns vary.">
+              APY est. based on network emissions. Actual returns vary.
             </p>
           </div>
         </div>
@@ -465,8 +468,8 @@ export default function PortfolioClient() {
 
         {/* Disclaimer */}
         <p className="text-xs text-gray-600 text-center pb-4">
-          Staking yield is estimated at ~8% APY and is for informational
-          purposes only. Not financial advice.
+          Staking yield is estimated at ~17% APY (classic root staking, post-halving) and is for informational
+          purposes only. Actual returns vary with network conditions. Not financial advice.
         </p>
       </div>
     </div>

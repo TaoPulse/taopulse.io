@@ -143,7 +143,7 @@ export default async function SubnetsPage() {
           <p className="text-xs text-gray-600 mt-3">
             {isLive
               ? "Emission data live from taostats.io, refreshed every 5 minutes."
-              : "Emission data from last known snapshot. For live data, visit taostats.io."}
+              : <>Emission data from last known snapshot, last verified March 2026. For live data, visit{" "}<a href="https://taostats.io" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 transition-colors">taostats.io</a>.</>}
           </p>
         </div>
       </div>

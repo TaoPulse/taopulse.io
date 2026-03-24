@@ -1,25 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const navLinks = [
+const primaryLinks = [
   { href: "/", label: "Home" },
   { href: "/what-is-tao", label: "What is TAO?" },
+  { href: "/subnets", label: "Subnets" },
+  { href: "/staking", label: "Staking" },
+  { href: "/halving", label: "Halving" },
+  { href: "/news", label: "News" },
+];
+
+const moreLinks = [
   { href: "/buy-tao", label: "Buy TAO" },
   { href: "/wallets", label: "Wallets" },
-  { href: "/staking", label: "Staking" },
-  { href: "/subnets", label: "Subnets" },
-  { href: "/subnets/directory", label: "Directory" },
-  { href: "/news", label: "News" },
   { href: "/portfolio", label: "Portfolio" },
-  { href: "/halving", label: "Halving" },
+  { href: "/subnets/directory", label: "Directory" },
 ];
+
+const allNavLinks = [...primaryLinks, ...moreLinks];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const pathname = usePathname();
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  // Close "More" dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Close "More" dropdown on Escape key
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setMoreOpen(false);
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const isMoreActive = moreLinks.some((link) =>
+    link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
+  );
 
   return (
     <nav className="sticky top-0 z-50 bg-[#080d14]/90 backdrop-blur-md border-b border-white/5">
@@ -51,7 +82,7 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
+            {primaryLinks.map((link) => {
               const isActive =
                 link.href === "/"
                   ? pathname === "/"
@@ -60,7 +91,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive
                       ? "text-white bg-white/10"
                       : "text-gray-400 hover:text-white hover:bg-white/5"
@@ -70,6 +101,56 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* More dropdown */}
+            <div className="relative" ref={moreRef}>
+              <button
+                onClick={() => setMoreOpen((prev) => !prev)}
+                aria-haspopup="true"
+                aria-expanded={moreOpen}
+                className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isMoreActive
+                    ? "text-white bg-white/10"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                More
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${moreOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {moreOpen && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-full mt-1 w-44 bg-[#0f1623] border border-white/10 rounded-xl shadow-xl py-1.5 z-50"
+                >
+                  {moreLinks.map((link) => {
+                    const isActive = pathname.startsWith(link.href);
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        role="menuitem"
+                        onClick={() => setMoreOpen(false)}
+                        className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
+                          isActive
+                            ? "text-white bg-white/10"
+                            : "text-gray-400 hover:text-white hover:bg-white/5"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* CTA + hamburger */}
@@ -119,11 +200,11 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — all items */}
       {mobileOpen && (
         <div className="md:hidden border-t border-white/5 bg-[#0a0f1a]">
           <div className="px-4 py-3 space-y-1">
-            {navLinks.map((link) => {
+            {allNavLinks.map((link) => {
               const isActive =
                 link.href === "/"
                   ? pathname === "/"
