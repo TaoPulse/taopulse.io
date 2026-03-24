@@ -50,9 +50,9 @@ const CATEGORIES: { id: string; emoji: string; label: string; wallets: Wallet[] 
       },
       {
         name: "Crucible",
-        subtitle: "Smart Allocator",
-        type: "Web Wallet (no download needed)",
-        platforms: ["Any browser"],
+        subtitle: "by Crucible Labs",
+        type: "Chrome Extension",
+        platforms: ["Chrome"],
         pros: [
           "Smart Allocator auto-optimizes staking yield across subnets",
           "Ledger hardware wallet support",
@@ -66,10 +66,10 @@ const CATEGORIES: { id: string; emoji: string; label: string; wallets: Wallet[] 
         badge: "Smart Allocator",
         badgeColor: "bg-emerald-600/15 text-emerald-400 border-emerald-600/30",
         description:
-          "Specialized Bittensor wallet with a standout feature: the Smart Allocator automatically rebalances your stake across the most productive subnets to optimize yield. Supports Ledger integration. No install required — just open in your browser.",
+          "TAO-native Chrome extension by Crucible Labs. Standout feature: Smart Allocator automatically stakes your rewards across top-performing subnets via a secure proxy key — your coldkey never leaves your control. Independently audited. 4.3★ on Chrome Web Store, updated March 2026.",
         bestFor: "Best for: Investors who want automated staking optimization",
-        url: "https://crucible.wtf",
-        urlLabel: "Open App",
+        url: "https://chromewebstore.google.com/detail/crucible-wallet/capjnhbneiilplogojhmhepiocnjpgee",
+        urlLabel: "Install Extension",
       },
       {
         name: "Bittensor Wallet",
