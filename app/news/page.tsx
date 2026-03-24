@@ -76,6 +76,7 @@ export default function NewsPage() {
   const [taoPrice, setTaoPrice] = useState<{
     usd: number;
     usd_24h_change: number;
+    usd_market_cap: number;
   } | null>(null);
 
   const fetchAll = useCallback(async () => {
@@ -115,7 +116,7 @@ export default function NewsPage() {
     const fetchPrice = async () => {
       try {
         const res = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_24hr_change=true"
+          "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true&include_24hr_change=true"
         );
         if (!res.ok) return;
         const data = await res.json();
@@ -162,7 +163,7 @@ export default function NewsPage() {
               </p>
             </div>
             {/* Live TAO price badge */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-3 shrink-0 flex-wrap">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               {taoPrice ? (
                 <>
@@ -182,6 +183,12 @@ export default function NewsPage() {
                   >
                     {taoPrice.usd_24h_change >= 0 ? "+" : ""}
                     {taoPrice.usd_24h_change.toFixed(2)}%
+                  </span>
+                  <span className="text-xs text-gray-500 hidden sm:inline">
+                    MCap:{" "}
+                    {taoPrice.usd_market_cap >= 1e9
+                      ? `$${(taoPrice.usd_market_cap / 1e9).toFixed(1)}B`
+                      : `$${(taoPrice.usd_market_cap / 1e6).toFixed(0)}M`}
                   </span>
                   <span className="text-xs text-gray-500">TAO</span>
                 </>
@@ -364,6 +371,12 @@ export default function NewsPage() {
                       {Math.abs(taoPrice.usd_24h_change).toFixed(2)}% 24h
                     </span>
                   </div>
+                  <p className="text-xs text-gray-500">
+                    MCap:{" "}
+                    {taoPrice.usd_market_cap >= 1e9
+                      ? `$${(taoPrice.usd_market_cap / 1e9).toFixed(1)}B`
+                      : `$${(taoPrice.usd_market_cap / 1e6).toFixed(0)}M`}
+                  </p>
                   <p className="text-xs text-gray-600">Updates every 30s</p>
                 </div>
               ) : (

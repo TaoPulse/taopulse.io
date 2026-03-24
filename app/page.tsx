@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "TaoPulse — Bittensor TAO Analytics, Staking & Subnet Explorer",
   description: "Your guide to Bittensor and TAO. Track live subnet emissions, compare validators, learn how to stake TAO, and explore the decentralized AI network.",
@@ -35,12 +37,15 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 const topSubnets = subnets.slice(0, 5);
 
-const STATS = [
-  { label: "Active Subnets", value: "128+", icon: "grid" },
-  { label: "TAO Staked", value: "76%", icon: "lock" },
-  { label: "Daily Emissions", value: "7,200 TAO", icon: "zap" },
-  { label: "Market Cap", value: "$2.8B", icon: "chart" },
-];
+function formatMarketCap(mc: number): string {
+  if (mc >= 1e9) return `$${(mc / 1e9).toFixed(1)}B`;
+  if (mc >= 1e6) return `$${(mc / 1e6).toFixed(0)}M`;
+  return `$${mc.toFixed(0)}`;
+}
+
+function formatPrice(p: number): string {
+  return `$${p.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
 
 const WHY_TAO = [
   {
@@ -75,7 +80,46 @@ const WHY_TAO = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  let taoPrice: { usd: number; usd_market_cap: number; usd_24h_change: number } | null = null;
+  try {
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true&include_24hr_change=true",
+      {
+        next: { revalidate: 60 },
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+    if (res.ok) taoPrice = (await res.json()).bittensor;
+  } catch {}
+
+  const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$2.9B";
+  const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "$308";
+  const change24h = taoPrice?.usd_24h_change ?? null;
+
+  const STATS = [
+    { label: "Active Subnets", value: "128+", icon: "grid" },
+    { label: "TAO Staked", value: "76%", icon: "lock" },
+    { label: "Daily Emissions", value: "7,200 TAO", icon: "zap" },
+    { label: "Market Cap", value: marketCapValue, icon: "chart" },
+    {
+      label: "TAO Price",
+      value: priceValue,
+      icon: "price",
+      badge:
+        change24h !== null ? (
+          <span
+            className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ml-1 ${
+              change24h >= 0 ? "bg-emerald-400/15 text-emerald-400" : "bg-red-400/15 text-red-400"
+            }`}
+          >
+            {change24h >= 0 ? "+" : ""}
+            {change24h.toFixed(2)}%
+          </span>
+        ) : null,
+    },
+  ];
+
   return (
     <div className="flex flex-col">
       {/* Hero */}
@@ -139,11 +183,12 @@ export default function HomePage() {
       {/* Stats bar */}
       <section className="bg-[#0f1623] border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
             {STATS.map((stat) => (
               <div key={stat.label} className="text-center">
-                <p className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                <p className="text-2xl sm:text-3xl font-bold text-white mb-1 flex items-center justify-center flex-wrap gap-1">
                   {stat.value}
+                  {"badge" in stat && stat.badge}
                 </p>
                 <p className="text-xs text-gray-500 uppercase tracking-wider">
                   {stat.label}
