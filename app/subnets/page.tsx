@@ -91,7 +91,7 @@ export default async function SubnetsPage() {
               <p className="text-gray-400 max-w-2xl leading-relaxed text-base">
                 Bittensor organizes decentralized AI production into specialized subnets — each
                 a market for a specific AI capability. Validators score miners, and{" "}
-                <span className="text-purple-400 font-medium">7,200 TAO</span> flows daily
+                <span className="text-purple-400 font-medium">3,600 TAO</span> flows daily
                 to the best performers. Click any subnet to explore details and mining guides.
               </p>
             </div>
@@ -123,7 +123,7 @@ export default async function SubnetsPage() {
               },
               {
                 label: "Total Daily TAO",
-                value: "7,200",
+                value: "3,600",
                 sub: `${categoryCount} categories`,
                 color: "text-blue-400",
               },

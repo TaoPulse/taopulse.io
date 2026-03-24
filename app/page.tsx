@@ -125,19 +125,10 @@ export default async function HomePage() {
   const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}` : "129";
 
   const STATS: { label: string; value: React.ReactNode; badge?: React.ReactNode; href?: string }[] = [
-    {
-      label: "TAO Price",
-      value: priceValue,
-      badge: change24h !== null ? (
-        <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ml-1 ${change24h >= 0 ? "bg-emerald-400/15 text-emerald-400" : "bg-red-400/15 text-red-400"}`}>
-          {change24h >= 0 ? "+" : ""}{change24h.toFixed(2)}%
-        </span>
-      ) : null,
-    },
     { label: "Market Cap", value: marketCapValue },
     { label: "Max Supply", value: "21M TAO" },
     { label: "Circulating", value: circulatingValue },
-    { label: "Daily Emissions", value: "7,200 TAO" },
+    { label: "Daily Emissions", value: "3,600 TAO" },
     { label: "TAO Staked", value: stakedValue },
     { label: "Active Subnets", value: subnetValue, href: "/subnets" },
   ];
@@ -201,7 +192,7 @@ export default async function HomePage() {
       {/* Stats bar */}
       <section className="bg-[#0f1623] border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
             {STATS.map((stat) => {
               const inner = (
                 <>

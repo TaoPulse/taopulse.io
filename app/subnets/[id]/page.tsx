@@ -66,7 +66,7 @@ export default async function SubnetDetailPage({
     subnet.emission >= 0.01 ? 2 : subnet.emission > 0 ? 3 : 1
   );
 
-  const dailyTAO = Math.round(subnet.emission * 7200);
+  const dailyTAO = Math.round(subnet.emission * 3600);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -180,7 +180,7 @@ export default async function SubnetDetailPage({
           />
         </div>
         <p className="text-xs text-gray-500 mt-2">
-          Based on ~7,200 TAO emitted daily across all subnets
+          Based on ~3,600 TAO emitted daily across all subnets
         </p>
       </div>
 
