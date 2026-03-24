@@ -6,55 +6,120 @@ import { usePathname } from "next/navigation";
 
 const primaryLinks = [
   { href: "/", label: "Home" },
-  { href: "/what-is-tao", label: "What is TAO?" },
   { href: "/subnets", label: "Subnets" },
   { href: "/staking", label: "Staking" },
-  { href: "/halving", label: "Halving" },
   { href: "/news", label: "News" },
+  { href: "/buy-tao", label: "Buy TAO" },
 ];
 
-const moreLinks = [
-  { href: "/buy-tao", label: "Buy TAO" },
-  { href: "/wallets", label: "Wallets" },
-  { href: "/portfolio", label: "Portfolio" },
-  { href: "/validator-calculator", label: "Validator Calc" },
-  { href: "/subnets/directory", label: "Directory" },
-  { href: "/emissions", label: "Emissions" },
-  { href: "/dtao", label: "dTAO" },
+const learnLinks = [
+  { href: "/what-is-tao", label: "What is TAO?" },
+  { href: "/emissions", label: "How Emissions Work" },
+  { href: "/dtao", label: "Dynamic TAO (dTAO)" },
+  { href: "/halving", label: "TAO Halving" },
   { href: "/glossary", label: "Glossary" },
 ];
 
-const allNavLinks = [...primaryLinks, ...moreLinks];
+const toolLinks = [
+  { href: "/validator-calculator", label: "Validator Calculator" },
+  { href: "/portfolio", label: "Portfolio Tracker" },
+  { href: "/wallets", label: "Wallets Guide" },
+  { href: "/subnets/directory", label: "Subnet Directory" },
+  { href: "/join", label: "Join Waitlist" },
+];
+
+const allNavLinks = [...primaryLinks, ...learnLinks, ...toolLinks];
+
+type DropdownProps = {
+  label: string;
+  links: { href: string; label: string }[];
+  pathname: string;
+  onNavigate: () => void;
+};
+
+function NavDropdown({ label, links, pathname, onNavigate }: DropdownProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const isActive = links.some((l) =>
+    l.href === "/" ? pathname === "/" : pathname.startsWith(l.href)
+  );
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        aria-haspopup="true"
+        aria-expanded={open}
+        className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          isActive
+            ? "text-white bg-white/10"
+            : "text-gray-400 hover:text-white hover:bg-white/5"
+        }`}
+      >
+        {label}
+        <svg
+          className={`w-3.5 h-3.5 transition-transform duration-150 ${open ? "rotate-180" : ""}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-0 top-full mt-1 w-52 bg-[#0f1623] border border-white/10 rounded-xl shadow-xl py-1.5 z-50"
+        >
+          {links.map((link) => {
+            const active =
+              link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                role="menuitem"
+                onClick={() => { setOpen(false); onNavigate(); }}
+                className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
+                  active
+                    ? "text-white bg-white/10"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
+  const [mobileLearnOpen, setMobileLearnOpen] = useState(false);
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const pathname = usePathname();
-  const moreRef = useRef<HTMLDivElement>(null);
-
-  // Close "More" dropdown on outside click
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
-        setMoreOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Close "More" dropdown on Escape key
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setMoreOpen(false);
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  const isMoreActive = moreLinks.some((link) =>
-    link.href === "/" ? pathname === "/" : pathname.startsWith(link.href)
-  );
 
   return (
     <nav className="sticky top-0 z-50 bg-[#080d14]/90 backdrop-blur-md border-b border-white/5">
@@ -106,55 +171,18 @@ export default function Navbar() {
               );
             })}
 
-            {/* More dropdown */}
-            <div className="relative" ref={moreRef}>
-              <button
-                onClick={() => setMoreOpen((prev) => !prev)}
-                aria-haspopup="true"
-                aria-expanded={moreOpen}
-                className={`flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isMoreActive
-                    ? "text-white bg-white/10"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                More
-                <svg
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${moreOpen ? "rotate-180" : ""}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {moreOpen && (
-                <div
-                  role="menu"
-                  className="absolute right-0 top-full mt-1 w-44 bg-[#0f1623] border border-white/10 rounded-xl shadow-xl py-1.5 z-50"
-                >
-                  {moreLinks.map((link) => {
-                    const isActive = pathname.startsWith(link.href);
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        role="menuitem"
-                        onClick={() => setMoreOpen(false)}
-                        className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
-                          isActive
-                            ? "text-white bg-white/10"
-                            : "text-gray-400 hover:text-white hover:bg-white/5"
-                        }`}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            <NavDropdown
+              label="Learn"
+              links={learnLinks}
+              pathname={pathname}
+              onNavigate={() => {}}
+            />
+            <NavDropdown
+              label="Tools"
+              links={toolLinks}
+              pathname={pathname}
+              onNavigate={() => {}}
+            />
           </div>
 
           {/* CTA + hamburger */}
@@ -171,32 +199,12 @@ export default function Navbar() {
               aria-label="Toggle menu"
             >
               {mobileOpen ? (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -204,15 +212,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu — all items */}
+      {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-white/5 bg-[#0a0f1a]">
           <div className="px-4 py-3 space-y-1">
-            {allNavLinks.map((link) => {
+            {/* Primary links */}
+            {primaryLinks.map((link) => {
               const isActive =
-                link.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(link.href);
+                link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.href}
@@ -228,6 +235,77 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Learn section */}
+            <div className="pt-1">
+              <button
+                onClick={() => setMobileLearnOpen((p) => !p)}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Learn
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform ${mobileLearnOpen ? "rotate-180" : ""}`}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {mobileLearnOpen && (
+                <div className="pl-3 mt-1 space-y-1">
+                  {learnLinks.map((link) => {
+                    const isActive = pathname.startsWith(link.href);
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                          isActive ? "text-white bg-white/10" : "text-gray-400 hover:text-white hover:bg-white/5"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Tools section */}
+            <div>
+              <button
+                onClick={() => setMobileToolsOpen((p) => !p)}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              >
+                Tools
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform ${mobileToolsOpen ? "rotate-180" : ""}`}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {mobileToolsOpen && (
+                <div className="pl-3 mt-1 space-y-1">
+                  {toolLinks.map((link) => {
+                    const isActive = pathname.startsWith(link.href);
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                          isActive ? "text-white bg-white/10" : "text-gray-400 hover:text-white hover:bg-white/5"
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             <Link
               href="/staking"
               onClick={() => setMobileOpen(false)}

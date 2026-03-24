@@ -1,0 +1,51 @@
+Read PROJECT.md first. Then build a complete user signup/waitlist feature for taopulse.io.
+
+## What to build
+
+A lightweight email capture system using Supabase (free tier). Users provide name + email. We want to build the list for eventual newsletter/marketing. No full auth — just capture.
+
+## Implementation plan
+
+### 1. Supabase setup
+- Install: npm install @supabase/supabase-js
+- Create lib/supabase.ts with the Supabase client (reads from env vars NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY)
+- Create lib/supabase-server.ts with a server-side client using SUPABASE_SERVICE_ROLE_KEY
+- Add the env vars to .env.local as empty placeholders (so code does not crash on localhost)
+
+### 2. API route: POST /api/subscribe
+- File: app/api/subscribe/route.ts
+- Accepts: { name: string, email: string, source?: string } (source = which page they signed up from)
+- Validates: email format, name not empty
+- Inserts into Supabase table called subscribers (columns: id, created_at, name, email, source)
+- Handles duplicate email gracefully (return success, do not error)
+- Returns: { success: true } or { error: "message" }
+
+### 3. EmailSignupForm component
+- File: components/EmailSignupForm.tsx
+- Props: source (optional string), className (optional string), heading (optional string), subheading (optional string), ctaText (optional string, default "Join the Waitlist")
+- Fields: Name (text), Email (email)
+- Submit button defaults to "Join the Waitlist"
+- States: idle -> loading -> success / error
+- On success: show "You are on the list! We will be in touch." message
+- Styling: matches TaoPulse dark theme (bg-[#0f1623], purple accents)
+- No external form libraries — just React useState + fetch
+
+### 4. Add signup form to homepage
+- In app/page.tsx: add a EmailSignupForm section near the bottom (before footer), with:
+  - heading: "Stay in the Loop"
+  - subheading: "Get notified when we add live staking data, validator rankings, and TAO portfolio tools."
+  - source: "homepage"
+
+### 5. Add a dedicated /join page
+- File: app/join/page.tsx
+- Full-page signup with more copy explaining what subscribers get (early access to new features, TAO market insights, subnet alerts)
+- Add to sitemap.ts
+
+### Important notes
+- If Supabase env vars are not set, the API route should return a 503 with { error: "Signup unavailable" } — never crash
+- Run npm run build and fix all errors before committing
+- Commit with message: feat: user signup / email capture via Supabase
+- Push to main
+
+When completely finished, run this command to notify:
+openclaw system event --text "Done: User signup feature built — EmailSignupForm, /api/subscribe, /join page, homepage section" --mode now

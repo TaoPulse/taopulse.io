@@ -1,0 +1,48 @@
+Read PROJECT.md first. Then build 3 high-SEO content pages for taopulse.io based on research from the official Bittensor docs.
+
+## Pages to build
+
+### Page 1: /emissions — "How TAO Emissions Work"
+File: app/emissions/page.tsx
+
+Content to cover (beginner-friendly, no jargon dumps):
+- What emissions are: 0.5 TAO per block, ~3,600 TAO/day total
+- Two stages: Injection (per block into subnet pools) → Distribution (per tempo, ~72 min, via Yuma Consensus)
+- The Flow-Based Model ("Taoflow") — active since Nov 2025. Emissions now based on net TAO staking inflows (EMA over ~87 days), not price. Subnets with net outflows = zero emissions.
+- Within-subnet split: 18% subnet creator, 41% validators, 41% miners
+- What this means for stakers: you earn a slice of the validator's 41%, minus the validator's "take" (default 18% of delegated emissions)
+- Simple visual: animated emission flow diagram (use divs/CSS, no chart library)
+- Link to /halving and /staking
+
+### Page 2: /dtao — "What is Dynamic TAO (dTAO)?"
+File: app/dtao/page.tsx
+
+Content to cover:
+- dTAO launched late 2024 — the big shift from one TAO to subnet-specific alpha tokens
+- Classic staking (root): stake TAO to validator → stay in TAO, earn TAO yield, no alpha exposure, lower risk
+- dTAO subnet staking: TAO goes into subnet liquidity pool → you receive alpha tokens → alpha has its own price → earn more if subnet grows, but face impermanent loss risk
+- Alpha halving: each subnet has its own halving schedule (independent of TAO halving)
+- Who should use dTAO vs classic: clear recommendation table
+- Key risks: impermanent loss, subnet failure, alpha token volatility
+- Link to /staking and /subnets
+
+### Page 3: /glossary — "TAO & Bittensor Glossary"
+File: app/glossary/page.tsx
+
+Terms to include (alphabetical, beginner definitions):
+- Alpha token, Block (~12 sec), btcli, Coldkey/Hotkey, dTAO, Emission, Halving, Miner, Nominator/Delegator, Root subnet (SN0), Subnet, Subnet Creator, Subtensor, TAO (τ), Taoflow, Tempo (~72 min / ~360 blocks), Validator, Validator Take (default 18%), Yuma Consensus
+- Each term: name + 1-2 sentence plain English definition + link to relevant page where applicable
+- Search/filter by letter (A-Z tabs or filter input)
+- Dark theme, matches site style
+
+## Requirements for all pages
+- Beginner-friendly tone — assume reader knows crypto but not Bittensor
+- No static numbers that look live (block counts, prices) — use "~" or "est." or pull from /api/network-stats
+- Add each page to app/sitemap.ts
+- Add to nav if appropriate (Glossary yes, Emissions + dTAO could be under "Learn" dropdown if nav allows)
+- Run npm run build and fix all errors before committing
+- Commit: "feat: add emissions, dtao, and glossary content pages"
+- Push to main
+
+When completely finished, run:
+openclaw system event --text "Done: 3 content pages built — /emissions, /dtao, /glossary" --mode now

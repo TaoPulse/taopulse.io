@@ -1,0 +1,54 @@
+Read PROJECT.md first. Then build an interactive Validator Take Calculator page for taopulse.io.
+
+## Page: /validator-calculator
+File: app/validator-calculator/page.tsx
+
+## What it does
+Shows stakers exactly how much yield they'll earn after the validator's cut. Interactive sliders/inputs — updates in real-time as user adjusts values.
+
+## Inputs (all adjustable)
+1. Your stake amount (TAO) — number input, default 10
+2. Validator's total stake (TAO) — number input, default 10,000
+3. Validator take % — slider 0-50%, default 18% (the Bittensor standard)
+4. Subnet emission share % — slider 0-10%, default 2% (represents subnet's share of daily emissions)
+5. TAO price (USD) — number input, default pulled from /api/price (fall back to 300 if unavailable)
+
+## Outputs (calculated, live as inputs change)
+Show all of these clearly:
+- Your share of delegated stake (%)
+- Daily TAO earned (est.)
+- Monthly TAO earned (est.)
+- Annual TAO earned (est.)
+- Annual APY % (est.)
+- Daily USD value (est.) — using TAO price input
+- Annual USD value (est.)
+
+## Math (implement exactly)
+Emission formula from official Bittensor docs:
+- Total daily TAO emitted: 3,600 TAO
+- Subnet daily emissions = 3,600 × (subnet_emission_share / 100)
+- Validator share of subnet = subnet_daily × 0.41 (validators get 41%)
+- Delegated portion = validator_share × (delegated_stake / total_validator_stake)
+  where delegated_stake = total_validator_stake - validator_own_stake (assume validator owns 20% by default)
+- After validator take: staker_pool = delegated_portion × (1 - validator_take/100)
+- Your share: staker_pool × (your_stake / total_delegated_stake)
+
+Add a note: "Calculations are estimates based on current emission parameters. Actual yield varies with network conditions."
+
+## UI requirements
+- Dark theme matching taopulse.io (bg-[#0f1623], purple accents)
+- Two-column layout on desktop: inputs left, results right (stacked on mobile)
+- Results update instantly as inputs change (no submit button needed)
+- Key result (Annual APY) displayed prominently in large text with purple color
+- "Compare validators" section below: show a table of common validator take scenarios (0%, 9%, 18%, 25%, 50%) and what APY looks like for each given current inputs
+- Small info tooltips (title attribute ok) explaining each input
+
+## Also do
+- Add to sitemap.ts
+- Add to nav (under "Tools" or similar grouping if possible, otherwise standalone)
+- Run npm run build and fix all errors before committing
+- Commit: "feat: validator take calculator — interactive staking yield tool"
+- Push to main
+
+When completely finished, run:
+openclaw system event --text "Done: Validator take calculator built at /validator-calculator" --mode now
