@@ -23,6 +23,7 @@ export const metadata = {
 };
 import PriceStrip from "@/components/PriceStrip";
 import HeroPrice from "@/components/HeroPrice";
+import HowItWorks from "@/components/HowItWorks";
 
 function formatMarketCap(mc: number): string {
   if (mc >= 1e9) return `$${(mc / 1e9).toFixed(1)}B`;
@@ -36,13 +37,7 @@ function formatPrice(p: number): string {
 
 
 
-const howItWorks = [
-  { step: 1, title: "Anyone creates a subnet", body: 'A specialized AI competition — e.g. "build the best trading signals"' },
-  { step: 2, title: "Miners compete", body: "Running AI models to produce the best outputs for that subnet" },
-  { step: 3, title: "Validators score miners", body: "Fairly and objectively evaluating performance across the network" },
-  { step: 4, title: "TAO flows to winners", body: "Better AI = more TAO rewards. The incentive drives quality." },
-  { step: 5, title: "The market decides value", body: "Subnets with useful AI get more TAO allocated to them" },
-];
+
 
 const whySpecial = [
   { title: "Fixed supply like Bitcoin", body: "Only 21 million TAO will ever exist", color: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
@@ -317,20 +312,8 @@ export default async function HomePage() {
         {/* How It Works */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">How It Works</h2>
-          <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step</p>
-          <div className="space-y-3">
-            {howItWorks.map((step) => (
-              <div key={step.step} className="flex items-start gap-4 bg-[#0f1623] rounded-xl border border-white/10 p-5 hover:border-purple-600/20 transition-colors">
-                <div className="shrink-0 w-9 h-9 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center text-sm font-bold">
-                  {step.step}
-                </div>
-                <div>
-                  <h3 className="text-base font-semibold text-white mb-1">{step.title}</h3>
-                  <p className="text-sm text-gray-400">{step.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="text-gray-400 mb-6">The Bittensor incentive mechanism, step by step — click any step to learn more</p>
+          <HowItWorks />
         </section>
 
         {/* The Halving */}
