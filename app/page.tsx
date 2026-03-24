@@ -289,6 +289,38 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* The Halving */}
+        <section>
+          <h2 className="text-2xl font-bold text-white mb-2">The Halving: TAO&apos;s Supply Milestone</h2>
+          <p className="text-gray-400 mb-6">On December 14, 2025, Bittensor completed its first halving — permanently cutting daily TAO emissions in half</p>
+          <div className="bg-[#0f1623] rounded-xl border border-amber-500/20 p-6 sm:p-8 space-y-4">
+            <p className="text-gray-300 leading-relaxed">
+              Like Bitcoin, Bittensor was designed with a fixed maximum supply of{" "}
+              <span className="text-white font-semibold">21 million TAO</span> and halving events roughly every 4 years. The first halving marks a structural shift: the rate at which new TAO enters circulation is now half what it was — dropping from 7,200 to{" "}
+              <span className="text-white font-semibold">3,600 TAO/day</span> — while demand for the network continues to grow.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {[
+                { label: "Miners & validators earn less per block", body: "Only the most competitive subnets survive — weaker participants exit, strengthening the network." },
+                { label: "Staking yields compress", body: "APY naturally tightens as emission rewards shrink. Price appreciation can offset this." },
+                { label: "Scarcity accelerates", body: "It now takes twice as long to mint the same amount of TAO. The pace of dilution has been permanently halved." },
+                { label: "Next halving: ~2029", body: "At that point emissions drop to 1,800 TAO/day — and the cycle of scarcity deepens further." },
+              ].map((item) => (
+                <div key={item.label} className="flex items-start gap-3 bg-white/5 rounded-lg border border-white/10 p-4">
+                  <span className="text-amber-400 mt-0.5 shrink-0">→</span>
+                  <div>
+                    <p className="text-sm font-semibold text-white mb-0.5">{item.label}</p>
+                    <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-400 leading-relaxed pt-1">
+              The halving doesn&apos;t reduce the value of existing TAO — it reduces the pace of dilution. Historically in Bitcoin, each halving preceded a significant price appreciation as the market repriced the new supply reality.
+            </p>
+          </div>
+        </section>
+
         {/* Comparison Table */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">TAO vs Competitors</h2>

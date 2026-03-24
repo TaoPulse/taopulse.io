@@ -335,7 +335,7 @@ export default async function WhatIsTaoPage() {
         {/* TAO Halving */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-2">TAO Halving</h2>
-          <p className="text-gray-400 mb-6">Like Bitcoin, TAO emissions are cut in half every ~10.5 million blocks (~4 years)</p>
+          <p className="text-gray-400 mb-6">On December 14, 2025, Bittensor completed its first halving — permanently cutting daily emissions in half</p>
 
           <div className="space-y-4">
 
@@ -344,9 +344,9 @@ export default async function WhatIsTaoPage() {
               <div className="flex items-start gap-4">
                 <div className="shrink-0 w-9 h-9 rounded-full bg-orange-500/15 text-orange-400 flex items-center justify-center text-sm font-bold">1</div>
                 <div>
-                  <h3 className="text-base font-semibold text-white mb-1">Scarcity increases over time</h3>
+                  <h3 className="text-base font-semibold text-white mb-1">Scarcity accelerates</h3>
                   <p className="text-sm text-gray-400 leading-relaxed">
-                    TAO has a hard cap of <span className="text-white font-medium">21 million</span> — identical to Bitcoin. After each halving, fewer new TAO enter circulation every day. As demand grows and supply growth slows, the economics tilt toward scarcity. This is a deliberate design choice: unlike inflationary AI tokens that can be printed indefinitely, TAO becomes structurally harder to acquire after each halving.
+                    TAO has a hard cap of <span className="text-white font-medium">21 million</span> — identical to Bitcoin. After the first halving, the network now takes twice as long to mint the same amount of TAO. Unlike inflationary AI tokens that can be printed indefinitely, TAO becomes structurally harder to acquire with every passing block. The next halving (~2029) will cut emissions to 1,800 TAO/day.
                   </p>
                 </div>
               </div>
@@ -359,7 +359,7 @@ export default async function WhatIsTaoPage() {
                 <div>
                   <h3 className="text-base font-semibold text-white mb-1">Miners and validators earn less per block</h3>
                   <p className="text-sm text-gray-400 leading-relaxed">
-                    Currently ~7,200 TAO is emitted daily across all subnets. After the next halving this drops to ~3,600 TAO/day. Miners competing for AI rewards and validators securing the network will receive half the TAO per block. This mirrors Bitcoin&apos;s miner dynamic — if price doesn&apos;t compensate, weaker participants exit, strengthening those who remain.
+                    Daily emissions dropped from 7,200 to <span className="text-white font-medium">3,600 TAO/day</span> after the December 2025 halving. Miners competing for AI rewards and validators securing the network now receive half the TAO per block. This mirrors Bitcoin&apos;s miner dynamic — if price doesn&apos;t compensate, weaker participants exit, strengthening those who remain.
                   </p>
                 </div>
               </div>
@@ -370,9 +370,9 @@ export default async function WhatIsTaoPage() {
               <div className="flex items-start gap-4">
                 <div className="shrink-0 w-9 h-9 rounded-full bg-purple-500/15 text-purple-400 flex items-center justify-center text-sm font-bold">3</div>
                 <div>
-                  <h3 className="text-base font-semibold text-white mb-1">Staking yield &amp; next halving</h3>
+                  <h3 className="text-base font-semibold text-white mb-1">Staking yield &amp; the next halving</h3>
                   <p className="text-sm text-gray-400 leading-relaxed">
-                    Staking rewards are funded by emissions. After the halving, nominal APY in TAO terms will compress. However, if TAO price rises — as it historically has around halvings — the USD value of rewards can remain stable or increase. The next halving is estimated around <span className="text-white font-medium">early 2027</span> (block 10,500,000, roughly 12 months away). Smart stakers pay attention to this schedule — it&apos;s one of the most predictable catalysts in the TAO calendar.
+                    Staking rewards are funded by emissions. With the halving now in effect, nominal APY in TAO terms has compressed. However, if TAO price rises — as it historically has around halvings — the USD value of rewards can remain stable or increase. The next halving is expected around <span className="text-white font-medium">2029</span>, when emissions drop to 1,800 TAO/day. Smart stakers treat halvings as one of the most predictable catalysts in the TAO calendar.
                   </p>
                 </div>
               </div>
