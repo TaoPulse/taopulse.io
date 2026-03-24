@@ -89,30 +89,51 @@ export async function GET() {
 
   const seenUrls = new Set<string>();
   const seenTitles = new Set<string>();
-  const items: NewsItem[] = [];
+  const googleItems: NewsItem[] = [];
+  const redditItems: NewsItem[] = [];
 
   function normalizeTitle(t: string): string {
     return t.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
   }
 
-  // Merge all sources, deduplicate by URL and normalized title
-  for (const result of [googleBittensor, googleTao, reddit]) {
+  // Collect Google News items (deduplicate by URL + title between the two queries)
+  for (const result of [googleBittensor, googleTao]) {
     if (result.status === "fulfilled") {
       for (const item of result.value) {
         const normTitle = normalizeTitle(item.title);
         if (!seenUrls.has(item.url) && !seenTitles.has(normTitle) && item.title.length > 5) {
           seenUrls.add(item.url);
           seenTitles.add(normTitle);
-          items.push(item);
+          googleItems.push(item);
         }
       }
     }
   }
 
-  // Sort by date, newest first
-  items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  // Collect Reddit items — deduplicate by URL only (titles are user-written, not news headlines)
+  const seenRedditUrls = new Set<string>();
+  if (reddit.status === "fulfilled") {
+    for (const item of reddit.value) {
+      if (!seenRedditUrls.has(item.url) && item.title.length > 3) {
+        seenRedditUrls.add(item.url);
+        redditItems.push(item);
+      }
+    }
+  }
 
-  return NextResponse.json(items.slice(0, 30), {
+  // Interleave: roughly 2 news : 1 reddit to ensure Reddit is always represented
+  const merged: NewsItem[] = [];
+  const gSorted = googleItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const rSorted = redditItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  let gi = 0, ri = 0;
+  while (gi < gSorted.length || ri < rSorted.length) {
+    if (gi < gSorted.length) merged.push(gSorted[gi++]);
+    if (gi < gSorted.length) merged.push(gSorted[gi++]);
+    if (ri < rSorted.length) merged.push(rSorted[ri++]);
+  }
+
+  return NextResponse.json(merged.slice(0, 40), {
     headers: {
       "Cache-Control": "s-maxage=300, stale-while-revalidate=60",
     },
