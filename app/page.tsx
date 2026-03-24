@@ -34,35 +34,7 @@ function formatPrice(p: number): string {
   return `$${p.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-const problems = [
-  {
-    title: "AI is controlled by a few giants",
-    body: "OpenAI, Google, Anthropic control everything. No transparency, no competition, you pay what they charge.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-      </svg>
-    ),
-  },
-  {
-    title: "No way to value AI services",
-    body: "How much is a good AI response worth? Centralized companies decide. Bittensor lets the market decide.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
-  },
-  {
-    title: "Talent is locked in silos",
-    body: "Brilliant AI researchers work for one company. Bittensor lets anyone compete and earn.",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
-  },
-];
+
 
 const howItWorks = [
   { step: 1, title: "Anyone creates a subnet", body: 'A specialized AI competition — e.g. "build the best trading signals"' },
@@ -306,23 +278,6 @@ export default async function HomePage() {
                     <p className="text-xs text-gray-400 leading-relaxed">{item.body}</p>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Problem It Solves */}
-        <section>
-          <h2 className="text-2xl font-bold text-white mb-2">The Problem It Solves</h2>
-          <p className="text-gray-400 mb-6">Why the AI industry needs a decentralized alternative</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {problems.map((p) => (
-              <div key={p.title} className="bg-[#0f1623] rounded-xl border border-white/10 p-6 hover:border-purple-600/30 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mb-4">
-                  {p.icon}
-                </div>
-                <h3 className="text-base font-semibold text-white mb-2">{p.title}</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">{p.body}</p>
               </div>
             ))}
           </div>
