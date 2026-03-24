@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://taopulse.io";
-  const pages = ["", "/what-is-tao", "/buy-tao", "/wallets", "/staking", "/subnets", "/subnets/directory", "/news", "/halving", "/portfolio", "/validator-calculator", "/join"];
+  const pages = ["", "/what-is-tao", "/buy-tao", "/wallets", "/staking", "/subnets", "/subnets/directory", "/news", "/halving", "/portfolio", "/validator-calculator", "/join", "/emissions", "/dtao", "/glossary"];
 
   return pages.map((path) => ({
     url: `${baseUrl}${path}`,

@@ -19,6 +19,9 @@ const moreLinks = [
   { href: "/portfolio", label: "Portfolio" },
   { href: "/validator-calculator", label: "Validator Calc" },
   { href: "/subnets/directory", label: "Directory" },
+  { href: "/emissions", label: "Emissions" },
+  { href: "/dtao", label: "dTAO" },
+  { href: "/glossary", label: "Glossary" },
 ];
 
 const allNavLinks = [...primaryLinks, ...moreLinks];
