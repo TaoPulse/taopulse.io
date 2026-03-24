@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "What is TAO? Bittensor Explained for Beginners",
   description: "Learn what TAO and Bittensor are: a decentralized AI network rewarding machine learning with cryptocurrency. Why TAO is unique, how it works, and why investors are paying attention.",
@@ -19,13 +21,11 @@ export const metadata = {
   alternates: { canonical: "https://taopulse.io/what-is-tao" },
 };
 
-const stats = [
-  { value: "$2.8B", label: "Market Cap" },
-  { value: "21M", label: "Max Supply" },
-  { value: "9.6M", label: "Circulating" },
-  { value: "128+", label: "Active Subnets" },
-  { value: "76%", label: "Supply Staked" },
-];
+function formatMarketCap(mc: number): string {
+  if (mc >= 1e9) return `$${(mc / 1e9).toFixed(1)}B`;
+  if (mc >= 1e6) return `$${(mc / 1e6).toFixed(0)}M`;
+  return `$${mc.toFixed(0)}`;
+}
 
 const problems = [
   {
@@ -186,7 +186,26 @@ function CellValue({ value, check, partial }: { value: string; check?: boolean; 
   );
 }
 
-export default function WhatIsTaoPage() {
+export default async function WhatIsTaoPage() {
+  let taoPrice: { usd: number; usd_market_cap: number } | null = null;
+  try {
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true",
+      { next: { revalidate: 60 }, signal: AbortSignal.timeout(5000) }
+    );
+    if (res.ok) taoPrice = (await res.json()).bittensor;
+  } catch {}
+
+  const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$3.0B";
+
+  const stats = [
+    { value: marketCapValue, label: "Market Cap" },
+    { value: "21M", label: "Max Supply" },
+    { value: "9.6M", label: "Circulating" },
+    { value: "128+", label: "Active Subnets" },
+    { value: "76%", label: "Supply Staked" },
+  ];
+
   return (
     <div className="min-h-screen bg-[#080d14]">
       {/* Hero */}
