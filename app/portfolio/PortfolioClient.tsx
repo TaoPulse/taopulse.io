@@ -295,9 +295,21 @@ export default function PortfolioClient() {
           <div className="bg-[#0f1623] border border-white/10 rounded-xl overflow-hidden">
             <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Positions</h2>
-              <span className="text-xs text-gray-500">
-                {positions.length} position{positions.length !== 1 ? "s" : ""}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-500">
+                  {positions.length} position{positions.length !== 1 ? "s" : ""}
+                </span>
+                <button
+                  onClick={() => {
+                    if (confirm("Clear all positions? This cannot be undone.")) {
+                      setPositions([]);
+                    }
+                  }}
+                  className="text-xs text-gray-500 hover:text-red-400 transition-colors px-2 py-1 rounded border border-white/10 hover:border-red-500/30"
+                >
+                  Clear all
+                </button>
+              </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
