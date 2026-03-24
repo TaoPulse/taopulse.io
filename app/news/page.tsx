@@ -5,20 +5,18 @@ import { useEffect, useState, useCallback } from "react";
 interface NewsItem {
   title: string;
   url: string;
-  source: "Reddit" | "Community" | "CoinDesk" | "CoinTelegraph" | "CryptoPanic" | "Blog";
+  source: "Reddit" | "Community" | "News" | "Blog";
   date: Date;
   summary?: string;
   score?: number;
 }
 
-type FilterTab = "All" | "Reddit" | "CoinDesk" | "CoinTelegraph" | "Community" | "CryptoPanic" | "Blog";
+type FilterTab = "All" | "Reddit" | "News" | "Community" | "Blog";
 
 const BADGE_STYLES: Record<string, string> = {
   Reddit: "bg-orange-500/20 text-orange-400",
   Community: "bg-red-500/20 text-red-400",
-  CoinDesk: "bg-blue-500/20 text-blue-400",
-  CoinTelegraph: "bg-yellow-500/20 text-yellow-400",
-  CryptoPanic: "bg-purple-500/20 text-purple-400",
+  News: "bg-blue-500/20 text-blue-400",
   Blog: "bg-teal-500/20 text-teal-400",
 };
 
@@ -53,7 +51,7 @@ function SkeletonCard() {
 interface ApiNewsItem {
   title: string;
   url: string;
-  source: "Reddit" | "Community" | "CoinDesk" | "CoinTelegraph" | "CryptoPanic" | "Blog";
+  source: "Reddit" | "Community" | "News" | "Blog";
   date: string;
   summary?: string;
   score?: number;
@@ -134,7 +132,7 @@ export default function NewsPage() {
   }, []);
 
   // Only show tabs that have results (always show "All")
-  const allTabs: FilterTab[] = ["All", "Reddit", "Community", "CryptoPanic", "Blog", "CoinDesk", "CoinTelegraph"];
+  const allTabs: FilterTab[] = ["All", "News", "Reddit", "Community", "Blog"];
   const sourcesWithItems = new Set(items.map((i) => i.source));
   const visibleTabs = allTabs.filter(
     (tab) => tab === "All" || sourcesWithItems.has(tab as NewsItem["source"])
@@ -386,7 +384,6 @@ export default function NewsPage() {
               <ul className="space-y-2 text-xs text-gray-400">
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
-                  CryptoPanic (TAO)
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-teal-400 shrink-0" />
@@ -402,11 +399,10 @@ export default function NewsPage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
-                  CoinDesk RSS
+                  News: "bg-blue-500/20 text-blue-400",
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-yellow-400 shrink-0" />
-                  CoinTelegraph RSS
                 </li>
               </ul>
             </div>
