@@ -24,6 +24,7 @@ export const metadata = {
 import PriceStrip from "@/components/PriceStrip";
 import HeroPrice from "@/components/HeroPrice";
 import HowItWorks from "@/components/HowItWorks";
+import TrendingSubnets from "@/components/TrendingSubnets";
 
 function formatMarketCap(mc: number): string {
   if (mc >= 1e9) return `$${(mc / 1e9).toFixed(1)}B`;
@@ -228,6 +229,22 @@ export default async function HomePage() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Trending Subnets */}
+      <section className="bg-[#0b1019] border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex items-end justify-between mb-5">
+            <div>
+              <h2 className="text-xl font-bold text-white">Trending Subnets</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Highest emission share right now — where TAO is flowing</p>
+            </div>
+            <Link href="/subnets" className="text-sm text-purple-400 hover:text-purple-300 transition-colors shrink-0 ml-4">
+              View all subnets →
+            </Link>
+          </div>
+          <TrendingSubnets />
         </div>
       </section>
 

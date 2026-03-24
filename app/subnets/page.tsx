@@ -1,5 +1,6 @@
 import SubnetTable from "@/components/SubnetTable";
 import HeroPrice from "@/components/HeroPrice";
+import TrendingSubnets from "@/components/TrendingSubnets";
 import staticSubnets from "@/data/subnets.json";
 
 export const metadata = {
@@ -146,6 +147,17 @@ export default async function SubnetsPage() {
               : <>Emission data from last known snapshot, last verified March 2026. For live data, visit{" "}<a href="https://taostats.io" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-400 transition-colors">taostats.io</a>.</>}
           </p>
         </div>
+      </div>
+
+      {/* Top by Emission highlight */}
+      <div className="mb-10">
+        <div className="flex items-end justify-between mb-5">
+          <div>
+            <h2 className="text-lg font-bold text-white">Top by Emission</h2>
+            <p className="text-sm text-gray-500 mt-0.5">Subnets currently earning the highest share of daily TAO</p>
+          </div>
+        </div>
+        <TrendingSubnets />
       </div>
 
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
