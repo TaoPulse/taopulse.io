@@ -25,6 +25,7 @@ import PriceStrip from "@/components/PriceStrip";
 import HeroPrice from "@/components/HeroPrice";
 import HowItWorks from "@/components/HowItWorks";
 import TrendingSubnets from "@/components/TrendingSubnets";
+import EmailSignupForm from "@/components/EmailSignupForm";
 
 function formatMarketCap(mc: number): string {
   if (mc >= 1e9) return `$${(mc / 1e9).toFixed(1)}B`;
@@ -337,6 +338,15 @@ export default async function HomePage() {
               </table>
             </div>
           </div>
+        </section>
+
+        {/* Email Signup */}
+        <section>
+          <EmailSignupForm
+            source="homepage"
+            heading="Stay in the Loop"
+            subheading="Get notified when we add live staking data, validator rankings, and TAO portfolio tools."
+          />
         </section>
 
         {/* CTA */}
