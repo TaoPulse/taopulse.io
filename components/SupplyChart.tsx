@@ -12,15 +12,15 @@ import {
 } from "recharts";
 
 // Calculate cumulative TAO supply over time
-// Halving 1: Dec 2025, Halving 2: ~2029, Halving 3: ~2033
-// 7,200 TAO/day before Dec 2025, 3,600 after, 1,800 after 2029, etc.
+// Halving 1: Dec 2025 (block 10.5M), Halving 2: ~Dec 2029 (block 21M), Halving 3: ~2033
+// 7,200 TAO/day before Dec 2025, 3,600 after, 1,800 after Dec 2029, etc.
 function buildSupplyData() {
   const startYear = 2021;
   const halvings = [
-    { year: 2025, month: 11, dailyAfter: 3600 },
-    { year: 2029, month: 6, dailyAfter: 1800 },
-    { year: 2033, month: 6, dailyAfter: 900 },
-    { year: 2037, month: 6, dailyAfter: 450 },
+    { year: 2025, month: 11, dailyAfter: 3600 },  // Dec 2025 — confirmed
+    { year: 2029, month: 11, dailyAfter: 1800 },  // Dec 2029 — est. based on 12s/block
+    { year: 2033, month: 11, dailyAfter: 900 },   // ~2033 est.
+    { year: 2037, month: 11, dailyAfter: 450 },   // ~2037 est.
   ];
 
   const points: { year: string; supply: number; pct: number }[] = [];

@@ -13,7 +13,7 @@ import {
 
 // Bittensor emission schedule (deterministic, based on halving every ~4 years)
 // Block time ~12s, blocks per year ~2,628,000
-// Halving 1: Dec 2025, Halving 2: ~2029, Halving 3: ~2033
+// Halving 1: Dec 2025, Halving 2: ~Dec 2029, Halving 3: ~2033
 const emissionsData = [
   { year: "2023", emissions: 7200 },
   { year: "2024", emissions: 7200 },
@@ -22,7 +22,7 @@ const emissionsData = [
   { year: "2026", emissions: 3600 },
   { year: "2027", emissions: 3600 },
   { year: "2028", emissions: 3600 },
-  { year: "~2029\n(Halving 2)", emissions: 1800, halving: true },
+  { year: "~Dec '29\n(Halving 2)", emissions: 1800, halving: true },
   { year: "2030", emissions: 1800 },
   { year: "2031", emissions: 1800 },
   { year: "2032", emissions: 1800 },

@@ -90,22 +90,34 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
-| TP-001 | T-012: Staking page — validator data should be live from TaoStats API | High | Currently hardcoded validator list |
-| TP-002 | Subnet page — fetch live emission data from TaoStats API | High | Currently static data |
-| TP-003 | Home page — live TAO price strip needs verified API source | Medium | Check if CoinGecko or TaoStats |
-| TP-004 | Add proper validator comparison with live stake/uptime from taostats.io | Medium | taostats.io/validators has the data |
-| TP-005 | News: verify CryptoPanic is actually returning articles (was empty before) | Medium | Check after deploy |
-| TP-006 | Usage monitoring — context size warning + daily cost tracker | Medium | Discussed but not built yet |
-| TP-007 | StakingCalculator component — verify APY inputs are accurate | Low | Uses hardcoded 17% APY estimate |
+| TP-001 | Staking page — validator data live from TaoStats API | High | Shows "data unavailable" without API key — need TAOSTATS_API_KEY in Vercel |
+| TP-002 | Subnet page — live emission data from TaoStats API | High | Falls back to snapshot data without API key; wording updated to say so |
+| TP-004 | Validator comparison with live stake/uptime | Medium | Blocked on API key |
+| TP-006 | Usage monitoring — context size + cost tracker | Medium | Basic snapshot script exists; real-time monitor TBD |
+| TP-008 | Nav overflow on medium screens (10 items) | Medium | Consider grouping under dropdowns |
+| TP-009 | TaoStats API key — set in Vercel env vars | High | Unlocks TP-001, TP-002, TP-004 |
+
+## Completed Tasks
+
+| # | Task | Done | Notes |
+|---|------|------|-------|
+| TP-003 | Live TAO price strip | ✅ | CoinGecko free API, working |
+| TP-005 | News feeds working | ✅ | Google News (Reddit route) works; CoinDesk/CoinTelegraph RSS sparse for TAO — expected |
+| TP-007 | StakingCalculator APY labels | ✅ | Now shows "(est.)" labels, updated price to $300, clearer disclaimer |
+| TP-010 | Halving countdown page | ✅ | /halving live with dynamic blocks remaining |
+| TP-011 | Portfolio tracker page | ✅ | /portfolio live, uses live price API |
+| TP-012 | Subnet directory page | ✅ | /subnets/directory live, static from docs (labeled) |
+| TP-013 | Sitemap includes all pages | ✅ | halving, portfolio, directory added |
+| TP-014 | Static data wording QA | ✅ | All pages now use "est.", "data unavailable", or verified live sources |
 
 ---
 
 ## Known Issues / Watch Out For
-- **Reddit API on Vercel**: Reddit sometimes blocks Vercel server IPs. News falls back to CryptoPanic + RSS.
-- **CryptoPanic "free" API**: No auth token needed but rate-limited. Watch for 429s.
-- **Subnet data is static**: The 128 subnets page was built with scraped taostats data. Goes stale. Need live API.
-- **Validator table is hardcoded**: 5 validators with made-up stake numbers. Need live TaoStats data.
+- **TaoStats API key not in Vercel**: TP-001, TP-002, TP-004 all blocked on this. Need to add TAOSTATS_API_KEY to Vercel project env vars.
+- **Reddit API on Vercel**: Reddit sometimes blocks Vercel server IPs. News falls back gracefully.
+- **CryptoPanic free tier**: Free endpoint may not work without auth token — returns empty gracefully.
 - **dTAO is new**: Bittensor's Dynamic TAO launched late 2024. Info may evolve — re-verify periodically.
+- **Nav has 10 items**: Getting crowded on medium screens. Consider a dropdown for secondary pages.
 
 ---
 
