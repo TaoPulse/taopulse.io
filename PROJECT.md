@@ -88,6 +88,10 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 
 ## Open Tasks (taopulse-specific)
 
+| TP-015 | Macrocosmos SN13 API — live X/Twitter + Reddit social feed | Low | Sign up at app.macrocosmos.ai for API key first. Use for: live $TAO tweet feed on news page, better Reddit integration, subnet sentiment widget. Docs: https://docs.macrocosmos.ai |
+
+
+
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
 | TP-001 | Staking page — validator data live from TaoStats API | High | Shows "data unavailable" without API key — need TAOSTATS_API_KEY in Vercel |
