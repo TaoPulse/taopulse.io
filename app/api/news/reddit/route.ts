@@ -87,15 +87,22 @@ export async function GET() {
     fetchReddit("bittensor_"),
   ]);
 
-  const seen = new Set<string>();
+  const seenUrls = new Set<string>();
+  const seenTitles = new Set<string>();
   const items: NewsItem[] = [];
 
-  // Merge all sources, deduplicate by URL
+  function normalizeTitle(t: string): string {
+    return t.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60);
+  }
+
+  // Merge all sources, deduplicate by URL and normalized title
   for (const result of [googleBittensor, googleTao, reddit]) {
     if (result.status === "fulfilled") {
       for (const item of result.value) {
-        if (!seen.has(item.url) && item.title.length > 5) {
-          seen.add(item.url);
+        const normTitle = normalizeTitle(item.title);
+        if (!seenUrls.has(item.url) && !seenTitles.has(normTitle) && item.title.length > 5) {
+          seenUrls.add(item.url);
+          seenTitles.add(normTitle);
           items.push(item);
         }
       }
