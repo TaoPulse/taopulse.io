@@ -59,6 +59,8 @@ async function fetchLiveSubnets(): Promise<typeof staticSubnets> {
 }
 
 export default async function SubnetsPage() {
+  const apiKey = process.env.TAOSTATS_API_KEY;
+  const isLive = !!apiKey;
   const subnets = await fetchLiveSubnets();
 
   const activeCount = subnets.filter((s) => s.status === "active").length;
@@ -139,7 +141,9 @@ export default async function SubnetsPage() {
             ))}
           </div>
           <p className="text-xs text-gray-600 mt-3">
-            Emission data live from taostats.io, refreshed every 5 minutes.
+            {isLive
+              ? "Emission data live from taostats.io, refreshed every 5 minutes."
+              : "Emission data from last known snapshot. For live data, visit taostats.io."}
           </p>
         </div>
       </div>

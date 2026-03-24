@@ -88,9 +88,11 @@ async function fetchRss(
 }
 
 async function fetchCryptoPanic(): Promise<CryptoNewsItem[]> {
+  // CryptoPanic free tier — auth_token=free was deprecated.
+  // Try the v1 free endpoint; if it fails, return empty gracefully.
   try {
     const res = await fetch(
-      "https://cryptopanic.com/api/v1/posts/?auth_token=free&currencies=TAO&public=true",
+      "https://cryptopanic.com/api/v1/posts/?currencies=TAO&public=true",
       {
         headers: { "User-Agent": BROWSER_UA },
         signal: AbortSignal.timeout(8000),
@@ -115,9 +117,9 @@ async function fetchCryptoPanic(): Promise<CryptoNewsItem[]> {
 }
 
 export async function GET() {
-  const [coindesk, coindesAlt, cointelegraph, cryptoPanic] =
+  const [coindeskFeedburner, cointelegraph, cryptoPanic] =
     await Promise.allSettled([
-      fetchRss("https://www.coindesk.com/arc/outboundfeeds/rss/", "CoinDesk"),
+      // CoinDesk via FeedBurner (more reliable than direct arc endpoint)
       fetchRss("https://feeds.feedburner.com/CoinDesk", "CoinDesk"),
       fetchRss("https://cointelegraph.com/rss", "CoinTelegraph"),
       fetchCryptoPanic(),
@@ -126,7 +128,7 @@ export async function GET() {
   const seen = new Set<string>();
   const items: CryptoNewsItem[] = [];
 
-  for (const result of [coindesk, coindesAlt, cointelegraph, cryptoPanic]) {
+  for (const result of [coindeskFeedburner, cointelegraph, cryptoPanic]) {
     if (result.status === "fulfilled") {
       for (const item of result.value) {
         if (!seen.has(item.url)) {
@@ -136,6 +138,9 @@ export async function GET() {
       }
     }
   }
+
+  // Sort by date descending
+  items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return NextResponse.json(items, {
     headers: {

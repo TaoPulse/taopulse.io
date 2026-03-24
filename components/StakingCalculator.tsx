@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from "react";
 
-const TAO_PRICE_USD = 500;
+// TAO_PRICE_USD_EST is an estimate used for illustration only — actual price varies
+const TAO_PRICE_USD_EST = 300;
 const APY_OPTIONS = [
-  { label: "Conservative (15%)", value: 15 },
-  { label: "Standard (18%)", value: 18 },
-  { label: "Optimistic (22%)", value: 22 },
+  { label: "Conservative ~15% (est.)", value: 15 },
+  { label: "Standard ~18% (est.)", value: 18 },
+  { label: "Optimistic ~22% (est.)", value: 22 },
 ];
 
 export default function StakingCalculator() {
@@ -26,7 +27,7 @@ export default function StakingCalculator() {
     val.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 4 });
 
   const formatUsd = (val: number) =>
-    (val * TAO_PRICE_USD).toLocaleString("en-US", {
+    (val * TAO_PRICE_USD_EST).toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
@@ -78,7 +79,7 @@ export default function StakingCalculator() {
           </div>
           {amount > 0 && (
             <p className="mt-1.5 text-xs text-gray-500">
-              ≈ {formatUsd(amount)} at ${TAO_PRICE_USD.toLocaleString()}/TAO
+              ≈ {formatUsd(amount)} at ~${TAO_PRICE_USD_EST.toLocaleString()}/TAO (est.)
             </p>
           )}
         </div>
@@ -99,16 +100,16 @@ export default function StakingCalculator() {
             ))}
           </select>
           <p className="mt-1.5 text-xs text-gray-500">
-            Based on current network conditions
+            Estimated range — actual APY varies by validator &amp; emissions
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Daily", tao: earnings.daily, usd: earnings.daily * TAO_PRICE_USD },
-          { label: "Monthly", tao: earnings.monthly, usd: earnings.monthly * TAO_PRICE_USD },
-          { label: "Yearly", tao: earnings.yearly, usd: earnings.yearly * TAO_PRICE_USD },
+          { label: "Daily", tao: earnings.daily, usd: earnings.daily * TAO_PRICE_USD_EST },
+          { label: "Monthly", tao: earnings.monthly, usd: earnings.monthly * TAO_PRICE_USD_EST },
+          { label: "Yearly", tao: earnings.yearly, usd: earnings.yearly * TAO_PRICE_USD_EST },
         ].map((item) => (
           <div
             key={item.label}
@@ -127,8 +128,7 @@ export default function StakingCalculator() {
       </div>
 
       <p className="mt-4 text-xs text-gray-600">
-        * Estimates assume compound interest. Actual returns vary based on network
-        emissions, validator commission, and TAO price. Not financial advice.
+        * Illustrative estimates only. APY range (~15–22%) is based on historical network data post-halving and is not guaranteed. TAO price used (~$300) is a rough estimate — actual price varies. Actual returns depend on network emissions, validator commission, and TAO price. Not financial advice.
       </p>
     </div>
   );
