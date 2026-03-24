@@ -260,7 +260,7 @@ export default async function WhatIsTaoPage() {
                 { label: "Miners & validators earn less per block", body: "Only the most competitive subnets survive — weaker participants exit, strengthening the network." },
                 { label: "Staking yields compress", body: "APY naturally tightens as emission rewards shrink. Price appreciation can offset this." },
                 { label: "Scarcity accelerates", body: "It now takes twice as long to mint the same amount of TAO. The pace of dilution has been permanently halved." },
-                { label: "Next halving: ~2029", body: "At that point emissions drop to 1,800 TAO/day — and the cycle of scarcity deepens further." },
+                { label: "Next halving: ~Dec 2029", body: "At that point emissions drop to 1,800 TAO/day — and the cycle of scarcity deepens further." },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-3 bg-white/5 rounded-lg border border-white/10 p-4">
                   <span className="text-amber-400 mt-0.5 shrink-0">→</span>

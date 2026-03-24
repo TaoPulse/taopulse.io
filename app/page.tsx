@@ -140,7 +140,7 @@ export default async function HomePage() {
     { label: "Market Cap", value: marketCapValue },
     { label: "Max Supply", value: "21M TAO" },
     { label: "Circulating", value: circulatingValue },
-    { label: "Daily Emissions", value: "3,600 TAO", href: "#halving" },
+    { label: "Daily Emissions", value: "3,600 TAO", href: "/halving" },
     { label: "TAO Staked", value: stakedValue },
     { label: "Active Subnets", value: subnetValue, href: "/subnets" },
   ];
