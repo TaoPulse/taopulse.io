@@ -38,8 +38,7 @@ async function fetchGoogleNews(query: string): Promise<NewsItem[]> {
       const pubDate = extractRssField(block, "pubDate");
       const source = extractRssField(block, "source");
       if (!title || title.toLowerCase().includes("google news")) continue;
-      // skip duplicate/aggregator entries
-      if (!link || link.includes("news.google.com/rss")) continue;
+      if (!link) continue;
       items.push({
         title: title.replace(/ - [^-]+$/, "").trim(), // strip " - Source Name" suffix
         url: link,
