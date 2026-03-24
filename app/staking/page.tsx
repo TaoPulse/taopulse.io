@@ -3,7 +3,7 @@ import StakingCalculator from "@/components/StakingCalculator";
 export const metadata = {
   title: "How to Stake TAO | TaoPulse",
   description:
-    "Beginner-friendly guide to staking TAO on the Bittensor network. Step-by-step CLI instructions, validator selection, safety warnings, and staking calculator.",
+    "Complete guide to staking TAO on the Bittensor network — wallet apps, CLI, classic vs dTAO staking, emission explained, risk table, and staking calculator.",
 };
 
 const VALIDATORS = [
@@ -15,6 +15,18 @@ const VALIDATORS = [
 ];
 
 const FAQ = [
+  {
+    q: "Will my TAO convert to another token when I stake?",
+    a: "In classic root staking (this guide): No. Your TAO stays as TAO and rewards are paid in TAO. In dTAO subnet staking (advanced): Yes, your TAO converts to the subnet token. This guide covers classic staking.",
+  },
+  {
+    q: "What is the APY for staking?",
+    a: "Estimated 15–20% APY in TAO for classic root staking, depending on network conditions. This is not guaranteed and changes with network activity.",
+  },
+  {
+    q: "Can I lose my staked TAO?",
+    a: "In classic root staking: extremely unlikely. Bittensor has no slashing. Main risks are a validator going offline (you miss rewards temporarily) or losing your wallet seed phrase. In dTAO subnet staking: yes, if the subnet token depreciates vs TAO.",
+  },
   {
     q: "How long until I earn rewards?",
     a: "Rewards accumulate every block (~12 seconds). Check btcli stake show daily.",
@@ -118,11 +130,197 @@ export default function StakingPage() {
         <h1 className="text-3xl font-bold text-white">How to Stake TAO</h1>
         <p className="text-gray-400 leading-relaxed">
           This guide walks you through staking TAO on the Bittensor network from scratch.
-          It covers both the command-line method and a no-CLI wallet option.
+          It covers wallet apps (no terminal needed) and the command-line method for advanced users.
         </p>
         <DangerBox>
           ⚠️ <strong>Never share your seed phrase or private key with anyone.</strong> TaoPulse will never ask for this. Anyone who asks for it is trying to steal your tokens.
         </DangerBox>
+      </section>
+
+      {/* What is Staking? */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold text-white">What is Staking?</h2>
+        <div className="rounded-xl border border-white/10 bg-[#0f1623] p-6 space-y-4 text-sm text-gray-400 leading-relaxed">
+          <p>
+            Staking TAO means lending your tokens to a validator in exchange for a share of network rewards.
+            Think of it like a savings account — your TAO stays yours, earns yield, and you can withdraw at any time.
+            When you stake, you also vote for which AI subnets get funded.
+          </p>
+          <div>
+            <p className="font-semibold text-white mb-2">What is Emission?</p>
+            <p>
+              The Bittensor network emits approximately <strong className="text-white">7,200 TAO per day</strong> across all subnets.
+              Each subnet gets a share proportional to how much stake it has attracted. A subnet with 4.3% emission
+              receives about 310 TAO per day (roughly $86,000/day at $279/TAO). Validators and miners split those
+              rewards — stakers who delegated to those validators earn a cut.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Two Types of Staking */}
+      <section className="space-y-5">
+        <h2 className="text-xl font-bold text-white">Two Types of Staking</h2>
+
+        {/* Classic Root Staking */}
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-6 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 uppercase tracking-wider">Recommended for Beginners</span>
+          </div>
+          <h3 className="text-base font-semibold text-white">Classic Root Staking</h3>
+          <ul className="space-y-1.5 text-sm text-gray-300">
+            <li className="flex items-start gap-2"><span className="text-emerald-400 shrink-0">✓</span> Your TAO stays as TAO — it does <strong className="text-white">NOT</strong> convert to any other token</li>
+            <li className="flex items-start gap-2"><span className="text-emerald-400 shrink-0">✓</span> You earn TAO rewards (estimated 15–20% APY)</li>
+            <li className="flex items-start gap-2"><span className="text-emerald-400 shrink-0">✓</span> Simplest, lowest risk</li>
+            <li className="flex items-start gap-2"><span className="text-emerald-400 shrink-0">✓</span> Bittensor has <strong className="text-white">NO SLASHING</strong> — your TAO cannot be penalized if a validator misbehaves</li>
+          </ul>
+        </div>
+
+        {/* dTAO Subnet Staking */}
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 uppercase tracking-wider">Advanced</span>
+          </div>
+          <h3 className="text-base font-semibold text-white">dTAO Subnet Staking</h3>
+          <p className="text-sm text-gray-400">
+            This is a newer feature (Dynamic TAO). When you stake directly into a specific subnet:
+          </p>
+          <ul className="space-y-1.5 text-sm text-gray-300">
+            <li className="flex items-start gap-2"><span className="text-amber-400 shrink-0">→</span> Your TAO is <strong className="text-white">CONVERTED</strong> to that subnet token (each subnet has its own token)</li>
+            <li className="flex items-start gap-2"><span className="text-amber-400 shrink-0">→</span> You earn rewards in the subnet token, not TAO</li>
+            <li className="flex items-start gap-2"><span className="text-amber-400 shrink-0">→</span> The subnet token price goes up or down vs TAO</li>
+          </ul>
+
+          <div className="grid sm:grid-cols-2 gap-3 mt-2">
+            <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4 space-y-2">
+              <p className="text-xs font-bold text-red-400 uppercase tracking-wider">Example: How You Can LOSE TAO</p>
+              <ul className="text-xs text-gray-300 space-y-1">
+                <li>• Stake 10 TAO → receive 200 SN8 tokens at 0.05 TAO/token</li>
+                <li>• Earn 20 more SN8 tokens as rewards (total: 220)</li>
+                <li>• SN8 drops from 0.05 → 0.03 TAO</li>
+                <li className="text-red-300 font-semibold">• Unstake: 220 × 0.03 = 6.6 TAO (lost 3.4 TAO)</li>
+              </ul>
+            </div>
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
+              <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Example: How You Can WIN</p>
+              <ul className="text-xs text-gray-300 space-y-1">
+                <li>• Same start: 200 SN8 tokens</li>
+                <li>• Earn 20 more SN8 tokens (total: 220)</li>
+                <li>• SN8 rises from 0.05 → 0.10 TAO</li>
+                <li className="text-emerald-300 font-semibold">• Unstake: 220 × 0.10 = 22 TAO (doubled)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Comparison Table */}
+        <div className="overflow-x-auto rounded-lg border border-white/10">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#080d14] border-b border-white/10">
+                <th className="px-4 py-3 text-left font-semibold text-gray-400">Feature</th>
+                <th className="px-4 py-3 text-center font-semibold text-emerald-400">Classic Root Staking</th>
+                <th className="px-4 py-3 text-center font-semibold text-amber-400">dTAO Subnet Staking</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5 text-gray-300">
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3 font-medium text-gray-400">Stake stays as</td>
+                <td className="px-4 py-3 text-center text-emerald-300">TAO</td>
+                <td className="px-4 py-3 text-center text-amber-300">Subnet token</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3 font-medium text-gray-400">Rewards paid in</td>
+                <td className="px-4 py-3 text-center text-emerald-300">TAO</td>
+                <td className="px-4 py-3 text-center text-amber-300">Subnet token</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3 font-medium text-gray-400">Price risk</td>
+                <td className="px-4 py-3 text-center text-emerald-300">TAO price only</td>
+                <td className="px-4 py-3 text-center text-amber-300">TAO + subnet token price</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3 font-medium text-gray-400">Complexity</td>
+                <td className="px-4 py-3 text-center text-emerald-300">Simple</td>
+                <td className="px-4 py-3 text-center text-amber-300">Complex</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3 font-medium text-gray-400">Recommended for</td>
+                <td className="px-4 py-3 text-center text-emerald-300">Beginners</td>
+                <td className="px-4 py-3 text-center text-amber-300">Advanced DeFi users</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Risk Table */}
+      <section className="space-y-4">
+        <h2 className="text-xl font-bold text-white">Risk Overview</h2>
+        <div className="overflow-x-auto rounded-lg border border-white/10">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-[#080d14] border-b border-white/10">
+                <th className="px-4 py-3 text-left font-semibold text-gray-400">Risk</th>
+                <th className="px-4 py-3 text-center font-semibold text-gray-400">Severity</th>
+                <th className="px-4 py-3 text-center font-semibold text-gray-400">Likelihood</th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-400 hidden sm:table-cell">Mitigation</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5 text-gray-300">
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3">Validator goes offline</td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">Low</span>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400">Medium</span>
+                </td>
+                <td className="px-4 py-3 text-gray-400 hidden sm:table-cell">Missed rewards only — TAO safe. Switch validators.</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3">High validator fee</td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">Low</span>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">Low</span>
+                </td>
+                <td className="px-4 py-3 text-gray-400 hidden sm:table-cell">Pick validators with 0–9% fee.</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3">Subnet token loses value</td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/15 text-red-400">High (dTAO)</span>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400">Medium</span>
+                </td>
+                <td className="px-4 py-3 text-gray-400 hidden sm:table-cell">Use classic root staking to avoid this risk entirely.</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3">Lost wallet seed phrase</td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-600/20 text-red-300 font-bold">Catastrophic</span>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-500/15 text-gray-400">Your responsibility</span>
+                </td>
+                <td className="px-4 py-3 text-gray-400 hidden sm:table-cell">Write seed phrase on paper, store offline. No recovery possible.</td>
+              </tr>
+              <tr className="hover:bg-white/2 transition-colors">
+                <td className="px-4 py-3">Network-level attack</td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">Very Low</span>
+                </td>
+                <td className="px-4 py-3 text-center">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">Very Low</span>
+                </td>
+                <td className="px-4 py-3 text-gray-400 hidden sm:table-cell">Bittensor is a decentralized network with no single point of failure.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Prerequisites */}
@@ -132,9 +330,8 @@ export default function StakingPage() {
         <ul className="space-y-2">
           {[
             "TAO tokens in a wallet you control",
-            "Bittensor CLI installed OR a compatible wallet app (see Method 2)",
+            "A compatible wallet app (Method 1 — recommended) or Bittensor CLI (Method 2 — advanced)",
             "At least 0.1 TAO for staking (minimum)",
-            "Basic command line experience (for CLI method)",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
               <span className="mt-0.5 text-emerald-400 shrink-0">✓</span>
@@ -144,11 +341,79 @@ export default function StakingPage() {
         </ul>
       </section>
 
-      {/* Method 1 */}
+      {/* Method 1: Wallet App (Recommended) */}
       <section className="space-y-5">
         <div>
-          <h2 className="text-xl font-bold text-white">Method 1: Stake via Bittensor CLI</h2>
-          <p className="mt-1 text-sm text-gray-400">Recommended for users comfortable with a terminal.</p>
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-xl font-bold text-white">Method 1: Stake via Wallet App</h2>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 uppercase tracking-wider">Recommended</span>
+          </div>
+          <p className="text-sm text-gray-400">No terminal needed — the easiest way to get started. Both options use classic root staking (TAO stays TAO).</p>
+        </div>
+
+        {/* Option A: TAO.com */}
+        <div className="rounded-xl border border-white/10 bg-[#0f1623] p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 uppercase tracking-wider">Option A</span>
+            <h3 className="text-base font-semibold text-white">TAO.com — Best for Mobile</h3>
+          </div>
+          <p className="text-sm text-gray-400">Available on iOS App Store and Google Play.</p>
+          <ol className="space-y-2 ml-1">
+            {[
+              "Download the TAO.com app from the iOS App Store or Google Play",
+              "Create a new wallet or import an existing one using your seed phrase",
+              "Go to the Staking tab",
+              "Choose a validator from the list",
+              "Enter the amount of TAO to stake",
+              "Confirm the transaction",
+            ].map((step, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                <span className="shrink-0 text-purple-500 font-semibold">{i + 1}.</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <DangerBox>
+            ⚠️ Write down your seed phrase offline during wallet setup. Anyone with your seed phrase can steal your TAO.
+          </DangerBox>
+        </div>
+
+        {/* Option B: Talisman */}
+        <div className="rounded-xl border border-white/10 bg-[#0f1623] p-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 uppercase tracking-wider">Option B</span>
+            <h3 className="text-base font-semibold text-white">Talisman — Best for Desktop</h3>
+          </div>
+          <p className="text-sm text-gray-400">Browser extension wallet for Chrome-based browsers.</p>
+          <ol className="space-y-2 ml-1">
+            {[
+              'Install Talisman from the Chrome Web Store (search "Talisman Polkadot Wallet")',
+              "Create a new wallet or import an existing one using your seed phrase",
+              "Open the Talisman extension and navigate to Staking",
+              "Search for Bittensor validators",
+              "Select a validator and enter your stake amount",
+              "Confirm the transaction",
+            ].map((step, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                <span className="shrink-0 text-purple-500 font-semibold">{i + 1}.</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+          <InfoBox>
+            Talisman supports multiple Substrate-based chains. Make sure you are on the Bittensor network when staking.
+          </InfoBox>
+        </div>
+      </section>
+
+      {/* Method 2: CLI (Advanced) */}
+      <section className="space-y-5">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-xl font-bold text-white">Method 2: Stake via Bittensor CLI</h2>
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 uppercase tracking-wider">Advanced</span>
+          </div>
+          <p className="text-sm text-gray-400">For developers &amp; power users. Requires a terminal and Python.</p>
         </div>
 
         {/* Step 1 */}
@@ -373,46 +638,6 @@ Balance: 10.5 TAO`}</CodeBlock>
             ✅ You are done! Your TAO is now staking and earning rewards automatically.
           </SuccessBox>
         </StepCard>
-      </section>
-
-      {/* Method 2 */}
-      <section className="space-y-4">
-        <div>
-          <h2 className="text-xl font-bold text-white">Method 2: Stake via Tensor Wallet</h2>
-          <p className="mt-1 text-sm text-gray-400">No command line required — easier for beginners.</p>
-        </div>
-        <div className="rounded-xl border border-white/10 bg-[#0f1623] p-6 space-y-3 text-sm text-gray-400 leading-relaxed">
-          <p>
-            <a
-              href="https://tensorwallet.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-purple-400 underline hover:text-purple-300 font-medium"
-            >
-              tensorwallet.io
-            </a>{" "}
-            is a wallet app with a graphical interface — no terminal needed.
-          </p>
-          <p className="text-sm font-medium text-gray-300">Steps:</p>
-          <ol className="space-y-2 ml-3">
-            {[
-              "Download Tensor Wallet from tensorwallet.io",
-              "Import an existing wallet or create a new one",
-              "Go to the Staking section",
-              "Choose a validator from the list",
-              "Enter the amount of TAO to stake",
-              "Confirm the transaction",
-            ].map((step, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span className="shrink-0 text-purple-500 font-semibold">{i + 1}.</span>
-                {step}
-              </li>
-            ))}
-          </ol>
-          <InfoBox>
-            This is the easiest option if you are not comfortable with the command line.
-          </InfoBox>
-        </div>
       </section>
 
       {/* How to Unstake */}
