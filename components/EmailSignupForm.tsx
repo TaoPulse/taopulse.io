@@ -37,7 +37,7 @@ export default function EmailSignupForm({
         style={{
           width: "100%",
           maxWidth: "100%",
-          height: "291px",
+          height: "160px",
           margin: 0,
           borderRadius: 0,
           backgroundColor: "transparent",
