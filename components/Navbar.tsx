@@ -132,9 +132,9 @@ export default function Navbar() {
             <Image
               src="/logo.svg"
               alt="TaoPulse logo"
-              width={32}
-              height={32}
-              className="rounded-md"
+              width={44}
+              height={44}
+              className="rounded-lg"
               priority
             />
             <span className="text-lg font-bold tracking-tight text-white">
