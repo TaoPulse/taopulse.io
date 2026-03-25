@@ -5,26 +5,22 @@ import { useEffect, useState, useCallback } from "react";
 interface NewsItem {
   title: string;
   url: string;
-  source: "Reddit" | "Community" | "News" | "Blog" | "Social";
+  source: "Reddit" | "Community" | "News" | "Blog";
   date: Date;
   summary?: string;
   score?: number;
   comments?: number;
   rank?: number;
-  platform?: "X" | "Reddit";
-  author?: string;
 }
 
-type FilterTab = "All" | "Reddit" | "News" | "Community" | "Blog" | "Social";
+type FilterTab = "All" | "Reddit" | "News" | "Community" | "Blog";
 
 const BADGE_STYLES: Record<string, string> = {
   Reddit: "bg-orange-500/20 text-orange-400",
   Community: "bg-red-500/20 text-red-400",
   News: "bg-blue-500/20 text-blue-400",
   Blog: "bg-teal-500/20 text-teal-400",
-  Social: "bg-sky-500/20 text-sky-400",
 };
-
 
 function timeAgo(date: Date): string {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
@@ -56,26 +52,17 @@ function SkeletonCard() {
 interface ApiNewsItem {
   title: string;
   url: string;
-  source: "Reddit" | "Community" | "News" | "Blog" | "Social";
+  source: "Reddit" | "Community" | "News" | "Blog";
   date: string;
   summary?: string;
   score?: number;
   comments?: number;
   rank?: number;
-  platform?: "X" | "Reddit";
-  author?: string;
 }
 
 async function fetchRedditNews(): Promise<NewsItem[]> {
   const res = await fetch("/api/news/reddit");
   if (!res.ok) throw new Error("Reddit API fetch failed");
-  const json: ApiNewsItem[] = await res.json();
-  return json.map((item) => ({ ...item, date: new Date(item.date) }));
-}
-
-async function fetchSocialNews(): Promise<NewsItem[]> {
-  const res = await fetch("/api/macrocosmos");
-  if (!res.ok) throw new Error("Macrocosmos API fetch failed");
   const json: ApiNewsItem[] = await res.json();
   return json.map((item) => ({ ...item, date: new Date(item.date) }));
 }
@@ -92,10 +79,7 @@ export default function NewsPage() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const results = await Promise.allSettled([
-      fetchRedditNews(),
-      fetchSocialNews(),
-    ]);
+    const results = await Promise.allSettled([fetchRedditNews()]);
 
     const allItems: NewsItem[] = [];
     for (const result of results) {
@@ -104,7 +88,6 @@ export default function NewsPage() {
       }
     }
 
-    // Deduplicate by URL
     const seen = new Set<string>();
     const deduped = allItems.filter((item) => {
       if (!item.url || seen.has(item.url)) return false;
@@ -141,8 +124,7 @@ export default function NewsPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // Only show tabs that have results (always show "All")
-  const allTabs: FilterTab[] = ["All", "News", "Reddit", "Community", "Blog", "Social"];
+  const allTabs: FilterTab[] = ["All", "News", "Reddit", "Community", "Blog"];
   const sourcesWithItems = new Set(items.map((i) => i.source));
   const visibleTabs = allTabs.filter(
     (tab) => tab === "All" || sourcesWithItems.has(tab as NewsItem["source"])
@@ -169,37 +151,21 @@ export default function NewsPage() {
                 TAO News &amp; Updates
               </h1>
               <p className="text-gray-400 text-lg max-w-2xl">
-                Latest Bittensor news from Reddit, crypto media, and the
-                community
+                Latest Bittensor news from Reddit, crypto media, and the community
               </p>
             </div>
-            {/* Live TAO price badge */}
             <div className="flex items-center gap-3 shrink-0 flex-wrap">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               {taoPrice ? (
                 <>
                   <span className="text-2xl font-bold text-white tabular-nums">
-                    $
-                    {taoPrice.usd.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    ${taoPrice.usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
-                  <span
-                    className={`px-2 py-0.5 rounded text-sm font-semibold ${
-                      taoPrice.usd_24h_change >= 0
-                        ? "bg-emerald-400/10 text-emerald-400"
-                        : "bg-red-400/10 text-red-400"
-                    }`}
-                  >
-                    {taoPrice.usd_24h_change >= 0 ? "+" : ""}
-                    {taoPrice.usd_24h_change.toFixed(2)}%
+                  <span className={`px-2 py-0.5 rounded text-sm font-semibold ${taoPrice.usd_24h_change >= 0 ? "bg-emerald-400/10 text-emerald-400" : "bg-red-400/10 text-red-400"}`}>
+                    {taoPrice.usd_24h_change >= 0 ? "+" : ""}{taoPrice.usd_24h_change.toFixed(2)}%
                   </span>
                   <span className="text-xs text-gray-500 hidden sm:inline">
-                    MCap:{" "}
-                    {taoPrice.usd_market_cap >= 1e9
-                      ? `$${(taoPrice.usd_market_cap / 1e9).toFixed(1)}B`
-                      : `$${(taoPrice.usd_market_cap / 1e6).toFixed(0)}M`}
+                    MCap: {taoPrice.usd_market_cap >= 1e9 ? `$${(taoPrice.usd_market_cap / 1e9).toFixed(1)}B` : `$${(taoPrice.usd_market_cap / 1e6).toFixed(0)}M`}
                   </span>
                   <span className="text-xs text-gray-500">TAO</span>
                 </>
@@ -280,36 +246,22 @@ export default function NewsPage() {
                           #{item.rank}
                         </span>
                       )}
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
-                          BADGE_STYLES[item.source]
-                        }`}
-                      >
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${BADGE_STYLES[item.source]}`}>
                         {item.source}
                       </span>
-                      <span className="text-xs text-gray-500 ml-auto">
-                        {timeAgo(item.date)}
-                      </span>
+                      <span className="text-xs text-gray-500 ml-auto">{timeAgo(item.date)}</span>
                     </div>
                     <h3 className="text-sm font-semibold text-white leading-snug group-hover:text-purple-300 transition-colors line-clamp-3">
                       {item.title}
                     </h3>
                     {item.summary && (
-                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                        {item.summary}
-                      </p>
+                      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{item.summary}</p>
                     )}
                     <div className="mt-auto flex items-center gap-3">
-                      {(item.source === "Reddit" || item.source === "Social") && item.score != null && (
+                      {item.score != null && (
                         <span className="text-xs text-gray-500 flex items-center gap-1">
                           ▲ {item.score}
                           {item.comments != null && <> · 💬 {item.comments}</>}
-                        </span>
-                      )}
-                      {item.source === "Social" && item.platform && (
-                        <span className="text-xs text-gray-600">
-                          via {item.platform === "X" ? "𝕏" : item.platform}
-                          {item.author ? ` · @${item.author}` : ""}
                         </span>
                       )}
                       <span className="text-xs text-purple-400 group-hover:text-purple-300 ml-auto">
@@ -322,9 +274,8 @@ export default function NewsPage() {
             )}
           </div>
 
-          {/* Sidebar — desktop only */}
+          {/* Sidebar */}
           <aside className="hidden lg:block w-72 shrink-0 space-y-5">
-            {/* Trending on Reddit */}
             <div className="bg-white/5 border border-white/5 rounded-xl p-5">
               <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">
                 Trending on Reddit
@@ -332,38 +283,20 @@ export default function NewsPage() {
               {loading ? (
                 <div className="space-y-3">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-4 bg-white/10 rounded animate-pulse"
-                    />
+                    <div key={i} className="h-4 bg-white/10 rounded animate-pulse" />
                   ))}
                 </div>
               ) : trendingReddit.length === 0 ? (
-                <p className="text-xs text-gray-500">
-                  No Reddit data available.
-                </p>
+                <p className="text-xs text-gray-500">No Reddit data available.</p>
               ) : (
                 <ol className="space-y-3">
                   {trendingReddit.map((item, i) => (
                     <li key={item.url}>
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex gap-3 group"
-                      >
-                        <span className="text-xs font-bold text-gray-600 tabular-nums w-4 shrink-0 mt-0.5">
-                          {i + 1}
-                        </span>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="flex gap-3 group">
+                        <span className="text-xs font-bold text-gray-600 tabular-nums w-4 shrink-0 mt-0.5">{i + 1}</span>
                         <div className="min-w-0">
-                          <p className="text-xs text-gray-300 group-hover:text-white transition-colors line-clamp-2 leading-snug">
-                            {item.title}
-                          </p>
-                          {item.score != null && (
-                            <p className="text-xs text-gray-600 mt-0.5">
-                              {item.score} pts
-                            </p>
-                          )}
+                          <p className="text-xs text-gray-300 group-hover:text-white transition-colors line-clamp-2 leading-snug">{item.title}</p>
+                          {item.score != null && <p className="text-xs text-gray-600 mt-0.5">{item.score} pts</p>}
                         </div>
                       </a>
                     </li>
@@ -372,37 +305,20 @@ export default function NewsPage() {
               )}
             </div>
 
-            {/* TAO Price widget */}
             <div className="bg-white/5 border border-white/5 rounded-xl p-5">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">
-                TAO Price
-              </h2>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">TAO Price</h2>
               {taoPrice ? (
                 <div className="space-y-2">
                   <span className="text-2xl font-bold text-white tabular-nums">
-                    $
-                    {taoPrice.usd.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
+                    ${taoPrice.usd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                   <div>
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
-                        taoPrice.usd_24h_change >= 0
-                          ? "bg-emerald-400/10 text-emerald-400"
-                          : "bg-red-400/10 text-red-400"
-                      }`}
-                    >
-                      {taoPrice.usd_24h_change >= 0 ? "↑" : "↓"}{" "}
-                      {Math.abs(taoPrice.usd_24h_change).toFixed(2)}% 24h
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${taoPrice.usd_24h_change >= 0 ? "bg-emerald-400/10 text-emerald-400" : "bg-red-400/10 text-red-400"}`}>
+                      {taoPrice.usd_24h_change >= 0 ? "↑" : "↓"} {Math.abs(taoPrice.usd_24h_change).toFixed(2)}% 24h
                     </span>
                   </div>
                   <p className="text-xs text-gray-500">
-                    MCap:{" "}
-                    {taoPrice.usd_market_cap >= 1e9
-                      ? `$${(taoPrice.usd_market_cap / 1e9).toFixed(1)}B`
-                      : `$${(taoPrice.usd_market_cap / 1e6).toFixed(0)}M`}
+                    MCap: {taoPrice.usd_market_cap >= 1e9 ? `$${(taoPrice.usd_market_cap / 1e9).toFixed(1)}B` : `$${(taoPrice.usd_market_cap / 1e6).toFixed(0)}M`}
                   </p>
                   <p className="text-xs text-gray-600">Updates every 30s</p>
                 </div>
@@ -414,11 +330,8 @@ export default function NewsPage() {
               )}
             </div>
 
-            {/* Sources legend */}
             <div className="bg-white/5 border border-white/5 rounded-xl p-5">
-              <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">
-                Sources
-              </h2>
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">Sources</h2>
               <ul className="space-y-2 text-xs text-gray-400">
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
@@ -427,10 +340,6 @@ export default function NewsPage() {
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-orange-400 shrink-0" />
                   r/bittensor_ (Reddit)
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
-                  Macrocosmos SN13 (𝕏 + Reddit)
                 </li>
               </ul>
             </div>
