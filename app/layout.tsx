@@ -31,6 +31,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@taopulseio",
   },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   robots: {
     index: true,
     follow: true,
