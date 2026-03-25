@@ -95,19 +95,7 @@ const whatisBittensor = [
   },
 ];
 
-const comparison = [
-  { feature: "Decentralized", tao: { value: "Fully", check: true }, openai: { value: "No", check: false }, google: { value: "No", check: false }, eth: { value: "Partial", partial: true } },
-  { feature: "Fixed supply", tao: { value: "21M max", check: true }, openai: { value: "No token", check: false }, google: { value: "No token", check: false }, eth: { value: "Inflationary", check: false } },
-  { feature: "Open source AI", tao: { value: "Yes", check: true }, openai: { value: "Closed", check: false }, google: { value: "Closed", check: false }, eth: { value: "Partial", partial: true } },
-  { feature: "VC-free", tao: { value: "Yes", check: true }, openai: { value: "$11B raised", check: false }, google: { value: "Google", check: false }, eth: { value: "VC-backed", check: false } },
-  { feature: "Earning potential", tao: { value: "Mine/Stake", check: true }, openai: { value: "No", check: false }, google: { value: "No", check: false }, eth: { value: "Limited", partial: true } },
-];
 
-function CellValue({ value, check, partial }: { value: string; check?: boolean; partial?: boolean }) {
-  if (check) return <span className="inline-flex items-center gap-1.5 text-emerald-400 font-medium"><span>✅</span> {value}</span>;
-  if (partial) return <span className="text-amber-400 font-medium">{value}</span>;
-  return <span className="inline-flex items-center gap-1.5 text-gray-500"><span>❌</span> {value}</span>;
-}
 
 export default async function HomePage() {
   let taoPrice: { usd: number; usd_market_cap: number; usd_24h_change: number } | null = null;
@@ -233,21 +221,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Trending Subnets */}
-      <section className="bg-[#0b1019] border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex items-end justify-between mb-5">
-            <div>
-              <h2 className="text-xl font-bold text-white">Trending Subnets</h2>
-              <p className="text-sm text-gray-500 mt-0.5">Highest emission share right now — where TAO is flowing</p>
-            </div>
-            <Link href="/subnets" className="text-sm text-purple-400 hover:text-purple-300 transition-colors shrink-0 ml-4">
-              View all subnets →
-            </Link>
-          </div>
-          <TrendingSubnets />
-        </div>
-      </section>
+
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 w-full space-y-16">
 
@@ -308,36 +282,18 @@ export default async function HomePage() {
           <HowItWorks activeSubnets={networkStats?.activeSubnets ?? null} />
         </section>
 
-        {/* Comparison Table */}
+        {/* Trending Subnets */}
         <section>
-          <h2 className="text-2xl font-bold text-white mb-2">TAO vs Competitors</h2>
-          <p className="text-gray-400 mb-6">How Bittensor stacks up against centralized AI alternatives</p>
-          <div className="rounded-xl border border-white/10 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-[#0a0f1a] border-b border-white/10">
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Feature</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-purple-400">TAO</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">OpenAI</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Google AI</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Ethereum AI</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparison.map((row, idx) => (
-                    <tr key={row.feature} className={idx % 2 === 0 ? "bg-[#0f1623]" : "bg-[#0b1019]"}>
-                      <td className="px-5 py-3.5 text-sm font-medium text-white">{row.feature}</td>
-                      <td className="px-5 py-3.5 text-sm"><CellValue {...row.tao} /></td>
-                      <td className="px-5 py-3.5 text-sm"><CellValue {...row.openai} /></td>
-                      <td className="px-5 py-3.5 text-sm"><CellValue {...row.google} /></td>
-                      <td className="px-5 py-3.5 text-sm"><CellValue {...row.eth} /></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <div className="flex items-end justify-between mb-5">
+            <div>
+              <h2 className="text-2xl font-bold text-white">Trending Subnets</h2>
+              <p className="text-gray-400 mt-1">Highest emission share right now — where TAO is flowing</p>
             </div>
+            <Link href="/subnets" className="text-sm text-purple-400 hover:text-purple-300 transition-colors shrink-0 ml-4">
+              View all subnets →
+            </Link>
           </div>
+          <TrendingSubnets />
         </section>
 
         {/* Email Signup */}
