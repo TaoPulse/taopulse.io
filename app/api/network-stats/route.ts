@@ -24,16 +24,19 @@ export async function GET() {
         }).then((r) => r.ok ? r.json() : null)
       : Promise.resolve(null),
 
-    // Circulating supply + market cap from CoinGecko (free)
-    fetch(
-      "https://api.coingecko.com/api/v3/coins/bittensor?localization=false&tickers=false&community_data=false&developer_data=false",
-      { next: { revalidate: 300 }, signal: AbortSignal.timeout(6000) }
-    ).then((r) => r.ok ? r.json() : null).catch(() => null),
+    // Circulating supply + price from TaoStats (more accurate than CoinGecko)
+    apiKey
+      ? fetch(`${TAOSTATS_BASE}/api/price/latest/v1?asset=tao`, {
+          headers: { Authorization: apiKey },
+          next: { revalidate: 300 },
+          signal: AbortSignal.timeout(6000),
+        }).then((r) => r.ok ? r.json() : null).catch(() => null)
+      : Promise.resolve(null),
   ]);
 
   const subnetData = results[0].status === "fulfilled" ? results[0].value : null;
   const validatorData = results[1].status === "fulfilled" ? results[1].value : null;
-  const geckoData = results[2].status === "fulfilled" ? results[2].value : null;
+  const priceData = results[2].status === "fulfilled" ? results[2].value : null;
 
   // Active subnets count — exclude netuid 0 (root network), not a real subnet
   const activeSubnets = subnetData?.data
@@ -51,9 +54,14 @@ export async function GET() {
     stakedTao = totalRao / 1e9;
   }
 
-  // Circulating supply from CoinGecko
-  const circulatingSupply: number | null = geckoData?.market_data?.circulating_supply ?? null;
-  const marketCap: number | null = geckoData?.market_data?.market_cap?.usd ?? null;
+  // Circulating supply + market cap from TaoStats price endpoint
+  const taoStats = priceData?.data?.[0] ?? null;
+  const circulatingSupply: number | null = taoStats
+    ? parseFloat(taoStats.circulating_supply)
+    : null;
+  const marketCap: number | null = taoStats
+    ? parseFloat(taoStats.market_cap)
+    : null;
 
   if (stakedTao !== null && circulatingSupply !== null) {
     stakedPct = (stakedTao / circulatingSupply) * 100;
