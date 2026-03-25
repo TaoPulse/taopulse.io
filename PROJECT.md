@@ -101,18 +101,11 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 
 ## Open Tasks (taopulse-specific)
 
-| TP-015 | Macrocosmos SN13 API — live X/Twitter + Reddit social feed | Low | Sign up at app.macrocosmos.ai for API key first. Use for: live $TAO tweet feed on news page, better Reddit integration, subnet sentiment widget. Docs: https://docs.macrocosmos.ai |
-
-
-
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
-| TP-001 | Staking page — validator data live from TaoStats API | High | Shows "data unavailable" without API key — need TAOSTATS_API_KEY in Vercel |
-| TP-002 | Subnet page — live emission data from TaoStats API | High | Falls back to snapshot data without API key; wording updated to say so |
-| TP-004 | Validator comparison with live stake/uptime | Medium | Blocked on API key |
-| TP-006 | Usage monitoring — context size + cost tracker | Medium | Basic snapshot script exists; real-time monitor TBD |
+| TP-004 | Validator comparison with live stake/uptime | Medium | |
 | TP-008 | Nav overflow on medium screens (10 items) | Medium | Consider grouping under dropdowns |
-| TP-009 | TaoStats API key — set in Vercel env vars | High | Unlocks TP-001, TP-002, TP-004 |
+| TP-015 | Macrocosmos SN13 API — live social feed on news page | Low | API key saved in TOOLS.md ✅ |
 
 ## Completed Tasks
 
@@ -126,6 +119,11 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 | TP-012 | Subnet directory page | ✅ | /subnets/directory live, static from docs (labeled) |
 | TP-013 | Sitemap includes all pages | ✅ | halving, portfolio, directory added |
 | TP-014 | Static data wording QA | ✅ | All pages now use "est.", "data unavailable", or verified live sources |
+| TP-009 | TaoStats API key in Vercel | ✅ | Live data working on staking, subnet, validator pages |
+| TP-001 | Staking page — live validator data | ✅ | TaoStats API live |
+| TP-002 | Subnet page — live emission data | ✅ | TaoStats API live |
+| TP-015 | Macrocosmos SN13 API | ⏳ Ready to build | API key in TOOLS.md, implement live social feed on /news |
+| TP-016 | TAO Alpha newsletter branding + /admin/weekly generator | ✅ | Beehiiv embedded, draft generator at /admin/weekly, logo in email |
 
 ---
 

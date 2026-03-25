@@ -5,21 +5,24 @@ import { useEffect, useState, useCallback } from "react";
 interface NewsItem {
   title: string;
   url: string;
-  source: "Reddit" | "Community" | "News" | "Blog";
+  source: "Reddit" | "Community" | "News" | "Blog" | "Social";
   date: Date;
   summary?: string;
   score?: number;
   comments?: number;
   rank?: number;
+  platform?: "X" | "Reddit";
+  author?: string;
 }
 
-type FilterTab = "All" | "Reddit" | "News" | "Community" | "Blog";
+type FilterTab = "All" | "Reddit" | "News" | "Community" | "Blog" | "Social";
 
 const BADGE_STYLES: Record<string, string> = {
   Reddit: "bg-orange-500/20 text-orange-400",
   Community: "bg-red-500/20 text-red-400",
   News: "bg-blue-500/20 text-blue-400",
   Blog: "bg-teal-500/20 text-teal-400",
+  Social: "bg-sky-500/20 text-sky-400",
 };
 
 
@@ -53,17 +56,26 @@ function SkeletonCard() {
 interface ApiNewsItem {
   title: string;
   url: string;
-  source: "Reddit" | "Community" | "News" | "Blog";
+  source: "Reddit" | "Community" | "News" | "Blog" | "Social";
   date: string;
   summary?: string;
   score?: number;
   comments?: number;
   rank?: number;
+  platform?: "X" | "Reddit";
+  author?: string;
 }
 
 async function fetchRedditNews(): Promise<NewsItem[]> {
   const res = await fetch("/api/news/reddit");
   if (!res.ok) throw new Error("Reddit API fetch failed");
+  const json: ApiNewsItem[] = await res.json();
+  return json.map((item) => ({ ...item, date: new Date(item.date) }));
+}
+
+async function fetchSocialNews(): Promise<NewsItem[]> {
+  const res = await fetch("/api/macrocosmos");
+  if (!res.ok) throw new Error("Macrocosmos API fetch failed");
   const json: ApiNewsItem[] = await res.json();
   return json.map((item) => ({ ...item, date: new Date(item.date) }));
 }
@@ -82,6 +94,7 @@ export default function NewsPage() {
     setLoading(true);
     const results = await Promise.allSettled([
       fetchRedditNews(),
+      fetchSocialNews(),
     ]);
 
     const allItems: NewsItem[] = [];
@@ -129,7 +142,7 @@ export default function NewsPage() {
   }, []);
 
   // Only show tabs that have results (always show "All")
-  const allTabs: FilterTab[] = ["All", "News", "Reddit", "Community", "Blog"];
+  const allTabs: FilterTab[] = ["All", "News", "Reddit", "Community", "Blog", "Social"];
   const sourcesWithItems = new Set(items.map((i) => i.source));
   const visibleTabs = allTabs.filter(
     (tab) => tab === "All" || sourcesWithItems.has(tab as NewsItem["source"])
@@ -287,10 +300,16 @@ export default function NewsPage() {
                       </p>
                     )}
                     <div className="mt-auto flex items-center gap-3">
-                      {item.source === "Reddit" && item.score != null && (
+                      {(item.source === "Reddit" || item.source === "Social") && item.score != null && (
                         <span className="text-xs text-gray-500 flex items-center gap-1">
                           ▲ {item.score}
                           {item.comments != null && <> · 💬 {item.comments}</>}
+                        </span>
+                      )}
+                      {item.source === "Social" && item.platform && (
+                        <span className="text-xs text-gray-600">
+                          via {item.platform === "X" ? "𝕏" : item.platform}
+                          {item.author ? ` · @${item.author}` : ""}
                         </span>
                       )}
                       <span className="text-xs text-purple-400 group-hover:text-purple-300 ml-auto">
@@ -408,6 +427,10 @@ export default function NewsPage() {
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-orange-400 shrink-0" />
                   r/bittensor_ (Reddit)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-sky-400 shrink-0" />
+                  Macrocosmos SN13 (𝕏 + Reddit)
                 </li>
               </ul>
             </div>

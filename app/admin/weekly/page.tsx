@@ -51,7 +51,7 @@ function getWeekOf(): string {
   return now.toLocaleDateString("en-US", options);
 }
 
-function buildEmailHTML(data: AllData): string {
+function buildEmailHTML(data: AllData, deepDive: string): string {
   const weekOf = getWeekOf();
   const price = data.price;
   const network = data.network;
@@ -155,7 +155,10 @@ function buildEmailHTML(data: AllData): string {
           <tr>
             <td style="padding:28px 40px 0;">
               <h2 style="margin:0 0 16px;font-size:16px;color:#7c3aed;text-transform:uppercase;letter-spacing:1px;font-family:Arial,sans-serif;">🔍 Deep Dive</h2>
-              <p style="font-family:Arial,sans-serif;font-size:14px;color:#9ca3af;font-style:italic;border:2px dashed #e5e7eb;padding:20px;border-radius:4px;">✏️ Write your deep dive here...</p>
+              ${deepDive.trim()
+                ? `<p style="font-family:Arial,sans-serif;font-size:14px;color:#374151;line-height:1.7;white-space:pre-wrap;">${deepDive.trim()}</p>`
+                : `<p style="font-family:Arial,sans-serif;font-size:14px;color:#9ca3af;font-style:italic;border:2px dashed #e5e7eb;padding:20px;border-radius:4px;">✏️ Write your deep dive in the left panel...</p>`
+              }
             </td>
           </tr>
 
@@ -175,7 +178,7 @@ function buildEmailHTML(data: AllData): string {
 </html>`;
 }
 
-function buildPlainText(data: AllData): string {
+function buildPlainText(data: AllData, deepDive: string): string {
   const weekOf = getWeekOf();
   const price = data.price;
   const network = data.network;
@@ -227,7 +230,7 @@ function buildPlainText(data: AllData): string {
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   lines.push(`🔍 DEEP DIVE`);
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  lines.push(`✏️ Write your deep dive here...`);
+  lines.push(deepDive.trim() || `✏️ Write your deep dive here...`);
   lines.push(``);
   lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   lines.push(`TAOPulse.io | Unsubscribe: [UNSUBSCRIBE_URL]`);
@@ -244,6 +247,7 @@ export default function WeeklyAdminPage() {
     lastFetched: null,
   });
   const [loading, setLoading] = useState(true);
+  const [deepDive, setDeepDive] = useState("");
   const [copyHTMLStatus, setCopyHTMLStatus] = useState<"idle" | "copied">("idle");
   const [copyTextStatus, setCopyTextStatus] = useState<"idle" | "copied">("idle");
 
@@ -274,20 +278,20 @@ export default function WeeklyAdminPage() {
   }, [fetchAllData]);
 
   const copyHTML = useCallback(async () => {
-    const html = buildEmailHTML(data);
+    const html = buildEmailHTML(data, deepDive);
     await navigator.clipboard.writeText(html);
     setCopyHTMLStatus("copied");
     setTimeout(() => setCopyHTMLStatus("idle"), 2000);
-  }, [data]);
+  }, [data, deepDive]);
 
   const copyText = useCallback(async () => {
-    const text = buildPlainText(data);
+    const text = buildPlainText(data, deepDive);
     await navigator.clipboard.writeText(text);
     setCopyTextStatus("copied");
     setTimeout(() => setCopyTextStatus("idle"), 2000);
-  }, [data]);
+  }, [data, deepDive]);
 
-  const emailHTML = buildEmailHTML(data);
+  const emailHTML = buildEmailHTML(data, deepDive);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -418,6 +422,20 @@ export default function WeeklyAdminPage() {
           <div className="text-xs text-gray-600 pt-2 border-t border-gray-800">
             Email will use top 5 subnets.
           </div>
+
+          <div>
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-3">
+              🔍 Deep Dive
+            </h2>
+            <textarea
+              value={deepDive}
+              onChange={(e) => setDeepDive(e.target.value)}
+              rows={8}
+              placeholder="Write your weekly deep dive here... (e.g. analysis of a trending subnet, TAO macro outlook, etc.)"
+              className="w-full bg-gray-800 text-gray-100 text-sm rounded p-3 border border-gray-700 focus:border-purple-500 focus:outline-none resize-y placeholder-gray-600"
+            />
+            <p className="text-xs text-gray-600 mt-1">Appears in the email preview live as you type.</p>
+          </div>
         </div>
 
         {/* Right: email preview */}
@@ -437,6 +455,7 @@ export default function WeeklyAdminPage() {
           ) : (
             <div
               className="bg-white rounded-lg shadow-lg overflow-hidden"
+              style={{ color: "#111827" }}
               dangerouslySetInnerHTML={{ __html: emailHTML }}
             />
           )}

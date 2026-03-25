@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  serverExternalPackages: ["macrocosmos", "@grpc/grpc-js", "@bufbuild/protobuf"],
 };
 
 export default nextConfig;
