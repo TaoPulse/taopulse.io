@@ -149,7 +149,7 @@ export default async function SubnetDetailPage({
     emission >= 0.01 ? 2 : emission > 0 ? 3 : 1
   );
 
-  const dailyTAO = Math.round(emission * 7200);
+  const dailyTAO = Math.round(emission * 3600);
 
   const activeMiners = live?.activeMiners ?? subnet.activeMiners;
   const activeValidators = live?.activeValidators ?? subnet.activeValidators;
@@ -290,7 +290,7 @@ export default async function SubnetDetailPage({
           />
         </div>
         <p className="text-xs text-gray-500 mt-2">
-          Based on ~7,200 TAO emitted daily across all subnets (dTAO era)
+          Based on ~3,600 TAO emitted daily across all subnets (post-halving Dec 2025)
         </p>
       </div>
 
