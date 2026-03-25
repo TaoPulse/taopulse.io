@@ -466,6 +466,23 @@ export default function PortfolioClient() {
           </div>
         )}
 
+        {/* Wallet lookup CTA */}
+        <div className="bg-[#0f1623] border border-purple-500/20 rounded-xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <p className="text-sm font-semibold text-white">Check your on-chain wallet</p>
+            <p className="text-xs text-gray-500 mt-0.5">See live balance, delegations &amp; transfers for any TAO address</p>
+          </div>
+          <a
+            href="/wallet"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors shrink-0"
+          >
+            Wallet Lookup
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+
         {/* Disclaimer */}
         <p className="text-xs text-gray-600 text-center pb-4">
           Staking yield is estimated at ~17% APY (classic root staking, post-halving) and is for informational
