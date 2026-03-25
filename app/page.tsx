@@ -300,7 +300,7 @@ export default async function HomePage() {
         <section>
           <EmailSignupForm
             source="homepage"
-            heading="Subscribe to Alpha Pulse"
+            heading="Subscribe to TAO Alpha"
             subheading="Our free weekly newsletter — TAO price, top subnet emissions, validator rankings, and one subnet deep dive. Every Monday morning."
           />
         </section>

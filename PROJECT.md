@@ -93,7 +93,7 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 - Embed form ID: `a290cdad-6846-4bac-99df-55e0cc240ece`
 - Attribution script in `app/layout.tsx`
 - Component: `components/EmailSignupForm.tsx`
-- Newsletter name: **Alpha Pulse** — weekly TAO intel, every Monday
+- Newsletter name: **TAO Alpha** — weekly TAO intel, every Monday
 - Beehiiv dashboard manages welcome email and weekly email templates
 - Logo URL for email templates: `https://taopulse.io/logo.jpg`
 

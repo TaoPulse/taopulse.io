@@ -3,7 +3,7 @@ import { Metadata } from "next";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Alpha Pulse — Weekly TAO Intel | TaoPulse",
+  title: "TAO Alpha — Weekly TAO Intel | TaoPulse",
   description: "Weekly Bittensor intelligence: TAO price, top subnet emissions, staking APY, validator rankings, and one subnet deep dive. Subscribe free.",
   alternates: { canonical: "https://taopulse.io/newsletter" },
 };
@@ -89,7 +89,7 @@ export default async function NewsletterPage() {
       <div className="bg-[#0f1623] border-b border-white/5">
         <div className="max-w-3xl mx-auto px-4 py-6 text-center">
           <p className="text-xs text-purple-400 uppercase tracking-widest mb-1">Weekly Newsletter</p>
-          <h1 className="text-3xl font-bold text-white mb-1">⚡ Alpha Pulse</h1>
+          <h1 className="text-3xl font-bold text-white mb-1">⚡ TAO Alpha</h1>
           <p className="text-gray-400 text-sm">Weekly TAO Intel — Issue #{issueNumber} · {issueDate}</p>
         </div>
       </div>

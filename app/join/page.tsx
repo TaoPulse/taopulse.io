@@ -2,11 +2,11 @@ import { Metadata } from "next";
 import EmailSignupForm from "@/components/EmailSignupForm";
 
 export const metadata: Metadata = {
-  title: "Subscribe to Alpha Pulse — Weekly TAO Newsletter | TaoPulse",
+  title: "Subscribe to TAO Alpha — Weekly TAO Newsletter | TaoPulse",
   description: "Get weekly TAO intel — price, top subnet emissions, validator rankings, and one subnet deep dive. Free, every Monday.",
-  keywords: ["TAO newsletter", "Alpha Pulse", "Bittensor newsletter", "TAO analytics", "TAO weekly"],
+  keywords: ["TAO newsletter", "TAO Alpha", "Bittensor newsletter", "TAO analytics", "TAO weekly"],
   openGraph: {
-    title: "Subscribe to Alpha Pulse — Weekly TAO Newsletter",
+    title: "Subscribe to TAO Alpha — Weekly TAO Newsletter",
     description: "Get weekly TAO intel — price, top subnet emissions, validator rankings, and one subnet deep dive. Free, every Monday.",
     url: "https://taopulse.io/join",
     siteName: "TaoPulse",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Subscribe to Alpha Pulse — Weekly TAO Newsletter",
+    title: "Subscribe to TAO Alpha — Weekly TAO Newsletter",
     description: "Get weekly TAO intel — price, top subnet emissions, validator rankings, and one subnet deep dive. Free, every Monday.",
   },
   alternates: { canonical: "https://taopulse.io/join" },
@@ -55,7 +55,7 @@ export default function JoinPage() {
             Free — No spam, ever
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight">
-            ⚡ Alpha Pulse<br />
+            ⚡ TAO Alpha<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
               Weekly TAO Intel
             </span>

@@ -87,7 +87,7 @@ function buildEmailHTML(data: AllData): string {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alpha Pulse — Week of ${weekOf}</title>
+  <title>TAO Alpha — Week of ${weekOf}</title>
 </head>
 <body style="margin:0;padding:0;background:#f3f4f6;font-family:Georgia,serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:32px 0;">
@@ -99,14 +99,14 @@ function buildEmailHTML(data: AllData): string {
           <tr>
             <td style="background:#0f172a;padding:28px 40px;text-align:center;">
               <img src="https://taopulse.io/logo.jpg" alt="TAOPulse" width="180" style="display:block;margin:0 auto 12px;" />
-              <p style="margin:0;color:#a78bfa;font-size:13px;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;">Alpha Pulse Newsletter</p>
+              <p style="margin:0;color:#a78bfa;font-size:13px;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;">TAO Alpha Newsletter</p>
             </td>
           </tr>
 
           <!-- Issue heading -->
           <tr>
             <td style="padding:28px 40px 0;border-bottom:2px solid #7c3aed;">
-              <h1 style="margin:0 0 8px;font-size:22px;color:#111827;font-family:Arial,sans-serif;">Alpha Pulse — Week of ${weekOf}</h1>
+              <h1 style="margin:0 0 8px;font-size:22px;color:#111827;font-family:Arial,sans-serif;">TAO Alpha — Week of ${weekOf}</h1>
               <p style="margin:0 0 20px;color:#6b7280;font-size:14px;font-family:Arial,sans-serif;">Your weekly signal from the Bittensor network</p>
             </td>
           </tr>
@@ -162,7 +162,7 @@ function buildEmailHTML(data: AllData): string {
           <!-- Footer -->
           <tr>
             <td style="padding:32px 40px;margin-top:28px;background:#f9fafb;border-top:1px solid #e5e7eb;text-align:center;">
-              <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:12px;color:#6b7280;">You're receiving this because you subscribed to Alpha Pulse.</p>
+              <p style="margin:0 0 8px;font-family:Arial,sans-serif;font-size:12px;color:#6b7280;">You're receiving this because you subscribed to TAO Alpha.</p>
               <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;color:#9ca3af;"><a href="[UNSUBSCRIBE_URL]" style="color:#7c3aed;">Unsubscribe</a> · <a href="https://taopulse.io" style="color:#7c3aed;">TAOPulse.io</a></p>
             </td>
           </tr>
@@ -294,7 +294,7 @@ export default function WeeklyAdminPage() {
       {/* Top bar */}
       <div className="border-b border-gray-800 bg-gray-900 px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-white">Alpha Pulse — Newsletter Generator</h1>
+          <h1 className="text-lg font-semibold text-white">TAO Alpha — Newsletter Generator</h1>
           <p className="text-xs text-gray-400 mt-0.5">
             Internal tool · /admin/weekly
             {data.lastFetched && (

@@ -26,7 +26,7 @@ const toolLinks = [
   { href: "/portfolio", label: "Portfolio Tracker" },
   { href: "/wallets", label: "Wallets Guide" },
   { href: "/subnets/directory", label: "Subnet Directory" },
-  { href: "/join", label: "⚡ Alpha Pulse Newsletter" },
+  { href: "/join", label: "⚡ TAO Alpha Newsletter" },
   { href: "/should-i-stake-or-mine", label: "Stake or Mine?" },
 ];
 
@@ -181,7 +181,7 @@ export default function Navbar() {
               href="/join"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors"
             >
-              ⚡ Alpha Pulse
+              ⚡ TAO Alpha
             </Link>
             <button
               className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
@@ -301,7 +301,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="block mt-2 px-3 py-2.5 rounded-md bg-purple-600 text-white text-sm font-semibold text-center transition-colors hover:bg-purple-500"
             >
-              ⚡ Alpha Pulse
+              ⚡ TAO Alpha
             </Link>
           </div>
         </div>
