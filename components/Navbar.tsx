@@ -22,6 +22,7 @@ const learnLinks = [
 ];
 
 const toolLinks = [
+  { href: "/validators", label: "Validator Comparison" },
   { href: "/validator-calculator", label: "Validator Calculator" },
   { href: "/portfolio", label: "Portfolio Tracker" },
   { href: "/wallets", label: "Wallets Guide" },
@@ -140,7 +141,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1">
             {primaryLinks.map((link) => {
               const isActive =
                 link.href === "/"
@@ -184,7 +185,7 @@ export default function Navbar() {
               ⚡ TAO Alpha
             </Link>
             <button
-              className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="lg:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
               onClick={() => setMobileOpen((prev) => !prev)}
               aria-label="Toggle menu"
             >
@@ -204,7 +205,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-white/5 bg-[#0a0f1a]">
+        <div className="lg:hidden border-t border-white/5 bg-[#0a0f1a]">
           <div className="px-4 py-3 space-y-1">
             {/* Primary links */}
             {primaryLinks.map((link) => {

@@ -361,7 +361,18 @@ export default async function StakingPage() {
 
             {/* Choose a Validator — standalone section */}
             <section id="validators" className="space-y-4">
-              <h2 className="text-xl font-bold text-white">Choose a Validator</h2>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <h2 className="text-xl font-bold text-white">Choose a Validator</h2>
+                <a
+                  href="/validators"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Compare all validators
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              </div>
               <p className="text-sm text-gray-400">
                 Validators are nodes that secure the Bittensor network. Pick one with a low fee and high uptime.
               </p>
