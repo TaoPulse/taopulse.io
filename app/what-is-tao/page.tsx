@@ -2,6 +2,7 @@ import Link from "next/link";
 import TaoPriceChart from "@/components/TaoPriceChart";
 import EmissionsChart from "@/components/EmissionsChart";
 import SupplyChart from "@/components/SupplyChart";
+import TaoComparisonChart from "@/components/TaoComparisonChart";
 
 export const metadata = {
   title: "What is TAO? Bittensor Explained for Beginners",
@@ -206,6 +207,7 @@ export default async function WhatIsTaoPage() {
               <EmissionsChart />
               <SupplyChart />
             </div>
+            <TaoComparisonChart />
           </div>
         </section>
 

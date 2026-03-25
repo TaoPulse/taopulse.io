@@ -1,4 +1,5 @@
 import ValidatorsClient, { type ValidatorRow } from "./ValidatorsClient";
+import YieldCalculator from "./YieldCalculator";
 
 export const metadata = {
   title: "Bittensor Validator Comparison — Live Stake, APR & Fees",
@@ -22,6 +23,20 @@ export const metadata = {
   },
   alternates: { canonical: "https://taopulse.io/validators" },
 };
+
+async function fetchTaoPrice(): Promise<number | null> {
+  try {
+    const res = await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd",
+      { headers: { "User-Agent": "TaoPulse/1.0" }, next: { revalidate: 60 } }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.bittensor?.usd ?? null;
+  } catch {
+    return null;
+  }
+}
 
 async function fetchValidators(): Promise<ValidatorRow[] | null> {
   const apiKey = process.env.TAOSTATS_API_KEY;
@@ -70,7 +85,7 @@ async function fetchValidators(): Promise<ValidatorRow[] | null> {
 }
 
 export default async function ValidatorsPage() {
-  const validators = await fetchValidators();
+  const [validators, taoPrice] = await Promise.all([fetchValidators(), fetchTaoPrice()]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
@@ -154,6 +169,11 @@ export default async function ValidatorsPage() {
         </div>
       ) : (
         <ValidatorsClient validators={validators} />
+      )}
+
+      {/* Yield Calculator */}
+      {validators !== null && validators.length > 0 && (
+        <YieldCalculator validators={validators} taoPrice={taoPrice} />
       )}
 
       {/* Footer note */}

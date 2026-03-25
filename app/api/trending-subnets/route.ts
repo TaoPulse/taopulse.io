@@ -49,14 +49,15 @@ export async function GET() {
             };
           }
 
+          // projected_emission is a fraction (e.g. 0.0247 = 2.47%)
+          // emission is raw rao units — do NOT use for percentage math
           const projectedEmission = parseFloat(live.projected_emission) || 0;
-          const currentEmission = parseFloat(live.emission) || 0;
-          const emissionValue = projectedEmission || currentEmission || s.emission;
+          const emissionValue = projectedEmission > 0 ? projectedEmission : s.emission;
 
-          // Detect if emission is trending higher than historical
+          // change: compare projected vs static baseline (s.emission is already a fraction)
           let change: string | undefined;
-          if (projectedEmission > 0 && currentEmission > 0) {
-            const diff = ((projectedEmission - currentEmission) / currentEmission) * 100;
+          if (projectedEmission > 0 && s.emission > 0) {
+            const diff = ((projectedEmission - s.emission) / s.emission) * 100;
             if (diff > 5) change = `+${diff.toFixed(1)}%`;
             else if (diff < -5) change = `${diff.toFixed(1)}%`;
           }

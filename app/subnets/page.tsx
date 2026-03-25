@@ -1,6 +1,7 @@
 import SubnetTable from "@/components/SubnetTable";
 import HeroPrice from "@/components/HeroPrice";
 import TrendingSubnets from "@/components/TrendingSubnets";
+import TopMovers, { type Mover } from "@/components/TopMovers";
 import staticSubnets from "@/data/subnets.json";
 
 export const metadata = {
@@ -22,27 +23,34 @@ export const metadata = {
   alternates: { canonical: "https://taopulse.io/subnets" },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function fetchLiveSubnets(): Promise<typeof staticSubnets> {
+interface LiveFetchResult {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  subnets: any[];
+  gainers: Mover[];
+  losers: Mover[];
+}
+
+async function fetchLiveSubnets(): Promise<LiveFetchResult> {
   try {
     const apiKey = process.env.TAOSTATS_API_KEY;
-    if (!apiKey) return staticSubnets;
+    if (!apiKey) return { subnets: staticSubnets, gainers: [], losers: [] };
 
     const res = await fetch("https://api.taostats.io/api/subnet/latest/v1?limit=200", {
       headers: { Authorization: apiKey },
       next: { revalidate: 300 },
     });
-    if (!res.ok) return staticSubnets;
+    if (!res.ok) return { subnets: staticSubnets, gainers: [], losers: [] };
 
     const json = await res.json();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const liveMap = new Map<number, any>();
     for (const s of json.data ?? []) {
+      if (s.netuid === 0) continue;
       liveMap.set(s.netuid, s);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (staticSubnets as any[]).map((s) => {
+    const subnets = (staticSubnets as any[]).map((s) => {
       const live = liveMap.get(s.id);
       if (!live) return s;
       const emissionPct = parseFloat(live.projected_emission) || s.emission;
@@ -54,15 +62,37 @@ async function fetchLiveSubnets(): Promise<typeof staticSubnets> {
       };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
+
+    // Compute movers: projected_emission vs emission
+    const movers: Mover[] = [];
+    for (const s of staticSubnets) {
+      const live = liveMap.get(s.id);
+      if (!live) continue;
+      const projected = parseFloat(live.projected_emission);
+      const current = parseFloat(live.emission);
+      if (!projected || !current || current === 0) continue;
+      const diff = projected - current;
+      const diffPct = (diff / current) * 100;
+      // Only include subnets with meaningful momentum (>1%)
+      if (Math.abs(diffPct) < 1) continue;
+      movers.push({ id: s.id, name: s.name, emission: projected, diff, diffPct });
+    }
+
+    movers.sort((a, b) => b.diffPct - a.diffPct);
+    const gainers = movers.filter((m) => m.diffPct > 0).slice(0, 3);
+    const losers = movers.filter((m) => m.diffPct < 0).slice(-3).reverse();
+
+    return { subnets, gainers, losers };
   } catch {
-    return staticSubnets;
+    return { subnets: staticSubnets, gainers: [], losers: [] };
   }
 }
 
 export default async function SubnetsPage() {
   const apiKey = process.env.TAOSTATS_API_KEY;
   const isLive = !!apiKey;
-  const subnets = await fetchLiveSubnets();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { subnets, gainers, losers }: LiveFetchResult = await fetchLiveSubnets();
 
   const activeCount = subnets.filter((s) => s.status === "active").length;
   const topEmission = subnets.reduce((max, s) => (s.emission > max.emission ? s : max), subnets[0]);
@@ -94,7 +124,7 @@ export default async function SubnetsPage() {
               <p className="text-gray-400 max-w-2xl leading-relaxed text-base">
                 Bittensor organizes decentralized AI production into specialized subnets — each
                 a market for a specific AI capability. Validators score miners, and{" "}
-                <span className="text-purple-400 font-medium">3,600 TAO</span> flows daily
+                <span className="text-purple-400 font-medium">7,200 TAO</span> flows daily
                 to the best performers. Click any subnet to explore details and mining guides.
               </p>
             </div>
@@ -126,7 +156,7 @@ export default async function SubnetsPage() {
               },
               {
                 label: "Total Daily TAO",
-                value: "3,600",
+                value: "7,200",
                 sub: `${categoryCount} categories`,
                 color: "text-blue-400",
               },
@@ -148,6 +178,9 @@ export default async function SubnetsPage() {
           </p>
         </div>
       </div>
+
+      {/* Top Movers */}
+      <TopMovers gainers={gainers} losers={losers} />
 
       {/* Top by Emission highlight */}
       <div className="mb-10">

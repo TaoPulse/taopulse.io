@@ -53,7 +53,8 @@ export async function GET(
 
     let liveSubnet = null;
     if (subnetData) {
-      const emission = parseFloat(subnetData.projected_emission) || parseFloat(subnetData.emission) || null;
+      // projected_emission is a fraction (e.g. 0.0247 = 2.47%); emission is raw rao — use projected only
+      const emission = parseFloat(subnetData.projected_emission) || null;
       const regCostRao = subnetData.burn ?? subnetData.registration_cost ?? null;
       liveSubnet = {
         emission,
