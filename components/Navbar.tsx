@@ -131,12 +131,12 @@ export default function Navbar() {
             <span className="text-lg font-bold tracking-tight">
               <span className="text-white">TAO</span><span className="text-purple-500">Pulse</span>
             </span>
-            <svg viewBox="0 0 80 12" width="72" height="10" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 80 16" width="72" height="10" xmlns="http://www.w3.org/2000/svg">
               <polyline
-                points="0,6 10,6 16,1 22,11 28,6 52,6 58,1 64,11 70,6 80,6"
+                points="0,8 22,8 26,8 28,6 30,14 33,1 36,14 38,8 42,8 80,8"
                 fill="none"
                 stroke="#a855f7"
-                strokeWidth="1.8"
+                strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
