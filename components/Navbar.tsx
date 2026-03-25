@@ -127,11 +127,11 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex flex-col items-center shrink-0 leading-none">
-            <span className="text-lg font-bold tracking-tight">
+          <Link href="/" className="flex flex-col items-center shrink-0 leading-none gap-0.5">
+            <span className="text-xl font-bold tracking-tight">
               <span className="text-white">TAO</span><span className="text-purple-500">Pulse</span>
             </span>
-            <svg viewBox="0 0 80 16" width="72" height="10" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 80 16" width="92" height="13" xmlns="http://www.w3.org/2000/svg">
               <polyline
                 points="0,8 35.2,8 37.6,6 38.4,11.2 40,0 41.6,16 43.2,8 45.6,8 48,11.2 50.4,8 80,8"
                 fill="none"
