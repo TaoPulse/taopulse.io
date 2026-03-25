@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const primaryLinks = [
@@ -128,18 +127,20 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Image
-              src="/logo.svg"
-              alt="TaoPulse logo"
-              width={44}
-              height={44}
-              className="rounded-lg"
-              priority
-            />
-            <span className="text-lg font-bold tracking-tight text-white">
-              TAO<span className="text-purple-500">Pulse</span>
+          <Link href="/" className="flex flex-col items-center shrink-0 leading-none">
+            <span className="text-lg font-bold tracking-tight">
+              <span className="text-white">TAO</span><span className="text-purple-500">Pulse</span>
             </span>
+            <svg viewBox="0 0 80 12" width="72" height="10" xmlns="http://www.w3.org/2000/svg">
+              <polyline
+                points="0,6 10,6 16,1 22,11 28,6 52,6 58,1 64,11 70,6 80,6"
+                fill="none"
+                stroke="#a855f7"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </Link>
 
           {/* Desktop nav */}
