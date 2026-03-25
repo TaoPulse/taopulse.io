@@ -26,10 +26,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://taopulse.io",
     siteName: "TaoPulse",
+    images: [{ url: "/logo-banner-clean.jpg", width: 1280, height: 714, alt: "TaoPulse — Feel the network." }],
   },
   twitter: {
     card: "summary_large_image",
     creator: "@taopulseio",
+    images: ["/logo-banner-clean.jpg"],
   },
   icons: {
     icon: "/favicon.ico",

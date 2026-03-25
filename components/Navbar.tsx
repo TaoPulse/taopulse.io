@@ -127,20 +127,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex flex-col items-center shrink-0 leading-none" style={{gap: '2px'}}>
-            <span className="text-xl font-bold tracking-tight">
-              <span className="text-white">TAO</span><span className="text-purple-500">Pulse</span>
-            </span>
-            <svg viewBox="0 0 80 16" width="96" height="12" xmlns="http://www.w3.org/2000/svg">
-              <polyline
-                points="0,8 30,8 35,6 39,12 45,0 51,16 57,8 61,8 65,11 69,8 80,8"
-                fill="none"
-                stroke="#ffffff"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <Link href="/" className="flex items-center shrink-0">
+            <img src="/logo-banner-clean.jpg" alt="TaoPulse" height={44} style={{height: '44px', width: 'auto'}} />
           </Link>
 
           {/* Desktop nav */}
