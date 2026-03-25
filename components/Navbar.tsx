@@ -25,7 +25,7 @@ const toolLinks = [
   { href: "/portfolio", label: "Portfolio Tracker" },
   { href: "/wallets", label: "Wallets Guide" },
   { href: "/subnets/directory", label: "Subnet Directory" },
-  { href: "/join", label: "Join Waitlist" },
+  { href: "/join", label: "⚡ Alpha Pulse Newsletter" },
   { href: "/should-i-stake-or-mine", label: "Stake or Mine?" },
 ];
 
