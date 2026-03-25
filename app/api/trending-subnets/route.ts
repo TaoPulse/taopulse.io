@@ -20,7 +20,7 @@ export async function GET() {
 
   try {
     if (apiKey) {
-      const res = await fetch("https://api.taostats.io/api/subnet/latest/v1?limit=200", {
+      const res = await fetch("https://api.taostats.io/api/subnet/latest/v1?limit=500", {
         headers: { Authorization: apiKey },
         next: { revalidate: 300 },
         signal: AbortSignal.timeout(8000),
@@ -31,6 +31,7 @@ export async function GET() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const liveMap = new Map<number, any>();
         for (const s of json.data ?? []) {
+          if (s.netuid === 0) continue; // skip root network
           liveMap.set(s.netuid, s);
         }
 

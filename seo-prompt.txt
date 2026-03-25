@@ -1,0 +1,116 @@
+Read PROJECT.md first. Then do a comprehensive SEO improvement pass on taopulse.io.
+
+## What needs fixing
+
+### 1. Fix missing/weak metadata on these pages
+Each page needs: title, description (150-160 chars, keyword-rich), keywords array, openGraph (title, description, url, siteName, type), twitter card, and canonical URL.
+
+Fix the following pages (they have empty or weak metadata):
+
+**app/halving/page.tsx**
+- title: "TAO Halving Countdown 2029 — Bittensor Emission Schedule"
+- description: "Live countdown to the next TAO halving in December 2029. Track blocks remaining, current emissions (3,600 TAO/day), post-halving supply, and Bittensor's full emission schedule."
+- keywords: TAO halving, Bittensor halving, TAO emission schedule, TAO supply, Bittensor 2029
+- canonical: https://taopulse.io/halving
+
+**app/emissions/page.tsx**
+- title: "How TAO Emissions Work — Bittensor Emission Model Explained"
+- description: "Understand how Bittensor distributes 3,600 TAO per day across subnets. Learn the Taoflow model, subnet emission shares, and how stakers earn yield from validator emissions."
+- keywords: TAO emissions, Bittensor emissions, Taoflow, subnet emissions, TAO staking yield
+- canonical: https://taopulse.io/emissions
+
+**app/dtao/page.tsx**
+- title: "What is Dynamic TAO (dTAO)? — Bittensor Alpha Tokens Explained"
+- description: "Dynamic TAO (dTAO) gives every Bittensor subnet its own alpha token. Learn how dTAO works, how it differs from classic staking, and the risks of impermanent loss."
+- keywords: dynamic TAO, dTAO, alpha token, Bittensor dTAO, TAO subnet staking, impermanent loss
+- canonical: https://taopulse.io/dtao
+
+**app/glossary/page.tsx**
+- title: "Bittensor & TAO Glossary — Key Terms Explained"
+- description: "Plain-English definitions for every Bittensor term: TAO, alpha tokens, Yuma Consensus, tempo, dTAO, emissions, validators, miners, Subtensor, and more."
+- keywords: Bittensor glossary, TAO terms, what is TAO, Bittensor definitions, crypto glossary
+- canonical: https://taopulse.io/glossary
+
+**app/validator-calculator/page.tsx**
+- title: "TAO Validator Calculator — Estimate Your Staking Yield"
+- description: "Calculate your TAO staking yield after validator take. Input your stake, validator share, and emission rate to see daily, monthly, and annual TAO rewards and APY."
+- keywords: TAO staking calculator, validator take, Bittensor yield calculator, TAO APY, staking rewards
+- canonical: https://taopulse.io/validator-calculator
+
+**app/portfolio/page.tsx**
+- title: "TAO Portfolio Tracker — Track Your Bittensor Holdings"
+- description: "Track the current value of your TAO holdings with live price data. Add multiple positions, see total value in USD, and estimate annual yield."
+- keywords: TAO portfolio tracker, Bittensor portfolio, TAO price, track TAO holdings
+- canonical: https://taopulse.io/portfolio
+
+**app/news/page.tsx** (if it has a layout.tsx or page.tsx with metadata, fix it)
+- title: "Bittensor & TAO News — Latest Updates"
+- description: "Stay up to date with the latest Bittensor and TAO news. Live feeds from Reddit r/bittensor_, crypto news sources, and the official Bittensor blog."
+- keywords: Bittensor news, TAO news, Bittensor updates, TAO Reddit, decentralized AI news
+- canonical: https://taopulse.io/news
+
+**app/join/page.tsx**
+- title: "Join TaoPulse — Get Early Access to TAO Analytics"
+- description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join."
+- keywords: TaoPulse waitlist, TAO analytics, Bittensor tools, TAO alerts
+- canonical: https://taopulse.io/join
+
+### 2. Improve the root layout metadata (app/layout.tsx)
+Update the default description to be more compelling and keyword-rich:
+- description: "TaoPulse is the beginner-friendly guide to Bittensor and TAO. Live subnet emissions, validator calculator, staking guides, halving countdown, and TAO market data."
+- Add more keywords: ["Bittensor", "TAO", "TAO staking", "decentralized AI", "Bittensor subnets", "TAO price", "TAO halving", "dTAO", "Bittensor validator", "buy TAO"]
+- Add robots metadata: { index: true, follow: true }
+- Add verification placeholder for Google Search Console (leave empty string, user will fill in): verification: { google: "" }
+
+### 3. Add JSON-LD structured data to key pages
+Add a WebSite schema to app/layout.tsx:
+```tsx
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "TaoPulse",
+      "url": "https://taopulse.io",
+      "description": "Bittensor and TAO analytics, education, and tools",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://taopulse.io/glossary?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    })
+  }}
+/>
+```
+
+Add a FAQPage schema to app/what-is-tao/page.tsx (add at the bottom of the returned JSX):
+FAQ items:
+- Q: "What is Bittensor?" A: "Bittensor is a decentralized AI network where participants earn TAO tokens for contributing AI compute, storage, and intelligence through competitive subnets."
+- Q: "What is TAO?" A: "TAO (τ) is the native token of Bittensor. It is used to incentivize miners, validators, and stakers across the network's 128+ subnets."
+- Q: "How do I buy TAO?" A: "You can buy TAO on exchanges like Kraken (US), Binance (international), Gate.io, and MEXC. See our buy TAO guide for step-by-step instructions."
+- Q: "What is TAO staking?" A: "TAO staking means delegating your TAO to a validator on the Bittensor network. You earn a share of the validator's emissions as passive yield, typically 15-20% APY."
+
+### 4. Create an OG image
+Create a simple OG image component at app/opengraph-image.tsx (Next.js ImageResponse):
+- Background: dark (#080d14)
+- Large bold text: "TaoPulse" in white
+- Subtitle: "Bittensor & TAO Analytics" in purple (#a855f7)
+- Size: 1200×630
+- Simple, clean — no complex graphics needed
+
+### 5. Add canonical to sitemap improvements
+Check app/sitemap.ts — ensure all new pages (/emissions, /dtao, /glossary, /validator-calculator, /join) are in the sitemap with appropriate priority:
+- / → priority 1.0, daily
+- /what-is-tao, /buy-tao, /staking, /subnets → priority 0.9, weekly
+- /halving, /emissions, /dtao, /wallets, /news → priority 0.8, weekly
+- /glossary, /validator-calculator, /portfolio, /join → priority 0.7, weekly
+- /subnets/directory → priority 0.6, monthly
+
+## Requirements
+- Run npm run build and fix all errors before committing
+- Commit: "feat: SEO improvements — metadata, JSON-LD, OG image, sitemap priorities"
+- Push to main
+
+When completely finished, run:
+openclaw system event --text "Done: SEO improvements — metadata fixed on all pages, JSON-LD, OG image, sitemap" --mode now

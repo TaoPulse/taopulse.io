@@ -8,9 +8,9 @@ export async function GET() {
   const apiKey = process.env.TAOSTATS_API_KEY;
 
   const results = await Promise.allSettled([
-    // Subnet count from taostats
+    // Subnet count from taostats (fetch all, we'll exclude netuid 0)
     apiKey
-      ? fetch(`${TAOSTATS_BASE}/api/subnet/latest/v1?limit=1`, {
+      ? fetch(`${TAOSTATS_BASE}/api/subnet/latest/v1?limit=500`, {
           headers: { Authorization: apiKey },
           next: { revalidate: 300 },
         }).then((r) => r.ok ? r.json() : null)
@@ -35,8 +35,10 @@ export async function GET() {
   const validatorData = results[1].status === "fulfilled" ? results[1].value : null;
   const geckoData = results[2].status === "fulfilled" ? results[2].value : null;
 
-  // Active subnets count
-  const activeSubnets = subnetData?.pagination?.total_items ?? null;
+  // Active subnets count — exclude netuid 0 (root network), not a real subnet
+  const activeSubnets = subnetData?.data
+    ? subnetData.data.filter((s: { netuid: number }) => s.netuid !== 0).length
+    : null;
 
   // Total staked TAO (sum all validators)
   let stakedTao: number | null = null;

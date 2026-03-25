@@ -22,7 +22,7 @@ export async function GET() {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const res = await fetch(`${TAOSTATS_BASE}/api/subnet/latest/v1?limit=200`, {
+  const res = await fetch(`${TAOSTATS_BASE}/api/subnet/latest/v1?limit=500`, {
     headers: { Authorization: apiKey },
     next: { revalidate: 300 },
   });
@@ -35,6 +35,7 @@ export async function GET() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const liveMap = new Map<number, any>();
   for (const s of json.data ?? []) {
+    if (s.netuid === 0) continue; // skip root network
     liveMap.set(s.netuid, s);
   }
 
