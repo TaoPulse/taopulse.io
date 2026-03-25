@@ -130,7 +130,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <Image
-              src="/logo-clean.png"
+              src="/logo.svg"
               alt="TaoPulse logo"
               width={32}
               height={32}
