@@ -103,8 +103,7 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 
 | # | Task | Priority | Notes |
 |---|------|----------|-------|
-| TP-004 | Validator comparison with live stake/uptime | Medium | |
-| TP-008 | Nav overflow on medium screens (10 items) | Medium | Consider grouping under dropdowns |
+
 | TP-015 | Macrocosmos SN13 API — live social feed on news page | Low | API key saved in TOOLS.md ✅ |
 
 ## Completed Tasks
@@ -124,6 +123,8 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 | TP-002 | Subnet page — live emission data | ✅ | TaoStats API live |
 | TP-015 | Macrocosmos SN13 API | ⏳ Ready to build | API key in TOOLS.md, implement live social feed on /news |
 | TP-016 | TAO Alpha newsletter branding + /admin/weekly generator | ✅ | Beehiiv embedded, draft generator at /admin/weekly, logo in email |
+| TP-004 | Validator comparison page with live stake/uptime | ✅ | /validators live, sortable table, linked from /staking |
+| TP-008 | Nav overflow on medium screens | ✅ | Switched to lg breakpoint — md screens now use hamburger menu |
 
 ---
 
