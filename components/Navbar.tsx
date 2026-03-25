@@ -26,6 +26,7 @@ const toolLinks = [
   { href: "/wallets", label: "Wallets Guide" },
   { href: "/subnets/directory", label: "Subnet Directory" },
   { href: "/join", label: "Join Waitlist" },
+  { href: "/should-i-stake-or-mine", label: "Stake or Mine?" },
 ];
 
 const allNavLinks = [...primaryLinks, ...learnLinks, ...toolLinks];

@@ -139,7 +139,7 @@
     "emission": 0.005,
     "activeMiners": 145,
     "activeValidators": 20,
-    "website": null,
+    "website": "https://computehorde.io",
     "status": "low-activity",
     "howToMine": "Install the Horde-compatible miner and point it to an LLM backend (KoboldCPP, Aphrodite, etc.). Throughput in tokens-per-second and model diversity score determine your emissions. Consumer GPUs with 16GB VRAM can participate."
   },
@@ -151,7 +151,7 @@
     "emission": 0.007,
     "activeMiners": 188,
     "activeValidators": 26,
-    "website": null,
+    "website": "https://macrocosmos.ai",
     "status": "active",
     "howToMine": "Contribute curated datasets to the Dataverse registry. Validators assess quality metrics including deduplication ratio, annotation accuracy, and coverage breadth. Unique, high-signal data earns the most emissions."
   },
@@ -187,7 +187,7 @@
     "emission": 0.004,
     "activeMiners": 65,
     "activeValidators": 12,
-    "website": null,
+    "website": "https://bitads.ai",
     "status": "low-activity",
     "howToMine": "Deploy a BitAds attribution node and connect it to publisher endpoints. Traffic quality is measured by fraud detection scoring. Verified high-quality traffic flows earn proportional TAO emissions."
   },
@@ -223,19 +223,19 @@
     "emission": 0.007,
     "activeMiners": 142,
     "activeValidators": 22,
-    "website": null,
+    "website": "https://nineteen.ai",
     "status": "active",
     "howToMine": "Deploy state-of-the-art vision models (ViT, DINO, SAM) on a GPU node. Register on SN19 and respond to validator classification and detection challenges. Model accuracy and inference speed jointly determine your reward."
   },
   {
     "id": 20,
-    "name": "BitAgent - Rizzo",
+    "name": "BitAgent",
     "category": "Agents",
     "description": "BitAgent coordinates autonomous AI agents across the Bittensor network. Miners deploy task-solving agents that validators evaluate on multi-step reasoning, tool use, and goal completion.",
     "emission": 0.009,
     "activeMiners": 168,
     "activeValidators": 28,
-    "website": null,
+    "website": "https://bitagent.ai",
     "status": "active",
     "howToMine": "Build an autonomous agent using frameworks like AutoGPT or LangChain and register on SN20. Your agent is tasked with complex goal-directed problems. Performance on benchmark tasks determines your emission share."
   },
@@ -259,7 +259,7 @@
     "emission": 0.005,
     "activeMiners": 98,
     "activeValidators": 16,
-    "website": null,
+    "website": "https://desearch.ai",
     "status": "low-activity",
     "howToMine": "Run a web crawler with AI-powered relevance ranking and connect it to the Meta Search subnet. Validator queries test result freshness and relevance. A scalable crawling infrastructure and strong NLP pipeline are key to high scores."
   },
@@ -289,13 +289,13 @@
   },
   {
     "id": 25,
-    "name": "Folding",
+    "name": "Folding@Bittensor",
     "category": "Training",
     "description": "Hivemind enables collaborative distributed training with gradient sharing across a swarm of nodes. Miners contribute compute to jointly train foundation models using the Hivemind optimizer protocol.",
     "emission": 0.01,
     "activeMiners": 278,
     "activeValidators": 30,
-    "website": null,
+    "website": "https://folding.ai",
     "status": "active",
     "howToMine": "Join the Hivemind swarm by running a peer node with at least one GPU. Your node participates in synchronous gradient averaging rounds. Higher GPU throughput and stable connectivity earn proportionally larger emission shares."
   },
@@ -307,7 +307,7 @@
     "emission": 0.005,
     "activeMiners": 138,
     "activeValidators": 18,
-    "website": null,
+    "website": "https://storb.io",
     "status": "low-activity",
     "howToMine": "Deploy high-quality image generation models including SDXL or Flux. Validators score outputs on aesthetic quality, prompt adherence, and resolution. Fine-tuned models with distinctive artistic styles can outperform generic base models."
   },
@@ -325,7 +325,7 @@
   },
   {
     "id": 28,
-    "name": "Unknown",
+    "name": "Foundry S&P Oracle",
     "category": "Finance/Quant",
     "description": "Foundry provides decentralized price oracles for traditional financial assets including the S&P500, commodities, and FX pairs. Miners submit price feeds validated against consensus.",
     "emission": 0.005,
@@ -355,13 +355,13 @@
     "emission": 0.007,
     "activeMiners": 145,
     "activeValidators": 22,
-    "website": null,
+    "website": "https://bettensor.com",
     "status": "active",
     "howToMine": "Build specialized agent modules compatible with the Swarms orchestration protocol. Register on SN30 and participate in multi-agent task pipelines. Your module's contribution quality and reliability in collaborative tasks determines your emission."
   },
   {
     "id": 31,
-    "name": "NullUntilBoot",
+    "name": "NAS Chain",
     "category": "Other",
     "description": "NAS Chain performs neural architecture search on the Bittensor network, discovering efficient model architectures through decentralized evolutionary algorithms.",
     "emission": 0.003,
@@ -403,7 +403,7 @@
     "emission": 0.004,
     "activeMiners": 72,
     "activeValidators": 14,
-    "website": null,
+    "website": "https://bitmind.ai",
     "status": "low-activity",
     "howToMine": "Train deepfake detection models using the BitMind benchmark dataset. Register on SN34 and submit your detector. Validators test it against a continuously updated adversarial test set. Higher detection accuracy on novel attacks earns more emissions."
   },
@@ -481,25 +481,25 @@
   },
   {
     "id": 41,
-    "name": "SPORTSTENSOR",
+    "name": "SportsTensor",
     "category": "Finance/Quant",
     "description": "Sport Prediction builds decentralized sports outcome forecasting models. Miners submit probability distributions for game outcomes evaluated against actual results over rolling time windows.",
     "emission": 0.005,
     "activeMiners": 118,
     "activeValidators": 16,
-    "website": null,
+    "website": "https://sportstensor.com",
     "status": "low-activity",
     "howToMine": "Develop statistical or ML-based sports prediction models and register on SN41. Submit probability forecasts for upcoming fixtures. Your Brier score on resolved predictions determines your emission share. Access to historical sports data is essential."
   },
   {
     "id": 42,
-    "name": "Real-Time Data by Masa",
+    "name": "Masa Finance",
     "category": "Finance/Quant",
     "description": "Score Predict specializes in exact-score prediction for sports and events. Miners compete to generate precise outcome distributions rather than binary win/loss predictions.",
     "emission": 0.004,
     "activeMiners": 88,
     "activeValidators": 14,
-    "website": null,
+    "website": "https://masa.ai",
     "status": "low-activity",
     "howToMine": "Build probabilistic score prediction models and register on SN42. Submit detailed outcome distributions and earn rewards proportional to log-likelihood on resolved events. Granular match data and Poisson-based models are commonly used."
   },
@@ -517,13 +517,13 @@
   },
   {
     "id": 44,
-    "name": "Score",
+    "name": "Dojo",
     "category": "Training",
     "description": "Dojo collects human preference data for RLHF training at scale. Miners coordinate human raters to produce comparison data that trains reward models for future LLM alignment.",
     "emission": 0.008,
     "activeMiners": 245,
     "activeValidators": 28,
-    "website": null,
+    "website": "https://dojo.network",
     "status": "active",
     "howToMine": "Operate a preference data collection pipeline through the Dojo interface. Recruit quality annotators and implement quality control to ensure consistent preference labels. Data quality and volume both factor into your emission allocation."
   },
@@ -559,7 +559,7 @@
     "emission": 0.005,
     "activeMiners": 125,
     "activeValidators": 18,
-    "website": null,
+    "website": "https://condenses.ai",
     "status": "low-activity",
     "howToMine": "Deploy a document summarization system using LLMs or extractive methods. Register on SN47 and process validator document batches. Summary quality is scored on ROUGE metrics and human factuality evaluations."
   },
@@ -703,7 +703,7 @@
     "emission": 0.002,
     "activeMiners": 32,
     "activeValidators": 7,
-    "website": null,
+    "website": "https://masa.ai",
     "status": "low-activity",
     "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
   },
@@ -1105,7 +1105,7 @@
   },
   {
     "id": 93,
-    "name": "Unknown",
+    "name": "Hivetrain",
     "category": "Agents",
     "description": "SN93 is a high-emission agents subnet at ~1.85% of total TAO daily emissions, incentivizing the development and deployment of autonomous AI agents for real-world task completion.",
     "emission": 0.0185,
@@ -1153,7 +1153,7 @@
   },
   {
     "id": 97,
-    "name": "LOADING",
+    "name": "Constantinople",
     "category": "Other",
     "description": "An early-stage Bittensor subnet. Details are pending community documentation.",
     "emission": 0.001,
