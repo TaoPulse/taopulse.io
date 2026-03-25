@@ -135,7 +135,7 @@ export default function Navbar() {
               <polyline
                 points="0,8 35.2,8 37.6,6 38.4,11.2 40,0 41.6,16 43.2,8 45.6,8 48,11.2 50.4,8 80,8"
                 fill="none"
-                stroke="#a855f7"
+                stroke="#ffffff"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
