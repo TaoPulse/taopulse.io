@@ -58,28 +58,45 @@ async function fetchGoogleNews(query: string): Promise<NewsItem[]> {
 
 async function fetchReddit(subreddit: string): Promise<NewsItem[]> {
   try {
+    // Use RSS feed — more reliable from server-side than JSON API (which Vercel IPs get blocked)
     const res = await fetch(
-      `https://www.reddit.com/r/${subreddit}/new.json?limit=20`,
+      `https://www.reddit.com/r/${subreddit}/new.rss?limit=25`,
       {
         headers: {
-          "User-Agent": "Bittensor:TaoPulse:v1.0 (by /u/taopulse)",
+          "User-Agent": "Mozilla/5.0 (compatible; TaoPulse/1.0; +https://taopulse.io)",
+          "Accept": "application/rss+xml, application/xml, text/xml",
         },
         signal: AbortSignal.timeout(8000),
       }
     );
     if (!res.ok) return [];
-    const json = await res.json();
-    if (!json?.data?.children) return [];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return json.data.children.map((child: any) => ({
-      title: child.data.title,
-      url: `https://reddit.com${child.data.permalink}`,
-      source: "Reddit" as const,
-      date: new Date(child.data.created_utc * 1000).toISOString(),
-      summary: child.data.selftext?.slice(0, 150) || undefined,
-      score: child.data.score ?? 0,
-      comments: child.data.num_comments ?? 0,
-    }));
+    const xml = await res.text();
+    const items: NewsItem[] = [];
+    const entryRe = /<entry>([\s\S]*?)<\/entry>/gi;
+    let m;
+    while ((m = entryRe.exec(xml)) !== null) {
+      const block = m[1];
+      const title = extractRssField(block, "title").replace(/^r\/[^ ]+ • posted by u\/[^ ]+:?\s*/i, "").trim();
+      // Get link: prefer <link rel="alternate" href="...">
+      const linkMatch = block.match(/<link[^>]+rel=["']alternate["'][^>]+href=["']([^"']+)["']/i)
+        || block.match(/<link[^>]+href=["']([^"']+)["']/i);
+      const url = linkMatch ? linkMatch[1] : "";
+      const published = extractRssField(block, "published") || extractRssField(block, "updated");
+      const content = extractRssField(block, "content");
+      // Extract score/comments from content HTML if present
+      const scoreMatch = content.match(/(\d+)\s+point/i);
+      const commentsMatch = content.match(/(\d+)\s+comment/i);
+      if (!title || title.length < 3 || !url || url.includes("/r/bittensor_/.rss")) continue;
+      items.push({
+        title,
+        url,
+        source: "Reddit" as const,
+        date: published ? new Date(published).toISOString() : new Date().toISOString(),
+        score: scoreMatch ? parseInt(scoreMatch[1]) : 0,
+        comments: commentsMatch ? parseInt(commentsMatch[1]) : 0,
+      });
+    }
+    return items;
   } catch {
     return [];
   }
