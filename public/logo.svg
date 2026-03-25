@@ -1,25 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <!-- Dark background with rounded corners -->
-  <rect width="100" height="100" rx="16" fill="#080d14"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   viewBox="0 0 1024 1024"
+   version="1.1"
+   xml:space="preserve">
+  
+  <defs>
+    <clipPath id="clip_rounded_square">
+      <rect x="0" y="0" width="1024" height="1024" rx="128" ry="128" />
+    </clipPath>
+  </defs>
 
-  <!-- τ (tau) character in purple using text -->
+  <rect x="0" y="0" width="1024" height="1024" rx="128" ry="128" fill="#000000" />
+
   <text
-    x="50"
-    y="76"
-    text-anchor="middle"
-    font-family="Georgia, 'Times New Roman', serif"
-    font-size="72"
-    font-weight="bold"
-    fill="#a855f7"
-  >τ</text>
+     x="512"
+     y="720"
+     style="font-family:'Times New Roman', Times, serif; font-weight:normal; font-style:italic; font-size:900px; fill:#a855f7; text-anchor:middle;"
+     >τ</text>
 
-  <!-- Pulse / EKG line in white, running through middle of τ -->
-  <polyline
-    points="5,52 20,52 26,38 32,66 38,52 62,52 68,38 74,66 80,52 95,52"
-    fill="none"
-    stroke="white"
-    stroke-width="3"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+  <path
+     d="M 50,512 
+        L 200,512 
+        C 220,512 230,480 250,480 
+        C 270,480 280,512 300,512 
+        L 320,512 
+        L 360,300 
+        L 420,720 
+        L 460,512 
+        L 520,512 
+        C 540,512 550,480 570,480 
+        C 590,480 600,512 620,512 
+        L 660,512 
+        L 700,300 
+        L 760,720 
+        L 800,512 
+        C 820,512 830,480 850,480 
+        C 870,480 880,512 900,512 
+        L 974,512"
+     style="fill:none;stroke:#ffffff;stroke-width:8px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     />
+
 </svg>
