@@ -133,7 +133,7 @@ export default function Navbar() {
             </span>
             <svg viewBox="0 0 80 16" width="96" height="12" xmlns="http://www.w3.org/2000/svg">
               <polyline
-                points="0,8 25,8 30,6 34,12 40,0 46,16 52,8 56,8 60,11 64,8 80,8"
+                points="0,8 30,8 35,6 39,12 45,0 51,16 57,8 61,8 65,11 69,8 80,8"
                 fill="none"
                 stroke="#ffffff"
                 strokeWidth="3"
