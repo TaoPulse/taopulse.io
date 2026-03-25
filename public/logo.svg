@@ -38,7 +38,7 @@
         C 820,512 830,480 850,480 
         C 870,480 880,512 900,512 
         L 974,512"
-     style="fill:none;stroke:#ffffff;stroke-width:8px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     style="fill:none;stroke:#ffffff;stroke-width:32px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
      />
 
 </svg>
