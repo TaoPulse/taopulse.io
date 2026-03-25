@@ -2,20 +2,20 @@ import { Metadata } from "next";
 import EmailSignupForm from "@/components/EmailSignupForm";
 
 export const metadata: Metadata = {
-  title: "Join TaoPulse — Get Early Access to TAO Analytics",
-  description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join.",
-  keywords: ["TaoPulse waitlist", "TAO analytics", "Bittensor tools", "TAO alerts"],
+  title: "Subscribe to Alpha Pulse — Weekly TAO Newsletter | TaoPulse",
+  description: "Get weekly TAO intel — price, top subnet emissions, validator rankings, and one subnet deep dive. Free, every Monday.",
+  keywords: ["TAO newsletter", "Alpha Pulse", "Bittensor newsletter", "TAO analytics", "TAO weekly"],
   openGraph: {
-    title: "Join TaoPulse — Get Early Access to TAO Analytics",
-    description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join.",
+    title: "Subscribe to Alpha Pulse — Weekly TAO Newsletter",
+    description: "Get weekly TAO intel — price, top subnet emissions, validator rankings, and one subnet deep dive. Free, every Monday.",
     url: "https://taopulse.io/join",
     siteName: "TaoPulse",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Join TaoPulse — Get Early Access to TAO Analytics",
-    description: "Sign up for TaoPulse to get early access to live staking data, validator rankings, subnet alerts, and TAO market insights. Free to join.",
+    title: "Subscribe to Alpha Pulse — Weekly TAO Newsletter",
+    description: "Get weekly TAO intel — price, top subnet emissions, validator rankings, and one subnet deep dive. Free, every Monday.",
   },
   alternates: { canonical: "https://taopulse.io/join" },
 };
@@ -23,23 +23,23 @@ export const metadata: Metadata = {
 const PERKS = [
   {
     icon: "📊",
-    title: "Live Staking Data",
-    body: "Be first to access real-time validator rankings, APY tracking, and staking performance metrics when they launch.",
+    title: "Weekly Emission Report",
+    body: "Top 5 subnets by emission, biggest movers, and where TAO is flowing — every Monday morning.",
   },
   {
-    icon: "🔔",
-    title: "Subnet Alerts",
-    body: "Get notified when top subnets shift — emission spikes, new entrants, and key changes in the TAO network.",
+    icon: "🔍",
+    title: "Subnet Spotlight",
+    body: "One underrated or fast-moving subnet deep dive per issue — emission trend, team activity, and a stake thesis.",
   },
   {
     icon: "📈",
-    title: "TAO Market Insights",
-    body: "Curated analysis of TAO price movements, on-chain activity, and what it means for stakers and holders.",
+    title: "TAO Market Snapshot",
+    body: "Price, market cap, 24h change, and one-liner macro context. Signal without the noise.",
   },
   {
-    icon: "🚀",
-    title: "Early Feature Access",
-    body: "Waitlist members get first access to new TaoPulse tools — portfolio tracker upgrades, validator comparisons, and more.",
+    icon: "💰",
+    title: "Staking Snapshot",
+    body: "Best validator APR right now, classic vs dTAO comparison, and one actionable recommendation.",
   },
 ];
 
@@ -55,9 +55,9 @@ export default function JoinPage() {
             Free — No spam, ever
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 leading-tight">
-            The TAO newsletter<br />
+            ⚡ Alpha Pulse<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
-              worth reading
+              Weekly TAO Intel
             </span>
           </h1>
           <p className="text-lg text-gray-400 max-w-xl mx-auto">
@@ -82,9 +82,8 @@ export default function JoinPage() {
         {/* Form */}
         <EmailSignupForm
           source="join-page"
-          heading="Get early access"
-          subheading="Drop your name and email — we'll reach out when new features go live."
-          ctaText="Join the Waitlist"
+          heading="Subscribe — it's free"
+          subheading="Every Monday morning. TAO price, top subnet emissions, one subnet deep dive, and what to watch this week."
         />
 
         <p className="text-center text-xs text-gray-600 mt-6">
