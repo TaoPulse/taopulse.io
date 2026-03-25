@@ -1,0 +1,138 @@
+# TaoPulse.io — Feature Roadmap
+_Researched: 2026-03-25 by Veera_
+
+## Competitive Landscape
+
+| Site | Focus | Weakness |
+|------|-------|----------|
+| taostats.io | Power-user block explorer, raw chain data | Not beginner-friendly, dense UI |
+| taomarketcap.com | Validators + miners + price | No education, no onboarding |
+| bittensor.com | Official docs | No analytics, static |
+| TaoPulse | Beginner-friendly analytics + education | ✅ Our moat |
+
+**Our edge:** None of the competitors hold a beginner's hand. TaoPulse is the only site that combines "what is this?" + "how do I buy it?" + live analytics. Double down on that.
+
+---
+
+## Proposed Features (prioritized)
+
+### 🔴 HIGH PRIORITY — Quick wins, high user value
+
+#### TP-017 — TAO Price Chart ✅ Already exists
+- Lives on `/what-is-tao` via `TaoPriceChart`, `EmissionsChart`, and `SupplyChart` components
+
+#### TP-018 — Wallet Address Lookup / Portfolio Tracker (public)
+- **What:** Enter any TAO wallet address → see balance, staked amount, which validators, recent transactions
+- **Why:** Huge for power users. "Check my wallet" is one of the most common crypto user actions.
+- **How:** TaoStats API has `/api/account/` endpoints. No auth needed for read.
+- **Effort:** Medium
+- **Route:** `/wallet/[address]` or enhance existing `/portfolio`
+
+#### TP-019 — Subnet Detail Pages (enhanced)
+- **What:** Each subnet gets a rich page: description, live emission %, active miners/validators, APY estimate, how to stake on it
+- **Why:** Currently subnets are just a list. Deep pages = SEO gold + real utility for people researching where to stake.
+- **How:** Extend existing `/subnets/[id]` pages with live TaoStats data
+- **Effort:** Medium
+- **Route:** `/subnets/[id]` (already exists as stubs, needs live data + content)
+
+#### TP-020 — TAO vs BTC / ETH / SOL Comparison Chart
+- **What:** Simple side-by-side % performance chart (30d, 90d, 1y)
+- **Why:** TAO investors always want to know "how is TAO doing vs BTC?" — this is a top Google search for any alt coin
+- **How:** CoinGecko free API for all assets
+- **Effort:** Low-Medium
+- **Route:** Section on home or `/price`
+
+---
+
+### 🟡 MEDIUM PRIORITY — Differentiators that build traffic
+
+#### TP-021 — "Should I Stake or Mine?" Decision Tool
+- **What:** Interactive questionnaire → recommends whether user should be a staker, validator, or miner based on their TAO amount, technical skill, time commitment
+- **Why:** Beginners are overwhelmed by this question. A guided flow would be a unique, shareable tool.
+- **How:** Pure frontend logic, no API needed
+- **Effort:** Low (pure UI/logic)
+- **Route:** `/should-i-stake-or-mine` (already exists? check)
+
+#### TP-022 — Staking APY Calculator (per validator)
+- **What:** Pick a validator → enter TAO amount → see projected weekly/monthly/yearly yield
+- **Why:** The generic staking calc exists but isn't validator-specific. People want to know "if I stake with Validator X, what do I earn?"
+- **How:** TaoStats validator API + simple math
+- **Effort:** Medium
+- **Route:** Enhance `/staking` or add to `/validators`
+
+#### TP-023 — TAO Tokenomics Deep Dive Page
+- **What:** Visual breakdown of TAO supply, emission schedule, halving history, circulating vs staked vs locked
+- **Why:** Every serious investor wants this. Currently it's scattered across the "What is TAO?" page.
+- **How:** Mix of static (emission schedule, halvings) + live TaoStats (circulating supply, staked %)
+- **Effort:** Medium (mostly content + visualization)
+- **Route:** `/tokenomics`
+
+#### TP-024 — "Top Movers" Widget (subnets gaining/losing emission)
+- **What:** Small widget showing which subnets gained or lost the most emission % in the last 24h
+- **Why:** Traders love momentum signals. "What's hot right now?"
+- **How:** TaoStats API — compare current emission vs previous period
+- **Effort:** Medium
+- **Route:** Home page widget + `/subnets`
+
+#### TP-025 — TAO Halving History + Next Halving Countdown (enhanced)
+- **What:** Existing halving page, but add: historical halving dates + price at each halving + visual timeline
+- **Why:** Halving narratives drive crypto price cycles. Historical context = shareable content.
+- **Effort:** Low (mostly content, existing page to enhance)
+- **Route:** Enhance `/halving`
+
+---
+
+### 🟢 LOWER PRIORITY — Long-term growth features
+
+#### TP-026 — Exchange Price Comparison (live)
+- **What:** Real-time TAO price across exchanges (Binance, Kraken, MEXC, Gate.io, etc.) with spread %
+- **Why:** Arbitrage-aware traders want this. Also helpful for "where should I buy?"
+- **How:** Exchange APIs or CoinGecko's exchange endpoint
+- **Effort:** Medium-High
+- **Route:** `/buy-tao` enhancement or `/exchanges`
+
+#### TP-027 — TAO Tax Estimator
+- **What:** Enter staking rewards earned → estimate taxable income (US-focused)
+- **Why:** Stakers have tax obligations on rewards. This is a real pain point with zero good tools.
+- **How:** Pure frontend math, no API. Disclaimer: "not financial/tax advice"
+- **Effort:** Low-Medium
+- **Route:** `/tax`
+
+#### TP-028 — Subnet Leaderboard (weekly/monthly emission winners)
+- **What:** Which subnets have consistently topped emission over time?
+- **Why:** Helps stakers identify reliable vs volatile subnets for long-term staking decisions
+- **How:** Needs historical emission data — TaoStats may have this
+- **Effort:** Medium-High
+- **Route:** `/subnets/leaderboard`
+
+#### TP-029 — "New to Bittensor" Guided Tour
+- **What:** Interactive step-by-step onboarding: "I have $500, I want to invest in TAO — walk me through it"
+- **Why:** The full journey exists across pages but isn't connected. A guided flow = better conversions to newsletter signups
+- **How:** Multi-step UI component, links to existing pages
+- **Effort:** Medium
+- **Route:** `/start-here` or `/guide`
+
+#### TP-030 — Embed Widgets for Other Sites
+- **What:** Shareable embeddable widgets: price badge, subnet emission chart, staking calculator
+- **Why:** Distribution. If other Bittensor sites embed TaoPulse widgets, traffic and backlinks grow.
+- **How:** iframe-friendly pages at `/embed/price`, `/embed/subnets`, etc.
+- **Effort:** Medium
+
+---
+
+## SEO / Content Quick Wins (no dev needed)
+
+- Blog/articles section with TAO-specific guides (ranks for long-tail searches)
+- "Best TAO wallets 2026" page (already exists, just needs SEO tuning)
+- Structured data (JSON-LD) for all pages
+- More internal linking between pages
+
+---
+
+## Recommended Next Sprint (3 tasks)
+
+1. **TP-019** — Enhance subnet detail pages with live data — SEO compound value
+2. **TP-023** — Tokenomics page — fills a real gap, shareable
+3. **TP-018** — Wallet address lookup — high utility for power users
+
+All three use existing TaoStats API (already integrated), no new dependencies.

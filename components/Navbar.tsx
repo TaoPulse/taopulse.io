@@ -15,6 +15,7 @@ const primaryLinks = [
 
 const learnLinks = [
   { href: "/what-is-tao", label: "What is TAO?" },
+  { href: "/tokenomics", label: "Tokenomics" },
   { href: "/emissions", label: "How Emissions Work" },
   { href: "/dtao", label: "Dynamic TAO (dTAO)" },
   { href: "/halving", label: "TAO Halving" },

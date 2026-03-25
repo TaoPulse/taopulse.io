@@ -22,6 +22,83 @@ const STATUS_STYLES = {
   inactive: "bg-gray-500/10 text-gray-500 border-gray-500/20",
 };
 
+interface LiveSubnetData {
+  emission: number | null;
+  activeMiners: number | null;
+  activeValidators: number | null;
+  registrationCost: number | null;
+}
+
+interface ValidatorEntry {
+  name: string | null;
+  hotkey: string;
+  fee: string;
+  apr: string | null;
+  aprRaw: number;
+  stake: string;
+  stakeRaw: number;
+}
+
+async function fetchLiveData(id: string): Promise<{
+  subnet: LiveSubnetData | null;
+  validators: ValidatorEntry[];
+}> {
+  try {
+    const apiKey = process.env.TAOSTATS_API_KEY;
+    if (!apiKey) return { subnet: null, validators: [] };
+
+    const netuid = parseInt(id, 10);
+    const [subnetRes, validatorsRes] = await Promise.all([
+      fetch(`https://api.taostats.io/api/subnet/latest/v1?netuid=${netuid}`, {
+        headers: { Authorization: apiKey },
+        next: { revalidate: 60 },
+      }),
+      fetch(`https://api.taostats.io/api/validator/latest/v1?netuid=${netuid}&limit=5`, {
+        headers: { Authorization: apiKey },
+        next: { revalidate: 60 },
+      }),
+    ]);
+
+    const subnetJson = subnetRes.ok ? await subnetRes.json() : null;
+    const validatorsJson = validatorsRes.ok ? await validatorsRes.json() : null;
+
+    const subnetData = subnetJson?.data?.[0] ?? null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const validators: ValidatorEntry[] = (validatorsJson?.data ?? []).map((v: any) => {
+      const takePct = parseFloat(v.take) * 100;
+      const aprPct = parseFloat(v.apr) * 100;
+      return {
+        name: v.name || null,
+        hotkey: v.hotkey?.ss58 ?? "",
+        fee: `${takePct.toFixed(1)}%`,
+        apr: aprPct > 0 ? `${aprPct.toFixed(1)}%` : null,
+        aprRaw: aprPct,
+        stake: (parseFloat(v.stake) / 1e9).toLocaleString("en-US", { maximumFractionDigits: 0 }),
+        stakeRaw: parseFloat(v.stake) / 1e9,
+      };
+    });
+
+    let subnet: LiveSubnetData | null = null;
+    if (subnetData) {
+      const emission =
+        parseFloat(subnetData.projected_emission) ||
+        parseFloat(subnetData.emission) ||
+        null;
+      const regCostRao = subnetData.burn ?? subnetData.registration_cost ?? null;
+      subnet = {
+        emission,
+        activeMiners: subnetData.active_miners ?? null,
+        activeValidators: subnetData.active_validators ?? null,
+        registrationCost: regCostRao != null ? parseFloat(regCostRao) / 1e9 : null,
+      };
+    }
+
+    return { subnet, validators };
+  } catch {
+    return { subnet: null, validators: [] };
+  }
+}
+
 export async function generateStaticParams() {
   return subnets.map((subnet) => ({
     id: String(subnet.id),
@@ -54,6 +131,8 @@ export default async function SubnetDetailPage({
     notFound();
   }
 
+  const { subnet: live, validators } = await fetchLiveData(id);
+
   const categoryColor =
     CATEGORY_COLORS[subnet.category] ??
     "bg-gray-500/15 text-gray-400 border-gray-500/30";
@@ -62,11 +141,20 @@ export default async function SubnetDetailPage({
   const statusLabel =
     subnet.status === "active" ? "Active" : subnet.status === "low-activity" ? "Low Activity" : "Inactive";
 
-  const emissionPct = (subnet.emission * 100).toFixed(
-    subnet.emission >= 0.01 ? 2 : subnet.emission > 0 ? 3 : 1
+  // Use live emission if available, fall back to static
+  const emission = live?.emission ?? subnet.emission;
+  const isLiveEmission = live?.emission != null;
+
+  const emissionPct = (emission * 100).toFixed(
+    emission >= 0.01 ? 2 : emission > 0 ? 3 : 1
   );
 
-  const dailyTAO = Math.round(subnet.emission * 3600);
+  const dailyTAO = Math.round(emission * 7200);
+
+  const activeMiners = live?.activeMiners ?? subnet.activeMiners;
+  const activeValidators = live?.activeValidators ?? subnet.activeValidators;
+  const isLiveMiners = live?.activeMiners != null;
+  const isLiveValidators = live?.activeValidators != null;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -132,25 +220,25 @@ export default async function SubnetDetailPage({
           {
             label: "Emission Rate",
             value: `${emissionPct}%`,
-            sub: "of total daily",
-            accent: subnet.emission >= 0.01 ? "text-emerald-400" : "text-gray-400",
+            sub: isLiveEmission ? "of total daily (live)" : "of total daily (est.)",
+            accent: emission >= 0.01 ? "text-emerald-400" : "text-gray-400",
           },
           {
             label: "Daily TAO",
             value: `~${dailyTAO.toLocaleString()}`,
-            sub: "TAO per day",
+            sub: isLiveEmission ? "TAO per day (live)" : "TAO per day (est.)",
             accent: "text-purple-400",
           },
           {
             label: "Active Miners",
-            value: subnet.activeMiners.toLocaleString(),
-            sub: "competing nodes",
+            value: activeMiners.toLocaleString(),
+            sub: isLiveMiners ? "competing (live)" : "competing (est.)",
             accent: "text-blue-400",
           },
           {
             label: "Validators",
-            value: subnet.activeValidators.toLocaleString(),
-            sub: "scoring miners",
+            value: activeValidators.toLocaleString(),
+            sub: isLiveValidators ? "scoring (live)" : "scoring (est.)",
             accent: "text-white",
           },
         ].map((stat) => (
@@ -167,22 +255,100 @@ export default async function SubnetDetailPage({
         ))}
       </div>
 
+      {/* Registration cost (live only) */}
+      {live?.registrationCost != null && live.registrationCost > 0 && (
+        <div className="bg-[#0f1623] rounded-xl border border-white/10 p-5 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Registration Cost</p>
+              <p className="text-xl font-bold text-amber-400">
+                {live.registrationCost.toFixed(4)} TAO
+              </p>
+              <p className="text-xs text-gray-500 mt-1">current burn to register a miner hotkey</p>
+            </div>
+            <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+              <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Emission bar */}
       <div className="bg-[#0f1623] rounded-xl border border-white/10 p-5 mb-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-gray-500 uppercase tracking-wider">Emission Share</span>
-          <span className="text-xs font-medium text-white">{emissionPct}% of network</span>
+          <span className="text-xs font-medium text-white">
+            {emissionPct}% of network{!isLiveEmission && " (est.)"}
+          </span>
         </div>
         <div className="h-2 bg-white/5 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400 transition-all"
-            style={{ width: `${Math.min((subnet.emission / 0.05) * 100, 100)}%` }}
+            style={{ width: `${Math.min((emission / 0.05) * 100, 100)}%` }}
           />
         </div>
         <p className="text-xs text-gray-500 mt-2">
-          Based on ~3,600 TAO emitted daily across all subnets
+          Based on ~7,200 TAO emitted daily across all subnets (dTAO era)
         </p>
       </div>
+
+      {/* Top Validators */}
+      {validators.length > 0 && (
+        <div className="bg-[#0f1623] rounded-xl border border-white/10 p-6 mb-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-lg bg-purple-500/15 text-purple-400 flex items-center justify-center shrink-0">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-semibold text-white">Top Validators on SN{subnet.id}</h2>
+          </div>
+          <div className="space-y-3">
+            {validators.map((v, i) => (
+              <div
+                key={v.hotkey || i}
+                className="flex items-center justify-between gap-4 p-3 rounded-lg bg-white/3 border border-white/8"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate">
+                    {v.name ?? (
+                      <span className="font-mono text-xs text-gray-400">
+                        {v.hotkey.slice(0, 8)}…{v.hotkey.slice(-6)}
+                      </span>
+                    )}
+                  </p>
+                  {v.name && (
+                    <p className="text-xs font-mono text-gray-500 truncate mt-0.5">
+                      {v.hotkey.slice(0, 8)}…{v.hotkey.slice(-6)}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-4 shrink-0 text-right">
+                  <div>
+                    <p className="text-xs text-gray-500">Stake</p>
+                    <p className="text-sm font-medium text-white">{v.stake} τ</p>
+                  </div>
+                  {v.apr && (
+                    <div>
+                      <p className="text-xs text-gray-500">APY</p>
+                      <p className="text-sm font-medium text-emerald-400">{v.apr}</p>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-xs text-gray-500">Fee</p>
+                    <p className="text-sm font-medium text-gray-300">{v.fee}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-3">
+            Top 5 validators by stake on this subnet · live data
+          </p>
+        </div>
+      )}
 
       {/* How to Mine */}
       <div className="bg-[#0f1623] rounded-xl border border-white/10 p-6 sm:p-8 mb-6">
