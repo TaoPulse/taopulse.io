@@ -121,10 +121,13 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 | TP-009 | TaoStats API key in Vercel | ✅ | Live data working on staking, subnet, validator pages |
 | TP-001 | Staking page — live validator data | ✅ | TaoStats API live |
 | TP-002 | Subnet page — live emission data | ✅ | TaoStats API live |
-| TP-015 | Macrocosmos SN13 API | ⏳ Ready to build | API key in TOOLS.md, implement live social feed on /news |
+| TP-015 | Macrocosmos SN13 API | ❌ Blocked | gRPC incompatible with Vercel serverless. Needs Macrocosmos HTTP API or self-hosted server. |
 | TP-016 | TAO Alpha newsletter branding + /admin/weekly generator | ✅ | Beehiiv embedded, draft generator at /admin/weekly, logo in email |
 | TP-004 | Validator comparison page with live stake/uptime | ✅ | /validators live, sortable table, linked from /staking |
 | TP-008 | Nav overflow on medium screens | ✅ | Switched to lg breakpoint — md screens now use hamburger menu |
+| TP-019 | Subnet detail pages with live data | ✅ | Live miners/validators/emission/reg cost from TaoStats, fixed 7200 TAO/day |
+| TP-023 | Tokenomics page | ✅ | /tokenomics live — supply, emission schedule, TAO vs BTC comparison |
+| TP-018 | Wallet address lookup | ✅ | /wallet and /wallet/[address] live, linked from nav + portfolio |
 
 ---
 
