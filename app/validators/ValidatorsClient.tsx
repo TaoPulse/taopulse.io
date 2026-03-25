@@ -35,6 +35,10 @@ function feeNum(fee: string) {
   return parseFloat(fee.replace("%", "")) || 0;
 }
 
+// Root network staking: no validator fee, ~18% APR estimate
+// Shown as a pinned comparison row at the top of the table
+const ROOT_STAKING_APR = 18.0; // estimated, labeled as ~est.
+
 export default function ValidatorsClient({ validators }: { validators: ValidatorRow[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("annualEarningsUsd");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
@@ -193,6 +197,42 @@ export default function ValidatorsClient({ validators }: { validators: Validator
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
+            {/* ── Root Network Staking (pinned comparison row) ── */}
+            {stakeNum > 0 && (
+              <tr className="bg-yellow-500/5 border-l-2 border-yellow-500/50 hover:bg-yellow-500/10 transition-colors">
+                <td className="px-3 py-3">
+                  <span className="text-yellow-500 text-xs font-bold">★</span>
+                </td>
+                <td className="px-3 py-3">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-yellow-300">Root Network Staking</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-yellow-500/15 text-yellow-400 border border-yellow-500/20 font-medium">No validator fee</span>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-0.5">Stake directly to the root network — earns TAO with no intermediary fee</div>
+                </td>
+                <td className="px-3 py-3 text-right text-gray-500 text-xs">—</td>
+                <td className="px-3 py-3 text-right">
+                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-yellow-400/10 text-yellow-400">
+                    ~{ROOT_STAKING_APR.toFixed(1)}% (est.)
+                  </span>
+                </td>
+                <td className="px-3 py-3 text-right">
+                  <span className="text-xs text-yellow-400 font-semibold">0%</span>
+                </td>
+                <td className="px-3 py-3 text-right text-gray-500 hidden sm:table-cell">—</td>
+                <td className="px-3 py-3 text-right text-gray-500 hidden md:table-cell">—</td>
+                <td className="px-3 py-3 text-right hidden lg:table-cell">
+                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-emerald-500/15 text-emerald-400">Active</span>
+                </td>
+                <td className="px-3 py-3 text-right">
+                  <div className="text-sm font-bold text-yellow-300 tabular-nums">
+                    {(stakeNum * (ROOT_STAKING_APR / 100)).toLocaleString("en-US", { maximumFractionDigits: 2 })} τ
+                  </div>
+                  <div className="text-[10px] text-yellow-600 mt-0.5">~est.</div>
+                </td>
+              </tr>
+            )}
+
             {sorted.map((v, i) => {
               const { annualTao } = computeEarnings(v);
               return (
