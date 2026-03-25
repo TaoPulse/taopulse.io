@@ -86,6 +86,19 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 
 ---
 
+## Email / Newsletter
+
+**Platform:** Beehiiv (embedded via iframe)
+- Embed script: `https://subscribe-forms.beehiiv.com/embed.js`
+- Embed form ID: `a290cdad-6846-4bac-99df-55e0cc240ece`
+- Attribution script in `app/layout.tsx`
+- Component: `components/EmailSignupForm.tsx`
+- Newsletter name: **Alpha Pulse** — weekly TAO intel, every Monday
+- Beehiiv dashboard manages welcome email and weekly email templates
+- Logo URL for email templates: `https://taopulse.io/logo.jpg`
+
+---
+
 ## Open Tasks (taopulse-specific)
 
 | TP-015 | Macrocosmos SN13 API — live X/Twitter + Reddit social feed | Low | Sign up at app.macrocosmos.ai for API key first. Use for: live $TAO tweet feed on news page, better Reddit integration, subnet sentiment widget. Docs: https://docs.macrocosmos.ai |
