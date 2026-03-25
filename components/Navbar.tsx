@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const primaryLinks = [
@@ -128,7 +129,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0">
-            <img src="/logo-banner-clean.jpg" alt="TaoPulse" height={72} style={{height: '72px', width: 'auto'}} />
+            <Image
+              src="/logo.jpg"
+              alt="TAOPulse"
+              width={160}
+              height={35}
+              className="h-9 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}
