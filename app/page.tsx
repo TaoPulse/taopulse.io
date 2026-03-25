@@ -300,8 +300,8 @@ export default async function HomePage() {
         <section>
           <EmailSignupForm
             source="homepage"
-            heading="Stay in the Loop"
-            subheading="Get notified when we add live staking data, validator rankings, and TAO portfolio tools."
+            heading="Subscribe to Alpha Pulse"
+            subheading="Our free weekly newsletter — TAO price, top subnet emissions, validator rankings, and one subnet deep dive. Every Monday morning."
           />
         </section>
 
