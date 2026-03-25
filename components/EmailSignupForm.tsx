@@ -28,22 +28,25 @@ export default function EmailSignupForm({
         src="https://subscribe-forms.beehiiv.com/embed.js"
         strategy="lazyOnload"
       />
-      <iframe
-        src="https://subscribe-forms.beehiiv.com/a290cdad-6846-4bac-99df-55e0cc240ece"
-        className="beehiiv-embed"
-        data-test-id="beehiiv-embed"
-        frameBorder={0}
-        scrolling="no"
-        style={{
-          width: "100%",
-          maxWidth: "100%",
-          height: "160px",
-          margin: 0,
-          borderRadius: 0,
-          backgroundColor: "transparent",
-          boxShadow: "none",
-        }}
-      />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <iframe
+          src="https://subscribe-forms.beehiiv.com/a290cdad-6846-4bac-99df-55e0cc240ece"
+          className="beehiiv-embed"
+          data-test-id="beehiiv-embed"
+          frameBorder={0}
+          scrolling="no"
+          style={{
+            width: "100%",
+            maxWidth: "560px",
+            height: "160px",
+            margin: "0 auto",
+            borderRadius: 0,
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            display: "block",
+          }}
+        />
+      </div>
     </div>
   );
 }
