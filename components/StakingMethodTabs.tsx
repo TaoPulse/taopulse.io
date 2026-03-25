@@ -520,6 +520,20 @@ Balance: 10.5 TAO`}</CodeBlock>
               automatically.
             </SuccessBox>
           </StepCard>
+
+          <StepCard number={7} title="How to Unstake">
+            <p>
+              To remove your stake and return TAO to your wallet, run:
+            </p>
+            <CodeBlock>{`btcli stake remove --wallet.name my-wallet --hotkey VALIDATOR_HOTKEY --amount 10`}</CodeBlock>
+            <p>
+              Replace <code className="text-purple-300 bg-white/5 px-1 rounded">VALIDATOR_HOTKEY</code> with the hotkey of the validator you staked to, and <code className="text-purple-300 bg-white/5 px-1 rounded">10</code> with the amount of TAO you want to unstake.
+            </p>
+            <SuccessBox>
+              ✅ Unstaking is immediate — no lock-up period. Your TAO returns to
+              your wallet within a few minutes.
+            </SuccessBox>
+          </StepCard>
         </div>
       )}
     </div>

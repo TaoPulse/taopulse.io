@@ -95,7 +95,6 @@ const TOC_SECTIONS = [
   { id: "risk-table", label: "Risks" },
   { id: "how-to-stake", label: "How to Stake" },
   { id: "validators", label: "Choose a Validator" },
-  { id: "unstaking", label: "Unstaking" },
   { id: "calculator", label: "Calculator" },
   { id: "faq", label: "FAQ" },
 ];
@@ -421,18 +420,6 @@ export default async function StakingPage() {
               )}
             </section>
 
-            {/* How to Unstake */}
-            <section id="unstaking" className="space-y-4">
-              <h2 className="text-xl font-bold text-white">How to Unstake</h2>
-              <div className="rounded-xl border border-white/10 bg-[#0f1623] p-6 space-y-3">
-                <p className="text-sm text-gray-400">Run this command to remove your stake:</p>
-                <CodeBlock>{`btcli stake remove --wallet.name my-wallet --hotkey VALIDATOR_HOTKEY --amount 10`}</CodeBlock>
-                <SuccessBox>
-                  ✅ Unstaking is immediate. Your TAO returns to your wallet within a few minutes.
-                  There is no lock-up period.
-                </SuccessBox>
-              </div>
-            </section>
 
             {/* Common Mistakes */}
             <section className="space-y-4">
