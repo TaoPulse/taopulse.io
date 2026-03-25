@@ -337,105 +337,78 @@ export default function WeeklyAdminPage() {
       </div>
 
       <div className="flex gap-0 h-[calc(100vh-73px)]">
-        {/* Left: data summary panel */}
-        <div className="w-72 shrink-0 bg-gray-900 border-r border-gray-800 overflow-y-auto p-5 space-y-6">
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-3">
-              TAO Price
-            </h2>
-            {loading ? (
-              <p className="text-sm text-gray-500">Loading…</p>
-            ) : data.price ? (
-              <dl className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">Price</dt>
-                  <dd className="text-white font-mono">{fmt(data.price.price)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">24h Change</dt>
-                  <dd className={`font-mono ${data.price.change24h >= 0 ? "text-green-400" : "text-red-400"}`}>
-                    {data.price.change24h >= 0 ? "+" : ""}{data.price.change24h.toFixed(2)}%
-                  </dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">Market Cap</dt>
-                  <dd className="text-white font-mono">{fmtMC(data.price.marketCap)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">Volume 24h</dt>
-                  <dd className="text-white font-mono">{fmtMC(data.price.volume24h)}</dd>
-                </div>
-              </dl>
-            ) : (
-              <p className="text-sm text-gray-500">—</p>
-            )}
-          </div>
+        {/* Left: editor + data summary panel */}
+        <div className="w-80 shrink-0 bg-gray-900 border-r border-gray-800 overflow-y-auto p-4 space-y-5">
 
+          {/* Deep Dive — top, most important */}
           <div>
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-3">
-              Network Health
-            </h2>
-            {loading ? (
-              <p className="text-sm text-gray-500">Loading…</p>
-            ) : data.network ? (
-              <dl className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">Subnets</dt>
-                  <dd className="text-white font-mono">{data.network.activeSubnets ?? "—"}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">Staked TAO</dt>
-                  <dd className="text-white font-mono">{data.network.stakedTao ? fmtTao(data.network.stakedTao) : "—"}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-400">Staked %</dt>
-                  <dd className="text-white font-mono">{data.network.stakedPct ? `${data.network.stakedPct}%` : "—"}</dd>
-                </div>
-              </dl>
-            ) : (
-              <p className="text-sm text-gray-500">—</p>
-            )}
-          </div>
-
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-3">
-              Top Subnets (by emission)
-            </h2>
-            {loading ? (
-              <p className="text-sm text-gray-500">Loading…</p>
-            ) : data.subnets.length > 0 ? (
-              <ol className="space-y-1 text-sm">
-                {data.subnets.slice(0, 8).map((s, i) => (
-                  <li key={s.id} className="flex justify-between">
-                    <span className="text-gray-400">
-                      {i + 1}. SN{s.id} {s.name}
-                    </span>
-                    <span className="text-white font-mono">{s.emission.toFixed(2)}%</span>
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p className="text-sm text-gray-500">—</p>
-            )}
-          </div>
-
-          <div className="text-xs text-gray-600 pt-2 border-t border-gray-800">
-            Email will use top 5 subnets.
-          </div>
-
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-3">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-2">
               🔍 Deep Dive
             </h2>
             <textarea
               value={deepDive}
               onChange={(e) => setDeepDive(e.target.value)}
-              rows={8}
-              placeholder="Write your weekly deep dive here... (e.g. analysis of a trending subnet, TAO macro outlook, etc.)"
-              className="w-full bg-gray-800 text-gray-100 text-sm rounded p-3 border border-gray-700 focus:border-purple-500 focus:outline-none resize-y placeholder-gray-600"
+              rows={6}
+              placeholder="Write your weekly analysis here… (subnet spotlight, macro outlook, etc.)"
+              className="w-full bg-gray-800 text-gray-100 text-sm rounded p-3 border border-gray-700 focus:border-purple-500 focus:outline-none resize-y placeholder-gray-600 leading-relaxed"
             />
-            <p className="text-xs text-gray-600 mt-1">Appears in the email preview live as you type.</p>
           </div>
+
+          {/* Live data summary — compact */}
+          <div className="border-t border-gray-800 pt-4">
+            <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-2">
+              Live Data
+            </h2>
+            {loading ? (
+              <p className="text-xs text-gray-500">Loading…</p>
+            ) : (
+              <dl className="space-y-1 text-xs">
+                {data.price && <>
+                  <div className="flex justify-between">
+                    <dt className="text-gray-400">Price</dt>
+                    <dd className="text-white font-mono">{fmt(data.price.price)}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt className="text-gray-400">24h</dt>
+                    <dd className={`font-mono ${data.price.change24h >= 0 ? "text-green-400" : "text-red-400"}`}>
+                      {data.price.change24h >= 0 ? "+" : ""}{data.price.change24h.toFixed(2)}%
+                    </dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt className="text-gray-400">Mkt Cap</dt>
+                    <dd className="text-white font-mono">{fmtMC(data.price.marketCap)}</dd>
+                  </div>
+                </>}
+                {data.network && <>
+                  <div className="flex justify-between mt-1">
+                    <dt className="text-gray-400">Subnets</dt>
+                    <dd className="text-white font-mono">{data.network.activeSubnets ?? "—"}</dd>
+                  </div>
+                  <div className="flex justify-between">
+                    <dt className="text-gray-400">Staked</dt>
+                    <dd className="text-white font-mono">{data.network.stakedTao ? fmtTao(data.network.stakedTao) : "—"}</dd>
+                  </div>
+                </>}
+              </dl>
+            )}
+          </div>
+
+          {/* Top subnets — compact */}
+          {!loading && data.subnets.length > 0 && (
+            <div className="border-t border-gray-800 pt-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-purple-400 mb-2">
+                Top Subnets
+              </h2>
+              <ol className="space-y-0.5 text-xs">
+                {data.subnets.slice(0, 5).map((s, i) => (
+                  <li key={s.id} className="flex justify-between">
+                    <span className="text-gray-400 truncate mr-2">{i + 1}. SN{s.id} {s.name}</span>
+                    <span className="text-white font-mono shrink-0">{s.emission.toFixed(2)}%</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </div>
 
         {/* Right: email preview */}
