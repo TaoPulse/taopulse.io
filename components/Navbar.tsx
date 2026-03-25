@@ -189,10 +189,10 @@ export default function Navbar() {
           {/* CTA + hamburger */}
           <div className="flex items-center gap-3">
             <Link
-              href="/staking"
+              href="/join"
               className="hidden sm:inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors"
             >
-              Start Staking
+              ⚡ Alpha Pulse
             </Link>
             <button
               className="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
@@ -308,11 +308,11 @@ export default function Navbar() {
             </div>
 
             <Link
-              href="/staking"
+              href="/join"
               onClick={() => setMobileOpen(false)}
               className="block mt-2 px-3 py-2.5 rounded-md bg-purple-600 text-white text-sm font-semibold text-center transition-colors hover:bg-purple-500"
             >
-              Start Staking
+              ⚡ Alpha Pulse
             </Link>
           </div>
         </div>
