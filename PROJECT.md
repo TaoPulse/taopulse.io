@@ -101,10 +101,7 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 
 ## Open Tasks (taopulse-specific)
 
-| # | Task | Priority | Notes |
-|---|------|----------|-------|
-
-| TP-015 | Macrocosmos SN13 API — live social feed on news page | Low | API key saved in TOOLS.md ✅ |
+See ROADMAP.md for full feature backlog.
 
 ## Completed Tasks
 
@@ -121,7 +118,6 @@ A beginner-friendly TAO/Bittensor analytics and education site. Target audience:
 | TP-009 | TaoStats API key in Vercel | ✅ | Live data working on staking, subnet, validator pages |
 | TP-001 | Staking page — live validator data | ✅ | TaoStats API live |
 | TP-002 | Subnet page — live emission data | ✅ | TaoStats API live |
-| TP-015 | Macrocosmos SN13 API | ❌ Blocked | gRPC incompatible with Vercel serverless. Needs Macrocosmos HTTP API or self-hosted server. |
 | TP-016 | TAO Alpha newsletter branding + /admin/weekly generator | ✅ | Beehiiv embedded, draft generator at /admin/weekly, logo in email |
 | TP-004 | Validator comparison page with live stake/uptime | ✅ | /validators live, sortable table, linked from /staking |
 | TP-008 | Nav overflow on medium screens | ✅ | Switched to lg breakpoint — md screens now use hamburger menu |
