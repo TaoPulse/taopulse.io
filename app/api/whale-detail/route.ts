@@ -92,7 +92,7 @@ export async function GET(req: Request) {
       timestamp: formatTs(t.timestamp ?? t.block_timestamp),
       block: t.block_number ?? null,
       extrinsic_id: t.extrinsic_id ?? null,
-    }));
+    })).filter((t: { amount: number }) => t.amount >= 0.001); // filter out 0-TAO subnet token movements
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const delegations = (delegationsRes.data ?? []).map((d: any) => ({
