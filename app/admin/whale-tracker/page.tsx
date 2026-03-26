@@ -50,7 +50,10 @@ type SortDir = "asc" | "desc";
 const PAGE_SIZE = 100;
 const REFRESH_MS = 30 * 60 * 1000;
 
-function fmt(n: number): string {
+function fmt(n: number, forceDecimals = false): string {
+  if (forceDecimals || (n > 0 && n < 1)) {
+    return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+  }
   return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
@@ -271,7 +274,7 @@ function ExpandedRow({ address, whale }: { address: string; whale: Whale }) {
                             {isUnstake ? "UNSTAKE" : "STAKE"}
                           </span>
                           <span className="font-semibold text-white tabular-nums w-24 shrink-0">
-                            {fmt(d.amount)} TAO
+                            {fmt(d.amount, true)} TAO
                           </span>
                           {d.validator_name ? (
                             <span className="text-gray-400 truncate">{d.validator_name}</span>
