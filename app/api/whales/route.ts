@@ -28,7 +28,7 @@ export async function GET() {
 
     const [pageResults, validatorsJson] = await Promise.all([
       Promise.all(
-        [1, 2, 3, 4, 5].map((page) =>
+        [1, 2, 3].map((page) =>
           fetch(
             `${TAOSTATS_BASE}/api/account/latest/v1?order_by=balance_total_desc&limit=200&page=${page}`,
             fetchOpts

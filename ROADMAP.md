@@ -259,14 +259,14 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 - **Effort:** Medium-High
 
 ##### Phase 1 — Richlist Page (building first)
-- **Scope:** Top 1000 wallets ranked by total TAO
+- **Scope:** Top 500 wallets ranked by total TAO
 - **Columns:** Rank | Address (full, copyable, links to /wallet/[address]) | Total TAO | Free TAO | Staked TAO | 24hr Change (Δ TAO + %)
 - **Highlight logic:**
   - 🔴 Red row/badge = balance dropped in last 24hr (selling signal)
   - 🟢 Green row/badge = balance increased in last 24hr (accumulating)
   - ⚪ No change = neutral
 - **Data source:** `GET /api/account/latest/v1?order_by=balance_total_desc&limit=200&page=N`
-  - API max is 200/page — fetch pages 1–5 in parallel server-side to get top 1000
+  - API max is 200/page — fetch pages 1–3 in parallel server-side to get top 500
   - API returns `balance_total`, `balance_free`, `balance_staked`, `balance_total_24hr_ago` — no cron needed for phase 1
 - **API confirmed:** 464,540 total accounts, endpoint live, sorts correctly, 200/page max
 - **Refresh rate:** Page auto-refreshes data every 30 minutes (client-side polling to a `/api/whales` route)
@@ -314,7 +314,7 @@ _All data sourced from TaoStats API. Aggregation logic built on our side._
 - **API:** `account/latest/v1` + `account/history/v1`
 
 ### TP-042 — Staking Ratio Trend
-- % of top 1000 wallets staked over time — rising = bullish, falling = bearish
+- % of top 500 wallets staked over time — rising = bullish, falling = bearish
 - Leading indicator for price direction
 - **API:** `balance_staked` vs `balance_free` from account history
 
@@ -329,7 +329,7 @@ _All data sourced from TaoStats API. Aggregation logic built on our side._
 - **API:** `account/latest/v1` richlist + total supply
 
 ### TP-045 — New Whale Detection
-- Wallets that entered the top 1000 in the last 7 / 30 days
+- Wallets that entered the top 500 in the last 7 / 30 days
 - "Fresh money" signal — who is accumulating quietly?
 - **API:** `account/latest/v1` rank diff vs `account/history/v1`
 
