@@ -269,6 +269,7 @@ All three use existing TaoStats API (already integrated), no new dependencies.
   - API max is 200/page — fetch pages 1–5 in parallel server-side to get top 1000
   - API returns `balance_total`, `balance_free`, `balance_staked`, `balance_total_24hr_ago` — no cron needed for phase 1
 - **API confirmed:** 464,540 total accounts, endpoint live, sorts correctly, 200/page max
+- **Refresh rate:** Page auto-refreshes data every 30 minutes (client-side polling to a `/api/whales` route)
 - **Wallet labels:**
   - 🔵 Validator — auto-detected by cross-referencing `/api/validator/latest/v1` coldkey addresses (name shown if available)
   - 🟡 Exchange — manually curated JSON file (Kraken, Binance, MEXC etc.)
