@@ -22,10 +22,16 @@ export async function GET() {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
-  const res = await fetch(`${TAOSTATS_BASE}/api/subnet/latest/v1?limit=500`, {
-    headers: { Authorization: apiKey },
-    next: { revalidate: 300 },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${TAOSTATS_BASE}/api/subnet/latest/v1?limit=500`, {
+      headers: { Authorization: apiKey },
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(10000),
+    });
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch subnets" }, { status: 502 });
+  }
 
   if (!res.ok) {
     return NextResponse.json({ error: "Failed to fetch subnets" }, { status: 502 });

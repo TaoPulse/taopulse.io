@@ -163,7 +163,7 @@ export default async function StakingPage() {
                   <p>
                     The Bittensor network emits approximately <strong className="text-white">3,600 TAO per day</strong> across all subnets.
                     Each subnet gets a share proportional to how much stake it has attracted. A subnet with 4.3% emission
-                    receives about 155 TAO per day (roughly $49,000/day at ~$315/TAO). Validators and miners split those
+                    receives about 155 TAO per day at current emissions. Validators and miners split those
                     rewards — stakers who delegated to those validators earn a cut.
                   </p>
                 </div>

@@ -116,15 +116,15 @@ export default async function HomePage() {
     if (statsRes?.ok) networkStats = await statsRes.json();
   } catch {}
 
-  const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$3.0B";
-  const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "$314";
+  const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "—";
+  const priceValue = taoPrice ? formatPrice(taoPrice.usd) : "—";
   const change24h = taoPrice?.usd_24h_change ?? null;
 
   const circulatingValue = networkStats?.circulatingSupply
     ? `${(networkStats.circulatingSupply / 1e6).toFixed(1)}M TAO`
-    : "9.6M TAO";
+    : "—";
   const stakedValue = networkStats?.stakedPct ? `${networkStats.stakedPct}%` : "—";
-  const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}` : "129";
+  const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}` : "—";
 
   const STATS: { label: string; value: React.ReactNode; badge?: React.ReactNode; href?: string }[] = [
     { label: "Market Cap", value: marketCapValue },

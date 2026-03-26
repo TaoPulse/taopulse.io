@@ -5,6 +5,18 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "TAO Alpha — Weekly TAO Intel | TaoPulse",
   description: "Weekly Bittensor intelligence: TAO price, top subnet emissions, staking APY, validator rankings, and one subnet deep dive. Subscribe free.",
+  openGraph: {
+    title: "TAO Alpha — Weekly TAO Intel | TaoPulse",
+    description: "Weekly Bittensor intelligence: TAO price, top subnet emissions, staking APY, validator rankings, and one subnet deep dive. Subscribe free.",
+    url: "https://taopulse.io/newsletter",
+    siteName: "TaoPulse",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TAO Alpha — Weekly TAO Intel | TaoPulse",
+    description: "Weekly Bittensor intelligence: TAO price, top subnet emissions, staking APY, validator rankings, and one subnet deep dive. Subscribe free.",
+  },
   alternates: { canonical: "https://taopulse.io/newsletter" },
 };
 

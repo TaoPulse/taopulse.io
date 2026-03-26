@@ -3,11 +3,11 @@ import { AFFILIATE_LINKS } from "@/lib/affiliate";
 
 export const metadata = {
   title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
-  description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Coinbase and OKX. Step-by-step guide for US and international buyers.",
-  keywords: "buy TAO, buy Bittensor, TAO exchange, how to buy TAO, TAO Kraken, TAO Coinbase",
+  description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Binance and Gate.io. Step-by-step guide for US and international buyers.",
+  keywords: "buy TAO, buy Bittensor, TAO exchange, how to buy TAO, TAO Kraken, TAO Binance",
   openGraph: {
     title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
-    description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Coinbase and OKX.",
+    description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Binance and Gate.io.",
     url: "https://taopulse.io/buy-tao",
     siteName: "TaoPulse",
     type: "website",
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "How to Buy TAO (Bittensor) — Best Exchanges & Step-by-Step Guide",
-    description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Coinbase and OKX.",
+    description: "Where and how to buy TAO (Bittensor). Compare exchanges like Kraken, Binance and Gate.io.",
   },
   alternates: { canonical: "https://taopulse.io/buy-tao" },
 };
