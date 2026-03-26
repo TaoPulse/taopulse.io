@@ -18,6 +18,7 @@ import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import { readFileSync } from "fs";
 import path from "path";
+import { Resend } from "resend";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
 
@@ -260,11 +261,99 @@ export async function GET(req: Request) {
       } catch { /* exchange flow is best-effort */ }
     }
 
+    // ── 9. Fire whale alerts (Phase 4) ──────────────────────────────────────
+    let alertsFired = 0;
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey) {
+      try {
+        const resend = new Resend(resendKey);
+
+        // Check each whale that has a balance drop
+        const whalesWithDrop = whalesEnriched.filter(
+          (w) => w.change_24hr !== null && w.change_24hr < 0
+        );
+
+        for (const whale of whalesWithDrop) {
+          const dropPct = Math.abs(
+            whale.change_24hr_pct ?? 0
+          );
+          if (dropPct < 1) continue; // ignore tiny fluctuations
+
+          // Get subscribers for this address
+          const subs = await kv.smembers<string[]>(`watch:subs:${whale.address}`).catch(() => [] as string[]);
+          if (!subs || subs.length === 0) continue;
+
+          for (const sub of subs) {
+            const [email, threshStr] = sub.split("|");
+            const threshold = parseFloat(threshStr ?? "5");
+            if (dropPct < threshold) continue; // below their threshold
+
+            const shortAddr = `${whale.address.slice(0, 8)}…${whale.address.slice(-8)}`;
+            const dropTao = Math.abs(whale.change_24hr ?? 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
+            const dropPctFmt = dropPct.toFixed(1);
+
+            await resend.emails.send({
+              from: "TaoPulse Alerts <alerts@taopulse.io>",
+              to: email,
+              subject: `🚨 Whale alert: ${shortAddr} dropped ${dropPctFmt}% (${dropTao} τ)`,
+              html: `
+                <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#080d14;color:#e5e7eb;padding:32px;border-radius:12px">
+                  <img src="https://taopulse.io/logo.jpg" alt="TaoPulse" style="height:40px;margin-bottom:24px" />
+                  <h2 style="color:#f87171;margin:0 0 8px">🚨 Whale balance dropped</h2>
+                  <p style="color:#9ca3af;margin:0 0 24px">A wallet you're watching has significantly reduced its TAO holdings.</p>
+                  <div style="background:#0f1623;border:1px solid #7f1d1d;border-radius:8px;padding:16px;margin-bottom:24px">
+                    <p style="font-family:monospace;color:#a78bfa;margin:0 0 12px;word-break:break-all">${whale.address}</p>
+                    <table style="width:100%;font-size:14px;border-collapse:collapse">
+                      <tr>
+                        <td style="color:#9ca3af;padding:4px 0">Rank</td>
+                        <td style="color:#fff;text-align:right">#${whale.rank}</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#9ca3af;padding:4px 0">Current Balance</td>
+                        <td style="color:#fff;text-align:right">${whale.balance_total.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#9ca3af;padding:4px 0">24h Change</td>
+                        <td style="color:#f87171;text-align:right">−${dropTao} τ (${dropPctFmt}%)</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#9ca3af;padding:4px 0">Free TAO</td>
+                        <td style="color:#fff;text-align:right">${whale.balance_free.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ</td>
+                      </tr>
+                      <tr>
+                        <td style="color:#9ca3af;padding:4px 0">Staked TAO</td>
+                        <td style="color:#fff;text-align:right">${whale.balance_staked.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <a href="https://taopulse.io/wallet/${whale.address}" style="display:inline-block;background:#7c3aed;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;margin-bottom:16px">
+                    View Full Wallet →
+                  </a>
+                  &nbsp;
+                  <a href="https://taopulse.io/whales" style="display:inline-block;background:#1f2937;color:#d1d5db;text-decoration:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;margin-bottom:16px">
+                    Whale Tracker →
+                  </a>
+                  <p style="color:#374151;font-size:12px;margin:24px 0 0">
+                    You set a ${threshold}% alert threshold for this wallet. To stop alerts, reply "unwatch" or manage your alerts at taopulse.io.
+                  </p>
+                </div>
+              `,
+            }).catch((e: unknown) => console.error("Alert email failed:", e));
+
+            alertsFired++;
+          }
+        }
+      } catch (e) {
+        console.error("Alert processing failed:", e);
+      }
+    }
+
     const elapsed = Date.now() - startedAt;
     return NextResponse.json({
       ok: true,
       elapsed_ms: elapsed,
       wallets: whales.length,
+      alerts_fired: alertsFired,
       keys_updated: [
         "whales:current",
         hasToday ? "(snapshot already exists today)" : todaySnap,

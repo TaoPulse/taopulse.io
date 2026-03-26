@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import BalanceChart from "./BalanceChart";
+import WatchModal from "./WatchModal";
 
 type Whale = {
   rank: number;
@@ -100,23 +102,19 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-// Phase 4 placeholder — will wire up alert subscription
+// Phase 4 — live watch button
 function WatchButton({ address, onClick }: { address: string; onClick: (e: React.MouseEvent) => void }) {
   return (
     <button
       onClick={onClick}
-      title="Watch this wallet (alerts coming soon)"
-      className="group flex items-center justify-center w-7 h-7 rounded-md text-gray-700 hover:text-yellow-400 hover:bg-yellow-400/10 transition-colors"
+      title="Get email alerts for this wallet"
+      className="flex items-center justify-center w-7 h-7 rounded-md text-gray-600 hover:text-yellow-400 hover:bg-yellow-400/10 transition-colors"
       aria-label="Watch wallet"
     >
       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
           d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 00-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
       </svg>
-      {/* "Soon" tooltip on hover */}
-      <span className="absolute hidden group-hover:block right-0 top-full mt-1 px-2 py-0.5 bg-gray-900 text-gray-400 text-[10px] rounded whitespace-nowrap border border-white/10 z-10">
-        Alerts coming soon
-      </span>
     </button>
   );
 }
@@ -184,17 +182,13 @@ function ExpandedRow({ address, whale }: { address: string; whale: Whale }) {
                   Last active: <span className="text-gray-300">{fmtDate(detail.last_active)}</span>
                 </span>
               )}
-              <div className="flex items-center gap-2 ml-auto">
-                {/* Phase 3 placeholder note */}
-                <span className="text-gray-700 text-[10px] italic">Balance chart — coming in Phase 3</span>
-                <Link
-                  href={`/wallet/${address}`}
-                  className="text-purple-400 hover:text-purple-300 transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Full profile →
-                </Link>
-              </div>
+              <Link
+                href={`/wallet/${address}`}
+                className="ml-auto text-purple-400 hover:text-purple-300 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Full profile →
+              </Link>
             </div>
 
             {/* Wallet breakdown */}
@@ -221,6 +215,11 @@ function ExpandedRow({ address, whale }: { address: string; whale: Whale }) {
                   </span>
                 )}
               </div>
+            </div>
+
+            {/* Balance history chart (Phase 3) */}
+            <div className="bg-white/[0.02] rounded-xl border border-white/5 p-3">
+              <BalanceChart address={address} />
             </div>
 
             {/* Transfer + Delegation side-by-side */}
@@ -369,6 +368,7 @@ export default function WhalesPage() {
   const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [expandedAddress, setExpandedAddress] = useState<string | null>(null);
+  const [watchAddress, setWatchAddress] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -443,18 +443,14 @@ export default function WhalesPage() {
                 Top {whales!.length.toLocaleString()} wallets by TAO holdings · click any row to expand · updated every 30 min
               </p>
             </div>
-            {/* Phase 4: future "Set Alert" CTA */}
-            <button
-              disabled
-              title="Global whale alerts — coming in Phase 4"
-              className="shrink-0 hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 text-gray-600 text-sm cursor-not-allowed"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* Phase 4: click any 🔔 in the table, or use this for a specific address */}
+            <div className="shrink-0 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-yellow-400/20 bg-yellow-400/5 text-yellow-300 text-xs font-medium">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 00-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
-              Whale Alerts <span className="text-[10px] text-purple-400 ml-1">Soon</span>
-            </button>
+              Click 🔔 on any row to set alerts
+            </div>
           </div>
           {lastUpdated && (
             <p className="text-gray-700 text-xs mt-2">Last updated: {lastUpdated.toLocaleTimeString()}</p>
@@ -610,9 +606,9 @@ export default function WhalesPage() {
                           )}
                         </td>
 
-                        {/* Watch button (Phase 4 — disabled for now) */}
+                        {/* Watch button (Phase 4 — live) */}
                         <td className="px-2 py-3 text-center relative">
-                          <WatchButton address={whale.address} onClick={(e) => { e.stopPropagation(); }} />
+                          <WatchButton address={whale.address} onClick={(e) => { e.stopPropagation(); setWatchAddress(whale.address); }} />
                         </td>
                       </tr>
 
@@ -635,6 +631,11 @@ export default function WhalesPage() {
           Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, data.length)} of {data.length.toLocaleString()} wallets
         </p>
       </div>
+
+      {/* Phase 4: Watch/Alert modal */}
+      {watchAddress && (
+        <WatchModal address={watchAddress} onClose={() => setWatchAddress(null)} />
+      )}
     </div>
   );
 }
