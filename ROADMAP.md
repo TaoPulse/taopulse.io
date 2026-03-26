@@ -1,5 +1,5 @@
 # TaoPulse.io — Feature Roadmap
-_Researched: 2026-03-25 by Veera_
+_Researched: 2026-03-25 by Veera | Updated: 2026-03-26_
 
 ## Competitive Landscape
 
@@ -175,3 +175,80 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 **Effort:** High — this is a multi-week project, not a sprint task. But it's the right long-term bet.
 
 **Start when:** After the site gets real traffic (post Reddit launch). Validate demand first, then invest in infrastructure.
+
+---
+
+## 💡 New Opportunities (Identified 2026-03-26)
+
+### 🔴 HIGH PRIORITY
+
+#### TP-031 — TAO Price Alert Signup
+- **What:** User enters a price target → gets email when TAO hits it
+- **Why:** Aggressive newsletter driver. Real utility for investors watching entry points.
+- **How:** Simple form → Beehiiv tag + Vercel cron checking price API
+- **Effort:** Medium
+- **Extends:** `/` homepage or `/price`
+
+#### TP-032 — "Start Here" Guided Journey (`/start-here`)
+- **What:** Interactive flow — "I have $X, I want to invest in TAO, walk me through it"
+- **Why:** Best conversion tool for beginners. Connects buy → wallet → staking in one guided path. All pages already exist, just need stitching.
+- **How:** Multi-step UI component, links to existing pages, no new API needed
+- **Effort:** Low
+- **Extends:** New page, links to `/buy-tao`, `/wallets`, `/staking`
+
+#### TP-033 — Validator Deep-Dive Pages (`/validators/[hotkey]`)
+- **What:** Each validator gets their own page — stake, APY trend, uptime, nominator count, history
+- **Why:** SEO gold (people Google validator names). Power users want this before committing stake.
+- **How:** Extend existing validator API data
+- **Effort:** Medium
+- **Extends:** `/validators`
+
+---
+
+### 🟡 MEDIUM PRIORITY
+
+#### TP-034 — Weekly News Digest Page (`/weekly`)
+- **What:** Auto-generated public page: "Bittensor news this week — [date]"
+- **Why:** Ranks for "bittensor news" searches. Gives newsletter subscribers a reason to visit weekly.
+- **How:** Pull from existing news feed API, render as static page via cron
+- **Effort:** Low
+- **Extends:** `/news`
+
+#### TP-035 — dTAO Subnet APY Tracker
+- **What:** Alpha token prices, liquidity, and estimated APY per subnet — beginner-friendly
+- **Why:** dTAO is new and confusing. Nothing beginner-friendly exists for this yet. First-mover opportunity.
+- **How:** TaoStats has alpha token data endpoints
+- **Effort:** Medium-High
+- **Extends:** `/subnets/[id]`
+
+#### TP-036 — TAO Tax Estimator (`/tax`)
+- **What:** Enter staking rewards earned → estimated US tax liability
+- **Why:** Real pain point, zero good tools exist. Pure frontend math.
+- **How:** No API needed. Add "not tax advice" disclaimer.
+- **Effort:** Low
+- **Route:** `/tax`
+
+#### TP-037 — Subnet Comparison Tool
+- **What:** Pick 2-3 subnets → compare emission, APY, miner count, growth trend side by side
+- **Why:** Useful for stakers deciding where to stake. No competitor has this.
+- **How:** Extends existing subnet API data
+- **Effort:** Medium
+- **Extends:** `/subnets`
+
+---
+
+### 🟢 LOWER PRIORITY
+
+#### TP-038 — Embeddable Widgets (`/embed/price`, `/embed/subnets`)
+- **What:** Shareable iframe widgets for other Bittensor sites to embed
+- **Why:** Distribution play — backlinks + traffic from other sites embedding TaoPulse data
+- **How:** iframe-friendly lightweight pages
+- **Effort:** Medium
+- **Route:** `/embed/*`
+
+#### TP-039 — Exchange Price Comparison
+- **What:** Live TAO price across Kraken, Binance, MEXC, Gate.io with spread %
+- **Why:** Helps users find the best rate. Natural extension of buy-tao page.
+- **How:** Exchange APIs or CoinGecko exchange endpoint
+- **Effort:** Medium
+- **Extends:** `/buy-tao`
