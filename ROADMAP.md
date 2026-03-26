@@ -394,3 +394,17 @@ _All data sourced from TaoStats API. Aggregation logic built on our side._
 - Add fallback logic: if TaoStats fails, try alternative source
 - Track which source served each response in logs
 - **Priority:** Do this before going viral — not after
+
+---
+
+## 🏷️ Wallet Label System (Deferred — revisit post-launch)
+
+Currently all wallets show as "Unknown" — named validators don't hold enough TAO to appear in the top 500.
+
+### Options to revisit:
+1. **Staking-pattern labels** — "Staker" (>80% staked) vs "Holder" (mostly free) vs "Trader" (high 24hr movement)
+2. **Manual curation** — look up top 20-50 addresses on TaoStats explorer, add to `data/known-wallets.json`
+3. **Community-sourced** — open PR process for the community to submit known wallet labels
+4. **On-chain identity** — if Bittensor adds on-chain identity system in future
+
+For now, label badges are hidden/removed from the UI until we have meaningful data to show.
