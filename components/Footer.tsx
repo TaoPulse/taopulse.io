@@ -13,9 +13,9 @@ export default function Footer() {
   return (
     <footer className="bg-[#0a0f1a] border-t border-white/5 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           {/* Brand */}
-          <div className="space-y-3">
+          <div className="space-y-3 shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-md bg-purple-600 flex items-center justify-center shrink-0">
                 <svg
@@ -44,26 +44,20 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Navigation */}
+          {/* Navigation — horizontal wrapping */}
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">
               Navigation
             </h3>
-            <ul className="space-y-2.5">
+            <ul className="flex flex-wrap gap-x-6 gap-y-2">
               <li>
-                <Link
-                  href="/"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
+                <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
               {footerLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-colors"
-                  >
+                  <Link href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                     {link.label}
                   </Link>
                 </li>
