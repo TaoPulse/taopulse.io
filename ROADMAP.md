@@ -277,9 +277,28 @@ All three use existing TaoStats API (already integrated), no new dependencies.
   - ⚪ Unknown — everyone else
   - Curated labels stored in `data/known-wallets.json` in the repo, community-maintainable
 
-##### Phase 2 — Alert System (decisions pending)
+##### Phase 2 — Wallet Deep Dive (expandable rows)
+- **Trigger:** Click/expand any row in the richlist
+- **Show inline:**
+  - Recent transfer history — counterparty address, amount, fee, timestamp, tx hash
+  - Delegation history — every STAKE/UNDELEGATE action, validator name, subnet, amount, timestamp
+  - "Last active" — timestamp of last on-chain activity
+  - ⚠️ "Recently unstaked" flag — if UNDELEGATE in last 7 days, show early warning badge (unstaking precedes selling)
+- **APIs:**
+  - `GET /api/transfer/v1?coldkey={address}&limit=10`
+  - `GET /api/delegation/v1?coldkey={address}&limit=10`
+- **UX:** Lazy-loaded on expand (don't fetch for all 1000 upfront)
+
+##### Phase 3 — Balance History Charts
+- **What:** Mini sparkline chart per wallet showing balance trend over last 7–30 days
+- **Trigger:** Shown in expanded row view (Phase 2)
+- **API:** `GET /api/account/history/v1?address={address}&limit=30` — daily snapshots of balance_total, rank, staked
+- **Value:** Visualize accumulation vs distribution patterns over time
+
+##### Phase 4 — Alert System (decisions pending)
 - **Delivery:** TBD — email only vs Telegram vs browser push
 - **Threshold:** TBD — any drop vs user-selectable (5% / 10% / 20%)
 - **Direction:** TBD — sell alerts only vs buy + sell
+- **Early signal:** Alert on UNDELEGATE events (pre-sell indicator) in addition to balance drops
 - **Storage:** TBD — Vercel KV vs Supabase
 - **Email service:** TBD — Resend vs Beehiiv (Beehiiv is newsletter; Resend better for triggered alerts)
