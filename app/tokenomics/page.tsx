@@ -1,5 +1,6 @@
 import Link from "next/link";
 import TokenomicsDistributionChart from "@/components/TokenomicsDistributionChart";
+import EmailSignupForm from "@/components/EmailSignupForm";
 
 export const metadata = {
   title: "TAO Tokenomics — Supply, Halvings & Scarcity Explained",
@@ -383,6 +384,15 @@ export default async function TokenomicsPage() {
         </p>
       </section>
 
+      {/* Newsletter CTA */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <EmailSignupForm
+          source="tokenomics-page"
+          heading="TAO supply updates in your inbox"
+          subheading="Weekly emission report, staking snapshot, and halving countdown — TAO Alpha, free every Monday."
+        />
+      </section>
+
       {/* 5. Why Scarcity Matters */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <h2 className="text-xl font-bold text-white mb-5">
@@ -441,17 +451,6 @@ export default async function TokenomicsPage() {
         </div>
       </section>
 
-      {/* Newsletter CTA */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-8 text-center">
-          <p className="text-xs text-purple-400 uppercase tracking-widest mb-1">Free Weekly Newsletter</p>
-          <h2 className="text-xl font-bold text-white mb-2">Get TAO Alpha every Monday</h2>
-          <p className="text-gray-400 mb-6 text-sm">TAO price snapshot, top subnet emissions, validator rankings, and one subnet deep dive — free, every week.</p>
-          <Link href="/join" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-colors">
-            Subscribe free →
-          </Link>
-        </div>
-      </section>
     </main>
   );
 }

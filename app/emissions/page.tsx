@@ -1,5 +1,6 @@
 import Link from "next/link";
 import TableOfContents from "@/components/TableOfContents";
+import EmailSignupForm from "@/components/EmailSignupForm";
 
 export const metadata = {
   title: "How TAO Emissions Work — Bittensor Emission Model Explained",
@@ -399,13 +400,12 @@ export default function EmissionsPage() {
             </section>
 
             {/* Newsletter CTA */}
-            <section className="rounded-xl border border-purple-500/20 bg-purple-500/5 p-6 text-center">
-              <p className="text-xs text-purple-400 uppercase tracking-widest mb-1">Free Weekly Newsletter</p>
-              <h2 className="text-base font-bold text-white mb-1">Get TAO Alpha every Monday</h2>
-              <p className="text-sm text-gray-400 mb-4">TAO price, top subnet emissions, validator rankings, and one subnet deep dive — straight to your inbox.</p>
-              <Link href="/join" className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-colors">
-                Subscribe free →
-              </Link>
+            <section>
+              <EmailSignupForm
+                source="emissions-page"
+                heading="Get weekly emission updates"
+                subheading="Top 5 subnets by emission, biggest movers, and staking snapshot — every Monday in TAO Alpha."
+              />
             </section>
 
             {/* Related Pages */}

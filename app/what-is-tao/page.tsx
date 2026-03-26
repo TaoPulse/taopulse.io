@@ -126,11 +126,11 @@ export default async function WhatIsTaoPage() {
     if (statsRes?.ok) networkStats = await statsRes.json();
   } catch {}
 
-  const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "$3.0B";
+  const marketCapValue = taoPrice ? formatMarketCap(taoPrice.usd_market_cap) : "—";
   const circulatingValue = networkStats?.circulatingSupply
     ? `${(networkStats.circulatingSupply / 1e6).toFixed(1)}M`
-    : "9.6M";
-  const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}+` : "129+";
+    : "—";
+  const subnetValue = networkStats?.activeSubnets ? `${networkStats.activeSubnets}+` : "—";
   const stakedValue = networkStats?.stakedPct ? `${networkStats.stakedPct}%` : "—";
 
 

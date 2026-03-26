@@ -1,5 +1,6 @@
 import EmissionsChart from "@/components/EmissionsChart";
 import HalvingCountdown from "@/components/HalvingCountdown";
+import EmailSignupForm from "@/components/EmailSignupForm";
 
 export const metadata = {
   title: "TAO Halving Countdown 2029 — Bittensor Emission Schedule",
@@ -352,6 +353,15 @@ export default async function HalvingPage() {
               Start Staking →
             </a>
           </div>
+        </section>
+
+        {/* Newsletter CTA */}
+        <section>
+          <EmailSignupForm
+            source="halving-page"
+            heading="Track the halving in your inbox"
+            subheading="Weekly countdown updates, emission data, and staking yield analysis — TAO Alpha, free every Monday."
+          />
         </section>
       </div>
     </div>

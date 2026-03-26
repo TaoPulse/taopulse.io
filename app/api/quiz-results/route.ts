@@ -43,7 +43,11 @@ export async function POST(req: Request) {
   const cutoff = cutoffString(90);
   const trimmed = entries.filter((e) => e.date >= cutoff);
 
-  await writeEntries(trimmed);
+  try {
+    await writeEntries(trimmed);
+  } catch {
+    return NextResponse.json({ error: "Failed to save result" }, { status: 500 });
+  }
   return NextResponse.json({ ok: true });
 }
 
