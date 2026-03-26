@@ -5,6 +5,7 @@ import path from "path";
 const TAOSTATS_BASE = "https://api.taostats.io";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 type KnownWallets = {
   exchange: Record<string, string>;
@@ -23,7 +24,7 @@ export async function GET() {
   }
 
   try {
-    const fetchOpts = { headers: { Authorization: apiKey }, next: { revalidate: 1800 } as const };
+    const fetchOpts = { headers: { Authorization: apiKey }, cache: "no-store" as const };
 
     const [pageResults, validatorsJson] = await Promise.all([
       Promise.all(
