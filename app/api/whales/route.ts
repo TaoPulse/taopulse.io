@@ -54,9 +54,9 @@ export async function GET() {
     const knownWalletsPath = path.join(process.cwd(), "data", "known-wallets.json");
     const knownWallets: KnownWallets = JSON.parse(readFileSync(knownWalletsPath, "utf-8"));
 
-    // Flatten pages
+    // Flatten pages and cap at 500
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const allAccounts: any[] = pageResults.flatMap((p) => p.data ?? []);
+    const allAccounts: any[] = pageResults.flatMap((p) => p.data ?? []).slice(0, 500);
 
     const whales = allAccounts.map((account, i) => {
       const address =

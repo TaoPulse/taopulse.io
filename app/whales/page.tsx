@@ -28,21 +28,6 @@ function fmtChange(n: number): string {
   return `${sign}${n.toLocaleString("en-US", { maximumFractionDigits: 1 })}`;
 }
 
-function LabelBadge({ label, name }: { label: Whale["label"]; name: string | null }) {
-  const configs = {
-    validator: { dot: "🔵", text: "text-blue-400", bg: "bg-blue-500/10", display: "Validator" },
-    exchange: { dot: "🟡", text: "text-yellow-400", bg: "bg-yellow-500/10", display: "Exchange" },
-    foundation: { dot: "🟣", text: "text-purple-400", bg: "bg-purple-500/10", display: "Foundation" },
-    unknown: { dot: "⚪", text: "text-gray-500", bg: "bg-white/5", display: "Unknown" },
-  };
-  const c = configs[label];
-  return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${c.bg} ${c.text}`}>
-      <span>{c.dot}</span>
-      <span>{name ?? c.display}</span>
-    </span>
-  );
-}
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
