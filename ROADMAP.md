@@ -302,3 +302,56 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 - **Early signal:** Alert on UNDELEGATE events (pre-sell indicator) in addition to balance drops
 - **Storage:** TBD — Vercel KV vs Supabase
 - **Email service:** TBD — Resend vs Beehiiv (Beehiiv is newsletter; Resend better for triggered alerts)
+
+---
+
+## 🔬 Analytics Roadmap (Future — post TP-040)
+_All data sourced from TaoStats API. Aggregation logic built on our side._
+
+### TP-041 — Whale Accumulation Index (`/analytics`)
+- Net buy/sell score across top 100 wallets over 7d / 30d
+- "Are whales accumulating or distributing right now?" — single clear signal
+- **API:** `account/latest/v1` + `account/history/v1`
+
+### TP-042 — Staking Ratio Trend
+- % of top 1000 wallets staked over time — rising = bullish, falling = bearish
+- Leading indicator for price direction
+- **API:** `balance_staked` vs `balance_free` from account history
+
+### TP-043 — UNDELEGATE Spike Detector
+- Real-time feed of large unstaking events across the network
+- Alert when multiple whales unstake in the same 24h window (coordinated sell signal)
+- **API:** `delegation/v1` filtered by action=UNDELEGATE + large amounts
+
+### TP-044 — TAO Concentration Risk
+- What % of total TAO is held by top 10 / 50 / 100 / 1000 wallets?
+- Gini coefficient over time — is TAO becoming more or less concentrated?
+- **API:** `account/latest/v1` richlist + total supply
+
+### TP-045 — New Whale Detection
+- Wallets that entered the top 1000 in the last 7 / 30 days
+- "Fresh money" signal — who is accumulating quietly?
+- **API:** `account/latest/v1` rank diff vs `account/history/v1`
+
+### TP-046 — Subnet Whale Intelligence
+- Which subnets are the top whales staked to?
+- Subnet popularity among top holders — rotation signals
+- If top holders are moving stake from SN-X to SN-Y, that's alpha
+- **API:** `alpha_balances` field on account records
+
+### TP-047 — Validator Dominance Shifts
+- Which validators are gaining / losing whale stake over time?
+- Useful for nominators deciding where to stake
+- **API:** `validator/latest/v1` stake + stake_24hr_change
+
+### TP-048 — Exchange Flow Tracker
+- Transfers TO known exchange wallets = likely selling pressure
+- Transfers FROM exchanges = likely buying / accumulation
+- Net exchange flow chart over time
+- **API:** `transfer/v1` filtered by known exchange coldkeys (from `data/known-wallets.json`)
+
+### TP-049 — Whale vs Retail Divergence
+- Compare balance trends of top 100 wallets vs wallets ranked 1000–10000
+- Are smart money and retail moving in the same direction or opposite?
+- Divergence = potential contrarian signal
+- **API:** Multiple `account/latest/v1` + `account/history/v1` queries
