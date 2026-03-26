@@ -33,11 +33,12 @@ interface NewsItem {
 async function getNewsletterData() {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? "https://taopulse.io";
 
-  const [priceRes, statsRes, subnetsRes, validatorsRes, marketRes, newsRes] =
+  const [cgRes, statsRes, subnetsRes, validatorsRes, newsRes] =
     await Promise.allSettled([
+      // Single CoinGecko call for all 4 coins — avoids rate limit from two calls
       fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_7d_change=true",
-        { next: { revalidate: 300 }, signal: AbortSignal.timeout(5000) }
+        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor,bitcoin,ethereum,solana&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_7d_change=true",
+        { next: { revalidate: 600 }, signal: AbortSignal.timeout(6000) }
       ),
       fetch(`${base}/api/network-stats`, {
         next: { revalidate: 300 },
@@ -51,20 +52,20 @@ async function getNewsletterData() {
         next: { revalidate: 300 },
         signal: AbortSignal.timeout(8000),
       }),
-      fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor,bitcoin,ethereum,solana&vs_currencies=usd&include_7d_change=true",
-        { next: { revalidate: 300 }, signal: AbortSignal.timeout(5000) }
-      ),
       fetch(`${base}/api/news/reddit`, {
         next: { revalidate: 300 },
         signal: AbortSignal.timeout(10000),
       }),
     ]);
 
-  const price =
-    priceRes.status === "fulfilled" && priceRes.value.ok
-      ? (await priceRes.value.json()).bittensor
+  const cgData =
+    cgRes.status === "fulfilled" && cgRes.value.ok
+      ? await cgRes.value.json()
       : null;
+
+  // TAO price/stats from the single CoinGecko response
+  const price = cgData?.bittensor ?? null;
+
   const stats =
     statsRes.status === "fulfilled" && statsRes.value.ok
       ? await statsRes.value.json()
@@ -78,14 +79,14 @@ async function getNewsletterData() {
       ? await validatorsRes.value.json()
       : [];
 
+  // Market comparison — extract 7d change from same CoinGecko response
   let market: Record<string, { usd_7d_change?: number }> | null = null;
-  if (marketRes.status === "fulfilled" && marketRes.value.ok) {
-    const raw = await marketRes.value.json();
+  if (cgData) {
     market = {
-      tao: { usd_7d_change: raw?.bittensor?.usd_7d_change ?? null },
-      btc: { usd_7d_change: raw?.bitcoin?.usd_7d_change ?? null },
-      eth: { usd_7d_change: raw?.ethereum?.usd_7d_change ?? null },
-      sol: { usd_7d_change: raw?.solana?.usd_7d_change ?? null },
+      tao: { usd_7d_change: cgData?.bittensor?.usd_7d_change ?? null },
+      btc: { usd_7d_change: cgData?.bitcoin?.usd_7d_change ?? null },
+      eth: { usd_7d_change: cgData?.ethereum?.usd_7d_change ?? null },
+      sol: { usd_7d_change: cgData?.solana?.usd_7d_change ?? null },
     };
   }
 
@@ -187,7 +188,7 @@ export default async function NewsletterPage() {
     await getNewsletterData();
 
   const taoPrice = price?.usd ?? null;
-  const change24h = price?.usd_24h_change ?? null;
+  const change7d = price?.usd_7d_change ?? null;
   const marketCap = price?.usd_market_cap ?? null;
   const topSubnets = getTopSubnets(subnets);
   const spotlight = getSubnetSpotlight(subnets);
@@ -270,12 +271,12 @@ export default async function NewsletterPage() {
               <p className="text-xs text-gray-500 mt-1">TAO Price</p>
             </div>
             <div className="bg-[#0f1623] rounded-xl border border-white/5 p-4 text-center">
-              <p className={`text-2xl font-bold ${changeColor(change24h)}`}>
-                {change24h != null
-                  ? `${changeArrow(change24h)} ${Math.abs(change24h).toFixed(1)}%`
+              <p className={`text-2xl font-bold ${changeColor(change7d)}`}>
+                {change7d != null
+                  ? `${changeArrow(change7d)} ${Math.abs(change7d).toFixed(1)}%`
                   : "—"}
               </p>
-              <p className="text-xs text-gray-500 mt-1">24h Change</p>
+              <p className="text-xs text-gray-500 mt-1">7d Change</p>
             </div>
             <div className="bg-[#0f1623] rounded-xl border border-white/5 p-4 text-center">
               <p className="text-2xl font-bold text-white">
