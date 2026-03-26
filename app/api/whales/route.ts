@@ -85,15 +85,18 @@ async function fetchLive(apiKey: string) {
   });
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   const apiKey = process.env.TAOSTATS_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "API key not configured" }, { status: 500 });
   }
 
   try {
+    const { searchParams } = new URL(req.url);
+    const bust = searchParams.get("bust") === "1";
+
     // Serve from KV if fresh (cron keeps this warm every 30 min)
-    const cached = await kv.get<{ data: Awaited<ReturnType<typeof fetchLive>>; fetched_at: number }>("whales:current");
+    const cached = bust ? null : await kv.get<{ data: Awaited<ReturnType<typeof fetchLive>>; fetched_at: number }>("whales:current");
     if (cached?.data) {
       return NextResponse.json(cached.data, {
         headers: {
