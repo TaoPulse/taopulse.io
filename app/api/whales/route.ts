@@ -50,9 +50,14 @@ export async function GET() {
       }
     }
 
-    // Load known wallets from static file
-    const knownWalletsPath = path.join(process.cwd(), "data", "known-wallets.json");
-    const knownWallets: KnownWallets = JSON.parse(readFileSync(knownWalletsPath, "utf-8"));
+    // Load known wallets from static file (fallback to empty if unavailable)
+    let knownWallets: KnownWallets = { exchange: {}, foundation: {} };
+    try {
+      const knownWalletsPath = path.join(process.cwd(), "data", "known-wallets.json");
+      knownWallets = JSON.parse(readFileSync(knownWalletsPath, "utf-8"));
+    } catch {
+      // file may not be available in all environments
+    }
 
     // Flatten pages and cap at 500
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
