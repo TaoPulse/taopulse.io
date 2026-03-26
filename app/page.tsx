@@ -13,11 +13,13 @@ export const metadata = {
     url: "https://taopulse.io",
     siteName: "TaoPulse",
     type: "website",
+    images: [{ url: "https://www.taopulse.io/logo-banner-clean.jpg", width: 1280, height: 714, alt: "TaoPulse — Bittensor & TAO Analytics" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "TaoPulse — Bittensor TAO Analytics",
     description: "Track live Bittensor subnets, compare validators, learn to stake TAO.",
+    images: ["https://www.taopulse.io/logo-banner-clean.jpg"],
   },
   alternates: { canonical: "https://taopulse.io" },
 };
