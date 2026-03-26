@@ -41,7 +41,8 @@ async function fetchAccount(address: string): Promise<any | null> {
   const apiKey = process.env.TAOSTATS_API_KEY;
   if (!apiKey) return null;
   try {
-    const res = await fetch(`${TAOSTATS_BASE}/api/account/v1?address=${address}`, {
+    // account/latest/v1 supports address filter and works with ss58 format
+    const res = await fetch(`${TAOSTATS_BASE}/api/account/latest/v1?address=${address}`, {
       headers: { Authorization: apiKey },
       next: { revalidate: 60 },
     });
@@ -136,11 +137,16 @@ export default async function WalletAddressPage({
     fetchPrice(),
   ]);
 
-  // Parse account
+  // Parse account — account/latest/v1 uses balance_free + balance_staked fields
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const accountRecord: any = accountJson?.data?.[0] ?? null;
-  const balanceRao: string | null = accountRecord?.balance ?? accountRecord?.free_balance ?? null;
+  const balanceRao: string | null =
+    accountRecord?.balance_free ?? accountRecord?.balance ?? accountRecord?.free_balance ?? null;
   const balanceTao = balanceRao != null ? parseFloat(balanceRao) / 1e9 : null;
+
+  // Staked balance from account record (more accurate than summing delegations)
+  const stakedRao: string | null = accountRecord?.balance_staked ?? null;
+  const stakedFromAccount = stakedRao != null ? parseFloat(stakedRao) / 1e9 : null;
 
   // Parse delegations
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -154,9 +160,12 @@ export default async function WalletAddressPage({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const transfers: any[] = transfersJson?.data ?? [];
 
-  // Total value = balance + staked
+  // Prefer account-level staked balance over summing delegations (more accurate)
+  const effectiveStakedTao = stakedFromAccount ?? totalStakedTao;
+
+  // Total value = free balance + staked
   const totalTao =
-    balanceTao != null ? balanceTao + totalStakedTao : totalStakedTao > 0 ? totalStakedTao : null;
+    balanceTao != null ? balanceTao + effectiveStakedTao : effectiveStakedTao > 0 ? effectiveStakedTao : null;
 
   // Determine if address was not found (all APIs returned nothing)
   const notFound =
@@ -218,8 +227,8 @@ export default async function WalletAddressPage({
               },
               {
                 label: "Total Staked",
-                value: totalStakedTao > 0 ? `${formatTao(totalStakedTao * 1e9)} TAO` : "—",
-                sub: totalStakedTao > 0 ? formatUsd(totalStakedTao, price) : null,
+                value: effectiveStakedTao > 0 ? `${formatTao(effectiveStakedTao * 1e9)} TAO` : "—",
+                sub: effectiveStakedTao > 0 ? formatUsd(effectiveStakedTao, price) : null,
                 color: "text-purple-400",
               },
               {
