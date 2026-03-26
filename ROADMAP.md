@@ -254,15 +254,24 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 - **Extends:** `/buy-tao`
 
 #### TP-040 — Whale Wallet Tracker + Alert System
-- **What:** 3-phase whale monitoring feature:
-  - **Phase 1:** Fetch all TAO wallet addresses and their balances via TaoStats API — full holder list
-  - **Phase 2:** Display top 100–200 wallets ranked by TAO held (`/whales`) — balance, staked amount, validator, recent txs
-  - **Phase 3:** Alert system — users subscribe to alerts for any wallet; if TAO balance drops (whale selling), send email/push notification
 - **Why:** Whale movements are high-signal for TAO price direction. No good whale tracker exists for TAO yet — first-mover opportunity. Also drives newsletter signups (alerts require email).
-- **How:**
-  - TaoStats API for wallet balances + history
-  - Vercel cron job (every 15–30 min) to snapshot top wallets and diff against previous snapshot
-  - Alert delivery: email via Beehiiv or a transactional service (Resend/Postmark), or browser push
-  - Store subscriptions + snapshots in a lightweight DB (Vercel KV or Supabase)
-- **Effort:** Medium-High
 - **Route:** `/whales`
+- **Effort:** Medium-High
+
+##### Phase 1 — Richlist Page (building first)
+- **Scope:** Top 200 wallets ranked by total TAO
+- **Columns:** Rank | Address (truncated) | Total TAO | Free TAO | Staked TAO | 24hr Change (Δ TAO + %)
+- **Highlight logic:**
+  - 🔴 Red row/badge = balance dropped in last 24hr (selling signal)
+  - 🟢 Green row/badge = balance increased in last 24hr (accumulating)
+  - ⚪ No change = neutral
+- **Data source:** `GET /api/account/latest/v1?order_by=balance_total_desc&limit=200`
+  - API returns `balance_total`, `balance_free`, `balance_staked`, `balance_total_24hr_ago` — no cron needed for phase 1
+- **API confirmed:** 464,540 total accounts, endpoint live, sorts correctly
+
+##### Phase 2 — Alert System (decisions pending)
+- **Delivery:** TBD — email only vs Telegram vs browser push
+- **Threshold:** TBD — any drop vs user-selectable (5% / 10% / 20%)
+- **Direction:** TBD — sell alerts only vs buy + sell
+- **Storage:** TBD — Vercel KV vs Supabase
+- **Email service:** TBD — Resend vs Beehiiv (Beehiiv is newsletter; Resend better for triggered alerts)
