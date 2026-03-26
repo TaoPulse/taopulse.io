@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 
 type Whale = {
@@ -16,6 +16,9 @@ type Whale = {
   label_name: string | null;
 };
 
+type SortKey = "rank" | "balance_total" | "balance_free" | "balance_staked" | "change_24hr";
+type SortDir = "asc" | "desc";
+
 const PAGE_SIZE = 100;
 const REFRESH_MS = 30 * 60 * 1000;
 
@@ -28,6 +31,10 @@ function fmtChange(n: number): string {
   return `${sign}${n.toLocaleString("en-US", { maximumFractionDigits: 1 })}`;
 }
 
+function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
+  if (!active) return <span className="ml-1 text-gray-600">↕</span>;
+  return <span className="ml-1 text-purple-400">{dir === "asc" ? "↑" : "↓"}</span>;
+}
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -90,7 +97,7 @@ function Pagination({
   const visible = pages.filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 2);
 
   return (
-    <div className="flex items-center justify-center gap-1 mt-6 flex-wrap">
+    <div className="flex items-center justify-center gap-1 my-4 flex-wrap">
       <button
         onClick={() => onChange(page - 1)}
         disabled={page === 1}
@@ -135,6 +142,8 @@ export default function WhalesPage() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [page, setPage] = useState(1);
+  const [sortKey, setSortKey] = useState<SortKey>("rank");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
 
   const loadData = useCallback(async () => {
     try {
@@ -155,6 +164,31 @@ export default function WhalesPage() {
     return () => clearInterval(interval);
   }, [loadData]);
 
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir(key === "rank" ? "asc" : "desc");
+    }
+    setPage(1);
+  };
+
+  const sortedData = useMemo(() => {
+    if (!whales) return [];
+    return [...whales].sort((a, b) => {
+      let av: number, bv: number;
+      if (sortKey === "change_24hr") {
+        av = a.change_24hr ?? -Infinity;
+        bv = b.change_24hr ?? -Infinity;
+      } else {
+        av = a[sortKey];
+        bv = b[sortKey];
+      }
+      return sortDir === "asc" ? av - bv : bv - av;
+    });
+  }, [whales, sortKey, sortDir]);
+
   if (!whales && !error) return <LoadingSkeleton />;
 
   if (error) {
@@ -173,11 +207,13 @@ export default function WhalesPage() {
     );
   }
 
-  const data = whales!;
-  const sold = data.filter((w) => w.change_24hr !== null && w.change_24hr < -0.01).length;
-  const accumulated = data.filter((w) => w.change_24hr !== null && w.change_24hr > 0.01).length;
+  const data = sortedData;
+  const sold = whales!.filter((w) => w.change_24hr !== null && w.change_24hr < -0.01).length;
+  const accumulated = whales!.filter((w) => w.change_24hr !== null && w.change_24hr > 0.01).length;
   const totalPages = Math.ceil(data.length / PAGE_SIZE);
   const pageData = data.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const thClass = "px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-300 select-none transition-colors";
 
   return (
     <div className="min-h-screen bg-[#080d14] text-white px-4 py-10">
@@ -186,7 +222,7 @@ export default function WhalesPage() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-white mb-1">TAO Whale Tracker</h1>
           <p className="text-gray-400 text-sm">
-            Top {data.length.toLocaleString()} wallets by TAO holdings. Updated every 30 minutes.
+            Top {whales!.length.toLocaleString()} wallets by TAO holdings. Updated every 30 minutes.
           </p>
           {lastUpdated && (
             <p className="text-gray-600 text-xs mt-1">
@@ -199,7 +235,7 @@ export default function WhalesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
           <div className="bg-[#0f1623] border border-white/10 rounded-xl px-4 py-3">
             <p className="text-xs text-gray-500 mb-0.5">Total Wallets</p>
-            <p className="text-xl font-bold text-white">{data.length.toLocaleString()}</p>
+            <p className="text-xl font-bold text-white">{whales!.length.toLocaleString()}</p>
           </div>
           <div className="bg-[#0f1623] border border-red-500/20 rounded-xl px-4 py-3">
             <p className="text-xs text-gray-500 mb-0.5">Sold (24h)</p>
@@ -222,21 +258,31 @@ export default function WhalesPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#0f1623] border-b border-white/10">
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
+                  <th className={`text-left ${thClass} w-12`} onClick={() => handleSort("rank")}>
+                    # <SortIcon active={sortKey === "rank"} dir={sortDir} />
+                  </th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total TAO</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Free TAO</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Staked TAO</th>
-                  <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">24h Change</th>
+                  <th className={`text-right ${thClass}`} onClick={() => handleSort("balance_total")}>
+                    Total TAO <SortIcon active={sortKey === "balance_total"} dir={sortDir} />
+                  </th>
+                  <th className={`text-right ${thClass} hidden md:table-cell`} onClick={() => handleSort("balance_free")}>
+                    Free TAO <SortIcon active={sortKey === "balance_free"} dir={sortDir} />
+                  </th>
+                  <th className={`text-right ${thClass} hidden md:table-cell`} onClick={() => handleSort("balance_staked")}>
+                    Staked TAO <SortIcon active={sortKey === "balance_staked"} dir={sortDir} />
+                  </th>
+                  <th className={`text-right ${thClass}`} onClick={() => handleSort("change_24hr")}>
+                    24h Change <SortIcon active={sortKey === "change_24hr"} dir={sortDir} />
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {pageData.map((whale) => {
-                  const sold = whale.change_24hr !== null && whale.change_24hr < -0.01;
-                  const accumulated = whale.change_24hr !== null && whale.change_24hr > 0.01;
-                  const rowBg = sold
+                  const isSold = whale.change_24hr !== null && whale.change_24hr < -0.01;
+                  const isAccum = whale.change_24hr !== null && whale.change_24hr > 0.01;
+                  const rowBg = isSold
                     ? "bg-red-500/5 hover:bg-red-500/10"
-                    : accumulated
+                    : isAccum
                     ? "bg-emerald-500/5 hover:bg-emerald-500/10"
                     : "hover:bg-white/5";
 
@@ -296,12 +342,12 @@ export default function WhalesPage() {
           </div>
         </div>
 
-        {/* Pagination */}
+        {/* Pagination — bottom */}
         {totalPages > 1 && (
           <Pagination page={page} totalPages={totalPages} onChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
         )}
 
-        <p className="text-center text-gray-700 text-xs mt-4">
+        <p className="text-center text-gray-700 text-xs mt-2">
           Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, data.length)} of {data.length.toLocaleString()} wallets
         </p>
       </div>
