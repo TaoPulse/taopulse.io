@@ -9,11 +9,37 @@ type Whale = {
   balance_total: number;
   balance_free: number;
   balance_staked: number;
-  balance_total_24hr_ago: number | null;
   change_24hr: number | null;
   change_24hr_pct: number | null;
   label: "validator" | "exchange" | "foundation" | "unknown";
   label_name: string | null;
+};
+
+type Transfer = {
+  from: string;
+  to: string;
+  amount: number;
+  fee: number;
+  timestamp: string | null;
+  block: number | null;
+  extrinsic_id: string | null;
+};
+
+type Delegation = {
+  action: string;
+  amount: number;
+  hotkey: string;
+  netuid: number | null;
+  validator_name: string | null;
+  timestamp: string | null;
+  block: number | null;
+};
+
+type WalletDetail = {
+  transfers: Transfer[];
+  delegations: Delegation[];
+  last_active: string | null;
+  recently_unstaked: boolean;
 };
 
 type SortKey = "rank" | "balance_total" | "balance_free" | "balance_staked" | "change_24hr";
@@ -31,6 +57,17 @@ function fmtChange(n: number): string {
   return `${sign}${n.toLocaleString("en-US", { maximumFractionDigits: 1 })}`;
 }
 
+function fmtDate(ts: string | null): string {
+  if (!ts) return "—";
+  const d = new Date(ts);
+  return d.toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
+function truncate(addr: string, chars = 8): string {
+  if (!addr || addr.length <= chars * 2 + 3) return addr;
+  return `${addr.slice(0, chars)}…${addr.slice(-chars)}`;
+}
+
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
   if (!active) return <span className="ml-1 text-gray-600">↕</span>;
   return <span className="ml-1 text-purple-400">{dir === "asc" ? "↑" : "↓"}</span>;
@@ -46,7 +83,7 @@ function CopyButton({ text }: { text: string }) {
   };
   return (
     <button
-      onClick={handleCopy}
+      onClick={(e) => { e.stopPropagation(); handleCopy(); }}
       title="Copy address"
       className="ml-1.5 text-gray-500 hover:text-gray-300 transition-colors shrink-0"
     >
@@ -60,6 +97,149 @@ function CopyButton({ text }: { text: string }) {
         </svg>
       )}
     </button>
+  );
+}
+
+function ExpandedRow({ address, whale }: { address: string; whale: Whale }) {
+  const [detail, setDetail] = useState<WalletDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
+    fetch(`/api/whale-detail?address=${encodeURIComponent(address)}`)
+      .then((r) => r.json())
+      .then((d) => { setDetail(d); setLoading(false); })
+      .catch((e) => { setError(e.message); setLoading(false); });
+  }, [address]);
+
+  return (
+    <tr className="bg-[#0a1020] border-b border-white/10">
+      <td colSpan={6} className="px-4 py-5">
+        {loading && (
+          <div className="flex items-center gap-2 text-gray-500 text-sm">
+            <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            Loading wallet activity…
+          </div>
+        )}
+        {error && <p className="text-red-400 text-sm">Failed to load: {error}</p>}
+        {detail && (
+          <div className="space-y-5">
+            {/* Header strip */}
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              {detail.recently_unstaked && (
+                <span className="inline-flex items-center gap-1 bg-orange-500/20 text-orange-300 border border-orange-500/30 rounded-full px-3 py-1 font-semibold">
+                  ⚠️ Recently Unstaked
+                </span>
+              )}
+              {detail.last_active && (
+                <span className="text-gray-500">
+                  Last active: <span className="text-gray-300">{fmtDate(detail.last_active)}</span>
+                </span>
+              )}
+              <Link
+                href={`/wallet/${address}`}
+                className="ml-auto text-purple-400 hover:text-purple-300 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Full profile →
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {/* Recent Transfers */}
+              <div>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                  Recent Transfers
+                </h3>
+                {detail.transfers.length === 0 ? (
+                  <p className="text-gray-600 text-xs">No recent transfers</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {detail.transfers.map((t, i) => {
+                      const isSender = t.from === address;
+                      const counterparty = isSender ? t.to : t.from;
+                      return (
+                        <div key={i} className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2 text-xs">
+                          <span className={`shrink-0 font-semibold ${isSender ? "text-red-400" : "text-emerald-400"}`}>
+                            {isSender ? "OUT" : "IN"}
+                          </span>
+                          <span className="font-medium text-white tabular-nums">
+                            {fmt(t.amount)} TAO
+                          </span>
+                          <span className="text-gray-600 shrink-0">{isSender ? "to" : "from"}</span>
+                          <span className="font-mono text-gray-400 truncate">{truncate(counterparty)}</span>
+                          <span className="ml-auto text-gray-600 shrink-0">{fmtDate(t.timestamp)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Delegation History */}
+              <div>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                  Delegation History
+                </h3>
+                {detail.delegations.length === 0 ? (
+                  <p className="text-gray-600 text-xs">No recent delegation activity</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {detail.delegations.map((d, i) => {
+                      const isUnstake = d.action?.toUpperCase().includes("UNDELEGATE");
+                      return (
+                        <div key={i} className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-2 text-xs">
+                          <span className={`shrink-0 font-semibold ${isUnstake ? "text-orange-400" : "text-blue-400"}`}>
+                            {isUnstake ? "UNSTAKE" : "STAKE"}
+                          </span>
+                          <span className="font-medium text-white tabular-nums">
+                            {fmt(d.amount)} TAO
+                          </span>
+                          {d.validator_name ? (
+                            <span className="text-gray-400 truncate">{d.validator_name}</span>
+                          ) : (
+                            <span className="font-mono text-gray-600 truncate">{truncate(d.hotkey, 6)}</span>
+                          )}
+                          {d.netuid !== null && (
+                            <span className="shrink-0 bg-purple-500/20 text-purple-300 rounded px-1">SN{d.netuid}</span>
+                          )}
+                          <span className="ml-auto text-gray-600 shrink-0">{fmtDate(d.timestamp)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Whale summary */}
+            <div className="flex flex-wrap gap-4 text-xs border-t border-white/5 pt-3">
+              <div>
+                <span className="text-gray-600">Free TAO: </span>
+                <span className="text-white font-medium">{fmt(whale.balance_free)}</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Staked TAO: </span>
+                <span className="text-white font-medium">{fmt(whale.balance_staked)}</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Staked %: </span>
+                <span className="text-white font-medium">
+                  {whale.balance_total > 0
+                    ? ((whale.balance_staked / whale.balance_total) * 100).toFixed(1) + "%"
+                    : "—"}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+      </td>
+    </tr>
   );
 }
 
@@ -144,6 +324,7 @@ export default function WhalesPage() {
   const [page, setPage] = useState(1);
   const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [expandedAddress, setExpandedAddress] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     try {
@@ -222,7 +403,7 @@ export default function WhalesPage() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-white mb-1">TAO Whale Tracker</h1>
           <p className="text-gray-400 text-sm">
-            Top {whales!.length.toLocaleString()} wallets by TAO holdings. Updated every 30 minutes.
+            Top {whales!.length.toLocaleString()} wallets by TAO holdings. Click any row to see activity. Updated every 30 minutes.
           </p>
           {lastUpdated && (
             <p className="text-gray-600 text-xs mt-1">
@@ -249,7 +430,7 @@ export default function WhalesPage() {
 
         {/* Pagination — top */}
         {totalPages > 1 && (
-          <Pagination page={page} totalPages={totalPages} onChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+          <Pagination page={page} totalPages={totalPages} onChange={(p) => { setPage(p); setExpandedAddress(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
         )}
 
         {/* Table */}
@@ -258,6 +439,7 @@ export default function WhalesPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-[#0f1623] border-b border-white/10">
+                  <th className="px-4 py-3 w-6" />
                   <th className={`text-left ${thClass} w-12`} onClick={() => handleSort("rank")}>
                     # <SortIcon active={sortKey === "rank"} dir={sortDir} />
                   </th>
@@ -280,7 +462,11 @@ export default function WhalesPage() {
                 {pageData.map((whale) => {
                   const isSold = whale.change_24hr !== null && whale.change_24hr < -0.01;
                   const isAccum = whale.change_24hr !== null && whale.change_24hr > 0.01;
-                  const rowBg = isSold
+                  const isExpanded = expandedAddress === whale.address;
+
+                  const rowBg = isExpanded
+                    ? "bg-[#0d1728] border-purple-500/30"
+                    : isSold
                     ? "bg-red-500/5 hover:bg-red-500/10"
                     : isAccum
                     ? "bg-emerald-500/5 hover:bg-emerald-500/10"
@@ -294,47 +480,61 @@ export default function WhalesPage() {
                       : "text-red-400";
 
                   return (
-                    <tr
-                      key={whale.address}
-                      className={`border-b border-white/5 transition-colors ${rowBg}`}
-                    >
-                      <td className="px-4 py-3 text-gray-500 font-mono text-xs">{whale.rank}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1">
-                          <Link
-                            href={`/wallet/${whale.address}`}
-                            className="font-mono text-xs text-gray-400 hover:text-purple-400 transition-colors truncate max-w-[160px] sm:max-w-[240px] lg:max-w-none"
-                            title={whale.address}
+                    <>
+                      <tr
+                        key={whale.address}
+                        onClick={() => setExpandedAddress(isExpanded ? null : whale.address)}
+                        className={`border-b border-white/5 transition-colors cursor-pointer ${rowBg}`}
+                      >
+                        {/* Expand chevron */}
+                        <td className="pl-4 pr-1 py-3 text-gray-600">
+                          <svg
+                            className={`w-3.5 h-3.5 transition-transform ${isExpanded ? "rotate-90 text-purple-400" : ""}`}
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
                           >
-                            {whale.address}
-                          </Link>
-                          <CopyButton text={whale.address} />
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-right font-medium text-white tabular-nums">
-                        {fmt(whale.balance_total)}
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-400 tabular-nums hidden md:table-cell">
-                        {fmt(whale.balance_free)}
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-400 tabular-nums hidden md:table-cell">
-                        {fmt(whale.balance_staked)}
-                      </td>
-                      <td className={`px-4 py-3 text-right tabular-nums font-medium ${changeColor}`}>
-                        {whale.change_24hr === null ? (
-                          <span className="text-gray-600">—</span>
-                        ) : (
-                          <span>
-                            {fmtChange(whale.change_24hr)} TAO
-                            {whale.change_24hr_pct !== null && (
-                              <span className="text-xs ml-1 opacity-70">
-                                ({fmtChange(whale.change_24hr_pct)}%)
-                              </span>
-                            )}
-                          </span>
-                        )}
-                      </td>
-                    </tr>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </td>
+                        <td className="px-4 py-3 text-gray-500 font-mono text-xs">{whale.rank}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-1">
+                            <Link
+                              href={`/wallet/${whale.address}`}
+                              className="font-mono text-xs text-gray-400 hover:text-purple-400 transition-colors truncate max-w-[160px] sm:max-w-[240px] lg:max-w-none"
+                              title={whale.address}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {whale.address}
+                            </Link>
+                            <CopyButton text={whale.address} />
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-right font-medium text-white tabular-nums">
+                          {fmt(whale.balance_total)}
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-400 tabular-nums hidden md:table-cell">
+                          {fmt(whale.balance_free)}
+                        </td>
+                        <td className="px-4 py-3 text-right text-gray-400 tabular-nums hidden md:table-cell">
+                          {fmt(whale.balance_staked)}
+                        </td>
+                        <td className={`px-4 py-3 text-right tabular-nums font-medium ${changeColor}`}>
+                          {whale.change_24hr === null ? (
+                            <span className="text-gray-600">—</span>
+                          ) : (
+                            <span>
+                              {fmtChange(whale.change_24hr)} TAO
+                              {whale.change_24hr_pct !== null && (
+                                <span className="text-xs ml-1 opacity-70">
+                                  ({fmtChange(whale.change_24hr_pct)}%)
+                                </span>
+                              )}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                      {isExpanded && <ExpandedRow key={`detail-${whale.address}`} address={whale.address} whale={whale} />}
+                    </>
                   );
                 })}
               </tbody>
@@ -344,11 +544,11 @@ export default function WhalesPage() {
 
         {/* Pagination — bottom */}
         {totalPages > 1 && (
-          <Pagination page={page} totalPages={totalPages} onChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+          <Pagination page={page} totalPages={totalPages} onChange={(p) => { setPage(p); setExpandedAddress(null); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
         )}
 
         <p className="text-center text-gray-700 text-xs mt-2">
-          Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, data.length)} of {data.length.toLocaleString()} wallets
+          Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, data.length)} of {data.length.toLocaleString()} wallets · Click any row to expand
         </p>
       </div>
     </div>
