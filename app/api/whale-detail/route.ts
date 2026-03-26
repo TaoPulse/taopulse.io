@@ -74,7 +74,7 @@ export async function GET(req: Request) {
   try {
     const [transfersRes, delegationsRes] = await Promise.all([
       fetch(
-        `${TAOSTATS_BASE}/api/transfer/v1?coldkey=${address}&limit=10&order=timestamp_desc`,
+        `${TAOSTATS_BASE}/api/transfer/v1?address=${address}&limit=10&order=timestamp_desc`,
         fetchOpts
       ).then((r) => r.json()),
       fetch(
@@ -94,17 +94,24 @@ export async function GET(req: Request) {
       extrinsic_id: t.extrinsic_id ?? null,
     })).filter((t: { amount: number }) => t.amount >= 0.001); // filter out 0-TAO subnet token movements
 
+    // delegation/v1 uses nominator/delegate objects, not coldkey/hotkey strings
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const delegations = (delegationsRes.data ?? []).map((d: any) => ({
-      action: d.action ?? "UNKNOWN",
-      amount: toTao(d.amount ?? d.alpha_amount ?? 0),
-      hotkey: typeof d.hotkey === "object" ? (d.hotkey?.ss58 ?? "") : (d.hotkey ?? ""),
-      coldkey: typeof d.coldkey === "object" ? (d.coldkey?.ss58 ?? "") : (d.coldkey ?? ""),
-      netuid: d.netuid ?? null,
-      validator_name: d.validator_name ?? d.name ?? null,
-      timestamp: formatTs(d.timestamp ?? d.block_timestamp),
-      block: d.block_number ?? null,
-    }));
+    const delegations = (delegationsRes.data ?? []).map((d: any) => {
+      const nominatorAddr = typeof d.nominator === "object" ? (d.nominator?.ss58 ?? "") : (d.nominator ?? "");
+      const delegateAddr = typeof d.delegate === "object" ? (d.delegate?.ss58 ?? "") : (d.delegate ?? "");
+      // For this wallet: if they are the nominator → they staked TO someone; if they are the delegate → someone staked TO them
+      const hotkey = nominatorAddr === address ? delegateAddr : nominatorAddr;
+      return {
+        action: d.action ?? "UNKNOWN",
+        amount: toTao(d.amount ?? 0),
+        hotkey,
+        coldkey: nominatorAddr,
+        netuid: d.netuid ?? null,
+        validator_name: d.delegate_name ?? d.validator_name ?? null,
+        timestamp: formatTs(d.timestamp ?? d.block_timestamp),
+        block: d.block_number ?? null,
+      };
+    });
 
     // Last active: most recent timestamp across both
     const allTimestamps = [
