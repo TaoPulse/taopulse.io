@@ -260,7 +260,7 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 
 ##### Phase 1 — Richlist Page (building first)
 - **Scope:** Top 200 wallets ranked by total TAO
-- **Columns:** Rank | Address (truncated) | Total TAO | Free TAO | Staked TAO | 24hr Change (Δ TAO + %)
+- **Columns:** Rank | Address (full, copyable, links to /wallet/[address]) | Total TAO | Free TAO | Staked TAO | 24hr Change (Δ TAO + %)
 - **Highlight logic:**
   - 🔴 Red row/badge = balance dropped in last 24hr (selling signal)
   - 🟢 Green row/badge = balance increased in last 24hr (accumulating)
