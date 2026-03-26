@@ -136,3 +136,42 @@ _Researched: 2026-03-25 by Veera_
 3. **TP-018** — Wallet address lookup — high utility for power users
 
 All three use existing TaoStats API (already integrated), no new dependencies.
+
+---
+
+## 🏆 NORTH STAR — Own the Data Layer (TP-NORTH)
+
+**Vision:** Stop being a TaoStats frontend. Become TaoPulse — a fully independent, beginner-friendly Bittensor data platform that pulls directly from the chain.
+
+**Why this matters:**
+- TaoStats is a third-party explorer — if they go down, change their API, or start charging, our core data breaks
+- We currently display TaoStats data with a TaoPulse skin — that's not a moat
+- Owning the data layer = real competitive advantage. No one else is doing beginner-friendly UX *with* direct chain data.
+- Long-term: TaoPulse could become THE go-to Bittensor interface, not just an analytics site
+
+**What "owning the data" means:**
+- Query Bittensor chain directly via Substrate RPC (`wss://entrypoint-finney.opentensor.ai:443`)
+- Use the Bittensor JS/Python SDK to decode chain state: validators, subnets, stake, emissions, balances
+- Cache data in our own layer (Redis or Vercel KV) — our own API, our own freshness
+- Replace all `api.taostats.io` calls with `api.taopulse.io` (our own endpoints)
+
+**What we get:**
+- Data no one else has (raw chain state, faster refresh, custom aggregations)
+- No dependency on TaoStats uptime or pricing
+- Ability to build features TaoStats never will (beginner UX, calculators, guided flows)
+- Credibility: "Data direct from chain" > "Powered by TaoStats"
+
+**Phases:**
+1. **Phase 1** — Mirror: Build our own data pipeline alongside TaoStats (fallback if ours fails → TaoStats)
+2. **Phase 2** — Replace: Swap all TaoStats calls to our own endpoints one by one
+3. **Phase 3** — Expand: Add data TaoStats doesn't expose (custom aggregations, historical trends, alerts)
+
+**Tech approach:**
+- Bittensor has a public WebSocket RPC at `wss://entrypoint-finney.opentensor.ai:443`
+- `@polkadot/api` (JS) can connect and query chain state
+- Vercel Cron Jobs to refresh data every 60s → store in Vercel KV
+- Eventually: dedicated data server (Railway/Render) for heavier queries
+
+**Effort:** High — this is a multi-week project, not a sprint task. But it's the right long-term bet.
+
+**Start when:** After the site gets real traffic (post Reddit launch). Validate demand first, then invest in infrastructure.
