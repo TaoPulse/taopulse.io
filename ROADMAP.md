@@ -253,9 +253,16 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 - **Effort:** Medium
 - **Extends:** `/buy-tao`
 
-#### TP-040 — Wallet Watching
-- **What:** Save any TAO wallet address to a watchlist — track balance, staked amount, validator, and recent activity without connecting your own wallet
-- **Why:** Power users want to monitor wallets (their own or others) passively. Also useful for tracking validators or whales.
-- **How:** TaoStats API + localStorage or simple backend to persist watched addresses
-- **Effort:** Medium
-- **Route:** `/watch` or extend `/wallet`
+#### TP-040 — Whale Wallet Tracker + Alert System
+- **What:** 3-phase whale monitoring feature:
+  - **Phase 1:** Fetch all TAO wallet addresses and their balances via TaoStats API — full holder list
+  - **Phase 2:** Display top 100–200 wallets ranked by TAO held (`/whales`) — balance, staked amount, validator, recent txs
+  - **Phase 3:** Alert system — users subscribe to alerts for any wallet; if TAO balance drops (whale selling), send email/push notification
+- **Why:** Whale movements are high-signal for TAO price direction. No good whale tracker exists for TAO yet — first-mover opportunity. Also drives newsletter signups (alerts require email).
+- **How:**
+  - TaoStats API for wallet balances + history
+  - Vercel cron job (every 15–30 min) to snapshot top wallets and diff against previous snapshot
+  - Alert delivery: email via Beehiiv or a transactional service (Resend/Postmark), or browser push
+  - Store subscriptions + snapshots in a lightweight DB (Vercel KV or Supabase)
+- **Effort:** Medium-High
+- **Route:** `/whales`
