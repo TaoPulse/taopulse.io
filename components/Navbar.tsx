@@ -27,7 +27,7 @@ const toolLinks = [
   { href: "/validator-calculator", label: "Validator Calculator" },
   { href: "/portfolio", label: "Portfolio Tracker" },
   { href: "/wallet", label: "Wallet Lookup" },
-  { href: "/whales", label: "Whale Tracker" },
+
   { href: "/wallets", label: "Wallets Guide" },
   { href: "/subnets/directory", label: "Subnet Directory" },
   { href: "/join", label: "⚡ TAO Alpha Newsletter" },

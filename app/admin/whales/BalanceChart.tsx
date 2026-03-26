@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
-import type { HistoryPoint } from "../api/whale-history/route";
+import type { HistoryPoint } from "../../api/whale-history/route";
 
 type Props = { address: string };
 
