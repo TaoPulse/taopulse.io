@@ -421,7 +421,7 @@ export default async function StakingPage() {
                     </table>
                   </div>
                   <p className="text-xs text-gray-600">
-                    Data from taostats.io, refreshed every 5 minutes. Copy a validator&apos;s hotkey from{" "}
+                    Copy a validator&apos;s hotkey from{" "}
                     <a href="https://taostats.io/validators" target="_blank" rel="noopener noreferrer" className="text-purple-400 underline hover:text-purple-300">
                       taostats.io/validators
                     </a>{" "}
