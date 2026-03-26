@@ -233,7 +233,6 @@ export default function WhalesPage() {
               <thead>
                 <tr className="bg-[#0f1623] border-b border-white/10">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">#</th>
-                  <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Label</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Address</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total TAO</th>
                   <th className="text-right px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden md:table-cell">Free TAO</th>
@@ -264,9 +263,6 @@ export default function WhalesPage() {
                       className={`border-b border-white/5 transition-colors ${rowBg}`}
                     >
                       <td className="px-4 py-3 text-gray-500 font-mono text-xs">{whale.rank}</td>
-                      <td className="px-4 py-3">
-                        <LabelBadge label={whale.label} name={whale.label_name} />
-                      </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
                           <Link
