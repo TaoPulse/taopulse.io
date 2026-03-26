@@ -35,9 +35,9 @@ async function getNewsletterData() {
 
   const [cgRes, statsRes, subnetsRes, validatorsRes, newsRes] =
     await Promise.allSettled([
-      // Single CoinGecko call for all 4 coins — avoids rate limit from two calls
+      // coins/markets returns 7d change on free tier (simple/price does not)
       fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bittensor,bitcoin,ethereum,solana&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_7d_change=true",
+        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bittensor,bitcoin,ethereum,solana&price_change_percentage=7d",
         { next: { revalidate: 600 }, signal: AbortSignal.timeout(6000) }
       ),
       fetch(`${base}/api/network-stats`, {
@@ -58,13 +58,24 @@ async function getNewsletterData() {
       }),
     ]);
 
-  const cgData =
+  // coins/markets returns an array; build a lookup by id
+  const cgRaw: { id: string; current_price: number; market_cap: number; price_change_percentage_24h: number; price_change_percentage_7d_in_currency: number }[] =
     cgRes.status === "fulfilled" && cgRes.value.ok
       ? await cgRes.value.json()
-      : null;
+      : [];
+  const cgData: Record<string, typeof cgRaw[number]> = {};
+  for (const coin of cgRaw) cgData[coin.id] = coin;
 
-  // TAO price/stats from the single CoinGecko response
-  const price = cgData?.bittensor ?? null;
+  // TAO price/stats from coins/markets response
+  const taoEntry = cgData["bittensor"] ?? null;
+  const price = taoEntry
+    ? {
+        usd: taoEntry.current_price,
+        usd_market_cap: taoEntry.market_cap,
+        usd_24h_change: taoEntry.price_change_percentage_24h,
+        usd_7d_change: taoEntry.price_change_percentage_7d_in_currency,
+      }
+    : null;
 
   const stats =
     statsRes.status === "fulfilled" && statsRes.value.ok
@@ -79,14 +90,14 @@ async function getNewsletterData() {
       ? await validatorsRes.value.json()
       : [];
 
-  // Market comparison — extract 7d change from same CoinGecko response
+  // Market comparison — extract 7d change from coins/markets response
   let market: Record<string, { usd_7d_change?: number }> | null = null;
-  if (cgData) {
+  if (cgRaw.length > 0) {
     market = {
-      tao: { usd_7d_change: cgData?.bittensor?.usd_7d_change ?? null },
-      btc: { usd_7d_change: cgData?.bitcoin?.usd_7d_change ?? null },
-      eth: { usd_7d_change: cgData?.ethereum?.usd_7d_change ?? null },
-      sol: { usd_7d_change: cgData?.solana?.usd_7d_change ?? null },
+      tao: { usd_7d_change: cgData["bittensor"]?.price_change_percentage_7d_in_currency ?? null },
+      btc: { usd_7d_change: cgData["bitcoin"]?.price_change_percentage_7d_in_currency ?? null },
+      eth: { usd_7d_change: cgData["ethereum"]?.price_change_percentage_7d_in_currency ?? null },
+      sol: { usd_7d_change: cgData["solana"]?.price_change_percentage_7d_in_currency ?? null },
     };
   }
 
