@@ -91,15 +91,7 @@ export default function TrendingSubnets() {
   if (error) {
     return (
       <div className="rounded-xl border border-white/10 bg-[#0f1623] p-6 text-center text-sm text-gray-500">
-        Data temporarily unavailable —{" "}
-        <a
-          href="https://taostats.io"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-purple-400 hover:text-purple-300 underline transition-colors"
-        >
-          see taostats.io
-        </a>
+        Data temporarily unavailable — please check back shortly.
       </div>
     );
   }
@@ -185,7 +177,7 @@ export default function TrendingSubnets() {
           {data.isLive ? (
             <span className="inline-flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-              Live from TaoStats
+              Live data
             </span>
           ) : (
             <span>Based on last known data</span>

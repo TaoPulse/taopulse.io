@@ -99,16 +99,7 @@ export default function SubnetDirectoryPage() {
 
       {/* Footer note */}
       <p className="text-xs text-gray-600 mt-10 text-center">
-        Miner/validator counts and registration costs are estimates — always verify at{" "}
-        <a
-          href="https://taostats.io/subnets"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-gray-500 hover:text-gray-400 underline"
-        >
-          taostats.io/subnets
-        </a>{" "}
-        before committing capital. Data sourced from official GitHub repositories and documentation, updated March 2026.
+        Miner/validator counts and registration costs are estimates — always verify on a block explorer before committing capital. Data sourced from official GitHub repositories and documentation, updated March 2026.
       </p>
     </div>
   );

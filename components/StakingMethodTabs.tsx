@@ -386,15 +386,7 @@ Balance: 10.5 TAO`}</CodeBlock>
               minus their fee.
             </p>
             <p className="text-gray-300">
-              Browse validators on TaoStats:{" "}
-              <a
-                href="https://taostats.io/validators"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-purple-400 underline hover:text-purple-300"
-              >
-                taostats.io/validators
-              </a>
+              Browse validators on a block explorer to find one you trust.
             </p>
             <p>What to look for:</p>
             <ul className="space-y-1 ml-3">
@@ -418,17 +410,7 @@ Balance: 10.5 TAO`}</CodeBlock>
               </p>
               <ol className="space-y-1.5 ml-3">
                 {[
-                  <>
-                    Go to{" "}
-                    <a
-                      href="https://taostats.io/validators"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-purple-400 underline hover:text-purple-300"
-                    >
-                      taostats.io/validators
-                    </a>
-                  </>,
+                  <>Open a block explorer and navigate to the validators list</>,
                   <>
                     Look for:{" "}
                     <strong className="text-white">low take rate (0–9%)</strong>
@@ -463,7 +445,7 @@ Balance: 10.5 TAO`}</CodeBlock>
             <p>Run this command to stake your TAO to a validator:</p>
             <CodeBlock>{`btcli stake add \\
   --wallet.name my-wallet \\    # The name you used when creating your wallet
-  --hotkey 5F4tQyWrhfGVcNhoqeiNsR6KjD4wMZ2kfhLj4oLYydGoqiGn \\  # Copied from TaoStats
+  --hotkey 5F4tQyWrhfGVcNhoqeiNsR6KjD4wMZ2kfhLj4oLYydGoqiGn \\  # Copied from block explorer
   --amount 5                    # Start with a small amount!`}</CodeBlock>
             <div className="space-y-1.5 mt-1">
               <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -480,7 +462,7 @@ Balance: 10.5 TAO`}</CodeBlock>
                   <code className="text-green-300 font-mono text-xs">
                     --hotkey 5F4tQ...
                   </code>{" "}
-                  → the validator hotkey you copied from TaoStats (step 4)
+                  → the validator hotkey you copied from the block explorer (step 4)
                 </li>
                 <li>
                   <code className="text-green-300 font-mono text-xs">

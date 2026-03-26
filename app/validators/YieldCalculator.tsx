@@ -145,7 +145,7 @@ export default function YieldCalculator({ validators, taoPrice }: Props) {
         )}
 
         <p className="text-xs text-gray-700 leading-relaxed">
-          Estimates based on current APR from TaoStats. APR fluctuates with network conditions — actual yield may differ. Fee is already reflected in the APR figure. Not financial advice.
+          Estimates based on current on-chain APR. APR fluctuates with network conditions — actual yield may differ. Fee is already reflected in the APR figure. Not financial advice.
         </p>
       </div>
     </div>
