@@ -252,3 +252,10 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 - **How:** Exchange APIs or CoinGecko exchange endpoint
 - **Effort:** Medium
 - **Extends:** `/buy-tao`
+
+#### TP-040 — Wallet Watching
+- **What:** Save any TAO wallet address to a watchlist — track balance, staked amount, validator, and recent activity without connecting your own wallet
+- **Why:** Power users want to monitor wallets (their own or others) passively. Also useful for tracking validators or whales.
+- **How:** TaoStats API + localStorage or simple backend to persist watched addresses
+- **Effort:** Medium
+- **Route:** `/watch` or extend `/wallet`
