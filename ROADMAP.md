@@ -259,15 +259,16 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 - **Effort:** Medium-High
 
 ##### Phase 1 — Richlist Page (building first)
-- **Scope:** Top 200 wallets ranked by total TAO
+- **Scope:** Top 1000 wallets ranked by total TAO
 - **Columns:** Rank | Address (full, copyable, links to /wallet/[address]) | Total TAO | Free TAO | Staked TAO | 24hr Change (Δ TAO + %)
 - **Highlight logic:**
   - 🔴 Red row/badge = balance dropped in last 24hr (selling signal)
   - 🟢 Green row/badge = balance increased in last 24hr (accumulating)
   - ⚪ No change = neutral
-- **Data source:** `GET /api/account/latest/v1?order_by=balance_total_desc&limit=200`
+- **Data source:** `GET /api/account/latest/v1?order_by=balance_total_desc&limit=200&page=N`
+  - API max is 200/page — fetch pages 1–5 in parallel server-side to get top 1000
   - API returns `balance_total`, `balance_free`, `balance_staked`, `balance_total_24hr_ago` — no cron needed for phase 1
-- **API confirmed:** 464,540 total accounts, endpoint live, sorts correctly
+- **API confirmed:** 464,540 total accounts, endpoint live, sorts correctly, 200/page max
 
 ##### Phase 2 — Alert System (decisions pending)
 - **Delivery:** TBD — email only vs Telegram vs browser push
