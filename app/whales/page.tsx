@@ -211,6 +211,11 @@ export default function WhalesPage() {
           </div>
         </div>
 
+        {/* Pagination — top */}
+        {totalPages > 1 && (
+          <Pagination page={page} totalPages={totalPages} onChange={(p) => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+        )}
+
         {/* Table */}
         <div className="rounded-xl border border-white/10 overflow-hidden">
           <div className="overflow-x-auto">
