@@ -4,7 +4,7 @@ import path from "path";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
 
-export const revalidate = 1800;
+export const revalidate = 1800; // 30 minutes
 
 type KnownWallets = {
   exchange: Record<string, string>;
