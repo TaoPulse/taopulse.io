@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://taopulse.io"),
+  metadataBase: new URL("https://www.taopulse.io"),
   title: {
     default: "TaoPulse — Bittensor TAO Analytics",
     template: "%s | TaoPulse",
