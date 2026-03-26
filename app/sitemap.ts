@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://taopulse.io";
+  const baseUrl = "https://www.taopulse.io";
 
   return [
     {
