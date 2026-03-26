@@ -355,3 +355,42 @@ _All data sourced from TaoStats API. Aggregation logic built on our side._
 - Are smart money and retail moving in the same direction or opposite?
 - Divergence = potential contrarian signal
 - **API:** Multiple `account/latest/v1` + `account/history/v1` queries
+
+---
+
+## ⚠️ Infrastructure Note — Data Source Independence
+
+**Current dependency:** TaoStats API (`api.taostats.io`) — free tier, single API key.
+
+**Risk:** TaoStats could rate-limit, block, or paywall us as we grow. They could also go down.
+
+### Mitigation Plan (in priority order)
+
+**Immediate (already planned):**
+- Cache all TaoStats responses server-side — users never hit TaoStats directly
+- 30min refresh cadence = minimal API calls regardless of traffic
+- Abstract all data fetching behind internal `/api/*` routes so the source is swappable
+
+**Short term:**
+- Monitor TaoStats API usage — add logging to `/api/whales` and other routes
+- Identify fallback sources per endpoint:
+  - Price → CoinGecko, CoinMarketCap
+  - Subnet data → Bittensor Python SDK metagraph
+  - Account balances → Subscan (Substrate chain indexer)
+
+**Medium term:**
+- Run a **Subtensor archive node** — full independence, no API keys, no rate limits
+  - Bittensor node can be queried directly via WebSocket RPC
+  - Subtensor repo: https://github.com/opentensor/subtensor
+  - Resource requirement: ~50-100GB storage, moderate CPU
+
+**Long term:**
+- Build our own indexer on top of the Subtensor node
+- Selectively use TaoStats for supplementary data (names, labels) only
+- Full data ownership = competitive moat (nobody can cut us off)
+
+### TP-050 — Data Source Abstraction Layer
+- Wrap all TaoStats calls in a `lib/data/` module with clear interfaces
+- Add fallback logic: if TaoStats fails, try alternative source
+- Track which source served each response in logs
+- **Priority:** Do this before going viral — not after
