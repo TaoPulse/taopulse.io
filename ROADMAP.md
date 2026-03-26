@@ -305,56 +305,93 @@ All three use existing TaoStats API (already integrated), no new dependencies.
 
 ---
 
-## 🔬 Analytics Roadmap (Future — post TP-040)
-_All data sourced from TaoStats API. Aggregation logic built on our side._
+## 🔬 Analytics Roadmap — Whale Intelligence Suite (post TP-040)
 
-### TP-041 — Whale Accumulation Index (`/analytics`)
-- Net buy/sell score across top 100 wallets over 7d / 30d
-- "Are whales accumulating or distributing right now?" — single clear signal
-- **API:** `account/latest/v1` + `account/history/v1`
+> **Vision:** TaoPulse owns the "whale intelligence" angle for TAO — better than TaoStats itself for market signals.
+> TaoStats is a block explorer. TaoPulse is the analytics layer on top of it.
+> The data is richer than most chains offer. The opportunity is real.
 
-### TP-042 — Staking Ratio Trend
-- % of top 500 wallets staked over time — rising = bullish, falling = bearish
-- Leading indicator for price direction
-- **API:** `balance_staked` vs `balance_free` from account history
+### Landing page: `/analytics`
+Single dashboard bringing all signals together. Priority: build the signal cards first, add charts progressively.
 
-### TP-043 — UNDELEGATE Spike Detector
-- Real-time feed of large unstaking events across the network
-- Alert when multiple whales unstake in the same 24h window (coordinated sell signal)
+---
+
+### 🔴 Priority 1 — Market Sentiment Signals
+
+#### TP-041 — Whale Accumulation Index
+- **What:** Net buy/sell score across top 100 wallets over 7d / 30d
+- **Output:** Single number + direction — "Whales are net ACCUMULATING (+12,400 τ this week)" or "DISTRIBUTING (-8,200 τ)"
+- **Shareable:** Yes — screenshot-worthy, people will post this
+- **API:** `account/latest/v1` (already in KV) + daily KV snapshots we're already storing
+- **Effort:** Low — data is already in KV
+
+#### TP-043 — UNDELEGATE Spike Detector
+- **What:** Real-time feed of large unstaking events. When multiple whales unstake in the same 24h window = coordinated sell signal
+- **Output:** Live feed + alert badge ("⚠️ 3 whales unstaked >10,000 τ in the last 24h")
+- **Shareable:** High — early warning signal the community will bookmark
 - **API:** `delegation/v1` filtered by action=UNDELEGATE + large amounts
+- **Effort:** Low — same API as whale-detail, just aggregated across top wallets
 
-### TP-044 — TAO Concentration Risk
-- What % of total TAO is held by top 10 / 50 / 100 / 1000 wallets?
-- Gini coefficient over time — is TAO becoming more or less concentrated?
-- **API:** `account/latest/v1` richlist + total supply
+#### TP-042 — Staking Ratio Trend
+- **What:** % of top 500 wallets staked over time — rising = bullish, falling = bearish. Leading indicator for price.
+- **Output:** Trend line chart (7d / 30d), current ratio, direction arrow
+- **Data dependency:** Needs our KV snapshots to build up over a few weeks to be meaningful
+- **API:** `balance_staked` / `balance_total` from `whales:current` KV cache (already stored)
+- **Effort:** Medium (needs chart library + time-series from KV snapshots)
 
-### TP-045 — New Whale Detection
-- Wallets that entered the top 500 in the last 7 / 30 days
-- "Fresh money" signal — who is accumulating quietly?
-- **API:** `account/latest/v1` rank diff vs `account/history/v1`
+---
 
-### TP-046 — Subnet Whale Intelligence
-- Which subnets are the top whales staked to?
-- Subnet popularity among top holders — rotation signals
-- If top holders are moving stake from SN-X to SN-Y, that's alpha
-- **API:** `alpha_balances` field on account records
+### 🟡 Priority 2 — Network Health
 
-### TP-047 — Validator Dominance Shifts
-- Which validators are gaining / losing whale stake over time?
-- Useful for nominators deciding where to stake
-- **API:** `validator/latest/v1` stake + stake_24hr_change
+#### TP-044 — TAO Concentration Risk (Gini Coefficient)
+- **What:** % of total TAO held by top 10 / 50 / 100 / 500 wallets. Gini coefficient over time — is TAO becoming more or less concentrated?
+- **Output:** Pie/bar breakdown + Gini score + comparison to BTC/ETH (for context)
+- **API:** `account/latest/v1` richlist (already in KV) + total supply from `network-stats`
+- **Effort:** Low math, medium visualization
 
-### TP-048 — Exchange Flow Tracker
-- Transfers TO known exchange wallets = likely selling pressure
-- Transfers FROM exchanges = likely buying / accumulation
-- Net exchange flow chart over time
-- **API:** `transfer/v1` filtered by known exchange coldkeys (from `data/known-wallets.json`)
+#### TP-045 — New Whale Detection
+- **What:** Wallets that entered the top 500 in the last 7 / 30 days — "fresh money" signal
+- **Output:** Table of new entrants with rank gained, TAO accumulated, first seen date
+- **Data dependency:** Needs KV snapshots to have history (grows richer over time)
+- **API:** Diff `whales:current` vs `whales:snapshot:YYYY-MM-DD`
+- **Effort:** Low — pure KV diff logic, no new API calls
 
-### TP-049 — Whale vs Retail Divergence
-- Compare balance trends of top 100 wallets vs wallets ranked 1000–10000
-- Are smart money and retail moving in the same direction or opposite?
-- Divergence = potential contrarian signal
-- **API:** Multiple `account/latest/v1` + `account/history/v1` queries
+#### TP-049 — Whale vs Retail Divergence
+- **What:** Compare balance trends of top 100 wallets vs wallets ranked 1000–10000. Divergence = contrarian signal.
+- **Output:** Two-line chart showing net accumulation for each group. When they diverge, show alert.
+- **API:** Multiple `account/latest/v1` queries
+- **Effort:** Medium
+
+---
+
+### 🟢 Priority 3 — Advanced Intelligence
+
+#### TP-046 — Subnet Whale Intelligence
+- **What:** Which subnets are top whales staked to? If whales rotate from SN1 → SN9, that's alpha before the market prices it in.
+- **Output:** Heatmap of whale stake by subnet. Top 5 subnets by whale concentration. 7d rotation signal.
+- **API:** `alpha_balances` field on account records + subnet metadata
+- **Effort:** High — requires cross-referencing whale addresses with subnet stake data
+
+#### TP-047 — Validator Dominance Shifts
+- **What:** Which validators are gaining / losing whale stake over time?
+- **Output:** Table sorted by 7d stake change. Rising validators = gaining trust. Falling = potential issues.
+- **API:** `validator/latest/v1` stake + `stake_24hr_change`
+- **Effort:** Medium — validator data already partially used in whale labeling
+
+#### TP-048 — Exchange Flow Tracker
+- **What:** Transfers TO known exchange wallets = selling pressure. FROM exchanges = accumulation. Net flow chart over time.
+- **Output:** Net flow bar chart (daily), current flow direction, 7d trend
+- **Dependency:** Requires populating `data/known-wallets.json` with more exchange addresses
+- **API:** `transfer/v1` filtered by known exchange coldkeys
+- **Effort:** Medium (data quality limited by how complete known-wallets.json is)
+
+---
+
+### Build Order
+1. TP-041 + TP-044 + TP-045 → first `/analytics` page (all use existing KV data, low effort, high impact)
+2. TP-043 → add UNDELEGATE spike feed (one new API call pattern)
+3. TP-042 → staking trend chart (waits for KV snapshots to accumulate ~2 weeks of data)
+4. TP-046 / TP-047 / TP-048 / TP-049 → advanced features, post initial traction
 
 ---
 
