@@ -71,44 +71,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-4">
-              Resources
-            </h3>
-            <ul className="space-y-2.5">
-              <li>
-                <a
-                  href="https://bittensor.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Bittensor.com
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://taostats.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  TaoStats
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://docs.bittensor.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-gray-400 hover:text-white transition-colors"
-                >
-                  Documentation
-                </a>
-              </li>
-            </ul>
-          </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
