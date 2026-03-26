@@ -113,7 +113,8 @@ export async function GET() {
       headers: { "Cache-Control": "s-maxage=1800, stale-while-revalidate=300" },
     });
   } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
     console.error("Failed to fetch whale data:", err);
-    return NextResponse.json({ error: "Failed to fetch whale data" }, { status: 502 });
+    return NextResponse.json({ error: "Failed to fetch whale data", detail: msg }, { status: 502 });
   }
 }
