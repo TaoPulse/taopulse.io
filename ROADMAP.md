@@ -378,6 +378,28 @@ Single dashboard bringing all signals together. Priority: build the signal cards
 - **API:** `validator/latest/v1` stake + `stake_24hr_change`
 - **Effort:** Medium — validator data already partially used in whale labeling
 
+#### TP-052 — Daily Emission Flow Tracker
+- **What:** Visual breakdown of how the daily ~7,200 TAO emission flows through the network — subnet → validator → stakers
+- **Output:**
+  - Emission by subnet (bar chart — which subnets are capturing the most TAO today)
+  - Per subnet: top validators receiving emission, their take %, TAO kept vs passed to stakers
+  - "If you have X TAO staked with Validator Y in SN3, you earned ~Z TAO today"
+- **Data sources:** Already live — no new API calls needed
+  - `subnet/latest/v1` → `emission`, `projected_emission` per subnet
+  - `validator/latest/v1` → `pending_emission`, `take`, `nominator_return_per_k`, `apr`, `subnet_dominance`
+- **Math:** `subnet_emission × validator_dominance × (1 - take)` = staker share
+- **Route:** `/analytics` or `/emission` or section on `/staking`
+- **Effort:** Low-Medium — data already fetched, mostly visualization work
+- **Dependency:** None — fully buildable today
+- **Historical note:** Backfill emission data from Dec 2025 onwards (just before the halving) — critical for showing pre/post halving emission comparison. TaoStats history endpoints should have this data.
+
+#### TP-051 — Validator Cross-Reference on Whale Detail
+- **What:** When viewing a whale wallet's staking positions, cross-reference the validator (hotkey) with live validator data to show: validator name, APY, take %, total stake
+- **Output:** In the expanded wallet row → staking positions show "Staked with tao.bot (8% APY, 0% take)"
+- **Data:** `whale_alpha_balances.hotkey` → join with `/api/validators` data
+- **Dependency:** Requires Supabase whale history tables (TP-040 Phase 3+) to be live
+- **Effort:** Low — data already exists, just needs joining in the UI
+
 #### TP-048 — Exchange Flow Tracker
 - **What:** Transfers TO known exchange wallets = selling pressure. FROM exchanges = accumulation. Net flow chart over time.
 - **Output:** Net flow bar chart (daily), current flow direction, 7d trend
