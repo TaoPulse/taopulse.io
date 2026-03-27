@@ -432,6 +432,24 @@ Single dashboard bringing all signals together. Priority: build the signal cards
 - Track which source served each response in logs
 - **Priority:** Do this before going viral — not after
 
+#### TP-052 — Emission Flow Dashboard ("The Pulse")
+- **Why:** This is the heartbeat of the network. Where TAO flows, who gets it, in real time. Nobody has built this for Bittensor yet.
+- **What:** Show the emission cascade in real time:
+  - "Today, SN3 received 258 TAO"
+  - "Validator X took 23 TAO (9% take)"
+  - "235 TAO distributed to 6,691 stakers"
+  - Per-staker projection: "You have 1,000 TAO staked in SN3 → earned ~0.47 TAO today (~$130/year)"
+- **Data:** All already fetched for `/subnets` and `/validators` pages
+  - Subnet emission % from `/api/network-stats`
+  - Validator APY, take %, stake from `/api/validators`
+  - No new API endpoints needed
+- **Math:** `subnet_emission × validator_dominance × (1 - take) = staker_return`
+- **Tricky part:** Emission happens per epoch (~1h), not once/day. Show real-time snapshot + 24h aggregate.
+- **Route:** `/emission-flow` or new dashboard section on home
+- **Effort:** Medium
+- **Impact:** High — bookmark-worthy, shareable visualization of the network's lifeblood
+- **User value:** "This is where the TAO goes every day" — power users + beginners both want this
+
 ---
 
 ## 🏷️ Wallet Label System (Deferred — revisit post-launch)
