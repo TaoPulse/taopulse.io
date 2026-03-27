@@ -34,9 +34,9 @@ export async function GET(req: NextRequest) {
     const json = await res.json();
     const data = (json?.data ?? []).map((r: Record<string, unknown>) => ({
       date: (r.timestamp as string)?.slice(0, 10) ?? "",
-      total: parseFloat(String(r.balance_total ?? 0)),
-      staked: parseFloat(String(r.balance_staked ?? 0)),
-      free: parseFloat(String(r.balance_free ?? 0)),
+      total: parseFloat(String(r.balance_total ?? 0)) / 1e9,
+      staked: parseFloat(String(r.balance_staked ?? 0)) / 1e9,
+      free: parseFloat(String(r.balance_free ?? 0)) / 1e9,
     }));
 
     // Return in ascending order (oldest first for chart)
