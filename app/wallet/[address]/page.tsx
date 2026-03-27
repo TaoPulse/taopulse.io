@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CopyButton from "./CopyButton";
 import WalletSearchForm from "../WalletSearchForm";
+import BalanceChart from "./BalanceChart";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
 
@@ -255,6 +256,9 @@ export default async function WalletAddressPage({
             ))}
           </div>
         )}
+
+        {/* Balance history chart */}
+        {!notFound && <BalanceChart address={address} />}
 
         {/* Stakes breakdown */}
         {!notFound && (
