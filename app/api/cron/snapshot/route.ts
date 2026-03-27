@@ -19,7 +19,7 @@ import { kv } from "@vercel/kv";
 import { readFileSync } from "fs";
 import path from "path";
 import { Resend } from "resend";
-import { getSupabaseAdmin } from "@/lib/supabase-server";
+import { createClient } from "@supabase/supabase-js";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
 
@@ -42,15 +42,6 @@ function todayKey() {
 
 function nowIso() {
   return new Date().toISOString();
-}
-
-function isoTimestamp(ts: unknown): string | null {
-  if (!ts) return null;
-  try { return new Date(String(ts)).toISOString(); } catch { return null; }
-}
-
-function toTaoRaw(raw: unknown): number {
-  return parseFloat(String(raw ?? "0")) / 1e9;
 }
 
 export async function GET(req: Request) {
@@ -140,26 +131,82 @@ export async function GET(req: Request) {
     });
 
     // ── 3. Store whales:current (main richlist cache) ────────────────────────
-    await kv.set("whales:current", { data: whalesEnriched, fetched_at: Date.now() }, { ex: 35 * 60 });
+    await kv.set("whales:current", { data: whalesEnriched, fetched_at: Date.now() }, { ex: 25 * 60 * 60 });
 
-    // ── 3a. Upsert today's snapshot row into Supabase whale_snapshots ────────
-    const supabase = getSupabaseAdmin();
-    if (supabase) {
-      const today = new Date().toISOString().slice(0, 10);
-      const snapshotRows = whales.map((w) => ({
-        address: w.address,
-        date: today,
-        balance_total: w.balance_total,
-        balance_free: w.balance_free,
-        balance_staked: w.balance_staked,
-        rank: w.rank,
-      }));
+    // ── 3a. Upsert today's snapshots + alpha balances into Supabase ──────────
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (supabaseUrl && supabaseServiceKey) {
       try {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const top100 = whalesEnriched.slice(0, 100);
+
+        // Build snapshot rows
+        const snapshotRows = top100.map((w) => ({
+          address: w.address,
+          date: todayStr,
+          balance_total: w.balance_total,
+          balance_free: w.balance_free,
+          balance_staked: w.balance_staked,
+          rank: w.rank,
+        }));
+
         const { error: snapErr } = await supabase
           .from("whale_snapshots")
           .upsert(snapshotRows, { onConflict: "address,date" });
-        if (snapErr) console.error("whale_snapshots upsert error:", snapErr.message);
-      } catch (e) { console.error("whale_snapshots upsert threw:", e); }
+        if (snapErr) console.error("Supabase snapshot upsert error:", snapErr.message);
+
+        // Build alpha balance rows from the raw accounts (need to look up from allAccounts)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const alphaRows: any[] = [];
+        for (let i = 0; i < allAccounts.length && i < 100; i++) {
+          const account = allAccounts[i];
+          const address =
+            typeof account.address === "object"
+              ? (account.address?.ss58 ?? "")
+              : (account.address ?? "");
+          if (!address) continue;
+          const rank = account.rank ?? i + 1;
+
+          // Root stake
+          const rootStake = toTao(account.balance_staked_root ?? 0);
+          if (rootStake > 0) {
+            alphaRows.push({
+              address,
+              date: todayStr,
+              netuid: 0,
+              hotkey: null,
+              balance_alpha: 0,
+              balance_as_tao: rootStake,
+              rank,
+            });
+          }
+
+          // Per-subnet alpha
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          for (const ab of (account.alpha_balances ?? []) as any[]) {
+            alphaRows.push({
+              address,
+              date: todayStr,
+              netuid: ab.netuid,
+              hotkey: ab.hotkey ?? null,
+              balance_alpha: toTao(ab.balance),
+              balance_as_tao: toTao(ab.balance_as_tao),
+              rank,
+            });
+          }
+        }
+
+        if (alphaRows.length > 0) {
+          const { error: alphaErr } = await supabase
+            .from("whale_alpha_balances")
+            .upsert(alphaRows, { onConflict: "address,date,netuid,hotkey" });
+          if (alphaErr) console.error("Supabase alpha upsert error:", alphaErr.message);
+        }
+      } catch (e) {
+        console.error("Supabase upsert failed (non-fatal):", e);
+      }
     }
 
     // ── 3b. Pre-fetch 30-day balance history for top 100 wallets ────────────
@@ -217,136 +264,6 @@ export async function GET(req: Request) {
 
       if (i + HIST_BATCH_SIZE < histTop100.length) {
         await new Promise((resolve) => setTimeout(resolve, HIST_BATCH_DELAY));
-      }
-    }
-
-    // ── 3c. Upsert top-100 transfers + delegations into Supabase ────────────
-    if (supabase) {
-      const today = new Date().toISOString().slice(0, 10);
-      const top100addrs = histTop100.map((w) => w.address);
-
-      // Fetch transfers + delegations in parallel batches of 5
-      const SUPABASE_BATCH = 5;
-      const SUPABASE_BATCH_DELAY = 500;
-
-      for (let i = 0; i < top100addrs.length; i += SUPABASE_BATCH) {
-        const batch = top100addrs.slice(i, i + SUPABASE_BATCH);
-
-        await Promise.all(batch.map(async (address) => {
-          try {
-            // Transfers
-            const txRes = await fetch(
-              `${TAOSTATS_BASE}/api/transfer/v1?coldkey=${address}&limit=50&order=timestamp_desc`,
-              fetchOpts
-            ).then((r) => r.json()).catch(() => ({ data: [] }));
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const txRows = (txRes.data ?? []).map((item: any) => {
-              const fromAddr = typeof item.from === "object" ? (item.from?.ss58 ?? "") : (item.from ?? "");
-              const toAddr   = typeof item.to   === "object" ? (item.to?.ss58   ?? "") : (item.to   ?? "");
-              const isInbound = toAddr === address;
-              const counterparty = isInbound ? fromAddr : toAddr;
-              const blockNum = item.block_number ?? item.block ?? null;
-              const txHash   = item.extrinsic_id ?? item.transaction_hash ?? item.hash ?? null;
-              return {
-                id: `${address}-${blockNum}-${txHash ?? ""}`,
-                address,
-                type: isInbound ? "transfer_in" : "transfer_out",
-                amount: toTaoRaw(item.amount),
-                counterparty: counterparty || null,
-                block_number: blockNum ? parseInt(String(blockNum), 10) : null,
-                timestamp: isoTimestamp(item.timestamp ?? item.block_timestamp),
-                transaction_hash: txHash ?? null,
-              };
-            });
-
-            if (txRows.length > 0) {
-              const { error } = await supabase
-                .from("whale_transactions")
-                .upsert(txRows, { onConflict: "id" });
-              if (error) console.error(`whale_transactions upsert (${address}):`, error.message);
-            }
-
-            // Delegations
-            const delRes = await fetch(
-              `${TAOSTATS_BASE}/api/delegation/v1?coldkey=${address}&limit=50&order=timestamp_desc`,
-              fetchOpts
-            ).then((r) => r.json()).catch(() => ({ data: [] }));
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const delRows = (delRes.data ?? []).map((item: any) => {
-              const delegate =
-                typeof item.delegate === "object"
-                  ? (item.delegate?.ss58 ?? item.delegate?.hotkey ?? "")
-                  : (item.delegate ?? item.hotkey ?? "");
-              const blockNum = item.block_number ?? item.block ?? null;
-              const netuid   = item.netuid ?? null;
-              const action   = (item.action ?? item.type ?? "DELEGATE").toUpperCase();
-              return {
-                id: `${address}-${blockNum}-${action}-${delegate}-${netuid ?? 0}`,
-                address,
-                action,
-                delegate: delegate || "",
-                delegate_name: item.delegate_name ?? item.validator_name ?? null,
-                netuid: netuid !== null ? parseInt(String(netuid), 10) : null,
-                amount: toTaoRaw(item.amount ?? item.tao ?? 0),
-                alpha: item.alpha != null ? toTaoRaw(item.alpha) : null,
-                usd: item.usd != null ? parseFloat(String(item.usd)) : null,
-                alpha_price_in_tao: item.alpha_price_in_tao != null ? parseFloat(String(item.alpha_price_in_tao)) : null,
-                alpha_price_in_usd: item.alpha_price_in_usd != null ? parseFloat(String(item.alpha_price_in_usd)) : null,
-                timestamp: isoTimestamp(item.timestamp ?? item.block_timestamp),
-                block_number: blockNum ? parseInt(String(blockNum), 10) : null,
-              };
-            });
-
-            if (delRows.length > 0) {
-              const { error } = await supabase
-                .from("whale_delegations")
-                .upsert(delRows, { onConflict: "id" });
-              if (error) console.error(`whale_delegations upsert (${address}):`, error.message);
-            }
-
-            // Alpha balances — derive from delegation data grouped by (netuid, delegate/hotkey)
-            // Use the most recent delegation snapshot to approximate current alpha holdings
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const alphaByNetuid: Map<string, any> = new Map();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            for (const item of (delRes.data ?? []) as any[]) {
-              const netuid = item.netuid ?? null;
-              if (netuid === null || item.alpha == null) continue;
-              const delegate =
-                typeof item.delegate === "object"
-                  ? (item.delegate?.ss58 ?? item.delegate?.hotkey ?? "")
-                  : (item.delegate ?? item.hotkey ?? "");
-              const key = `${netuid}-${delegate}`;
-              if (!alphaByNetuid.has(key)) {
-                alphaByNetuid.set(key, {
-                  address,
-                  date: today,
-                  netuid: parseInt(String(netuid), 10),
-                  hotkey: delegate || null,
-                  balance_alpha: toTaoRaw(item.alpha),
-                  balance_as_tao: toTaoRaw(item.amount ?? item.tao ?? 0),
-                  rank: null,
-                });
-              }
-            }
-
-            if (alphaByNetuid.size > 0) {
-              const alphaRows = Array.from(alphaByNetuid.values());
-              const { error } = await supabase
-                .from("whale_alpha_balances")
-                .upsert(alphaRows, { onConflict: "address,date,netuid" });
-              if (error) console.error(`whale_alpha_balances upsert (${address}):`, error.message);
-            }
-          } catch (e) {
-            console.error(`Supabase batch error for ${address}:`, e);
-          }
-        }));
-
-        if (i + SUPABASE_BATCH < top100addrs.length) {
-          await new Promise((resolve) => setTimeout(resolve, SUPABASE_BATCH_DELAY));
-        }
       }
     }
 
@@ -419,7 +336,7 @@ export async function GET(req: Request) {
       const mean = balances.reduce((s, b) => s + b, 0) / n;
       concentration.gini = mean > 0 ? sumOfAbsDiffs / (2 * n * n * mean) : 0;
     }
-    await kv.set("analytics:concentration", concentration, { ex: 35 * 60 });
+    await kv.set("analytics:concentration", concentration, { ex: 25 * 60 * 60 });
 
     // ── 7. Accumulation index (TP-041) ────────────────────────────────────────
     // Net TAO change across top 100 wallets vs yesterday
@@ -436,7 +353,7 @@ export async function GET(req: Request) {
       neutral_count: top100.length - buyingCount - sellingCount,
       signal: netChange24h > 100 ? "ACCUMULATING" : netChange24h < -100 ? "DISTRIBUTING" : "NEUTRAL",
     };
-    await kv.set("analytics:accumulation-index", accumIndex, { ex: 35 * 60 });
+    await kv.set("analytics:accumulation-index", accumIndex, { ex: 25 * 60 * 60 });
 
     // ── 8. Exchange flow (TP-048) — transfers to/from known exchanges ─────────
     // We store a rolling window of exchange flow snapshots (24h cadence is fine)
@@ -475,7 +392,7 @@ export async function GET(req: Request) {
           net_tao: outflow - inflow, // positive = net buying, negative = net selling
           transfer_count: recent.length,
         };
-        await kv.set("analytics:exchange-flow", exchangeFlow, { ex: 35 * 60 });
+        await kv.set("analytics:exchange-flow", exchangeFlow, { ex: 25 * 60 * 60 });
       } catch { /* exchange flow is best-effort */ }
     }
 
@@ -558,30 +475,34 @@ export async function GET(req: Request) {
               `,
             }).catch((e: unknown) => console.error("Alert email failed:", e));
 
-            // Also post to Discord alerts channel
-            const discordAlertWebhook = process.env.DISCORD_TAOPULSE_ALERT_WEBHOOK;
-            if (discordAlertWebhook) {
-              fetch(discordAlertWebhook, {
+            alertsFired++;
+
+            // Also post to Discord #taopulse-alerts
+            const alertWebhook = process.env.DISCORD_TAOPULSE_ALERT_WEBHOOK;
+            if (alertWebhook) {
+              const shortAddr = `${whale.address.slice(0, 8)}…${whale.address.slice(-8)}`;
+              await fetch(alertWebhook, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  username: "TaoPulse Bot",
                   embeds: [{
-                    title: `🚨 Whale Alert — Large Balance Drop`,
+                    title: `🚨 Whale Alert: ${shortAddr}`,
                     color: 0xef4444,
+                    url: `https://taopulse.io/wallet/${whale.address}`,
                     fields: [
-                      { name: "Wallet", value: `[${whale.address.slice(0, 8)}...](https://taopulse.io/wallet/${whale.address})`, inline: false },
-                      { name: "24h Change", value: `−${dropTao} τ (${dropPctFmt}%)`, inline: true },
-                      { name: "Current Balance", value: `${whale.balance_total.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ`, inline: true },
-                      { name: "Threshold", value: `${threshold}%`, inline: true },
+                      { name: "Rank", value: `#${whale.rank}`, inline: true },
+                      { name: "Balance", value: `${whale.balance_total.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ`, inline: true },
+                      { name: "24h Change", value: `−${Math.abs(whale.change_24hr ?? 0).toLocaleString("en-US", { maximumFractionDigits: 0 })} τ (${dropPctFmt}%)`, inline: true },
+                      { name: "Free TAO", value: `${whale.balance_free.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ`, inline: true },
+                      { name: "Staked TAO", value: `${whale.balance_staked.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ`, inline: true },
+                      { name: "Threshold triggered", value: `${threshold}% (${email})`, inline: true },
                     ],
+                    footer: { text: whale.address },
                     timestamp: new Date().toISOString(),
                   }],
                 }),
-              }).catch((e: unknown) => console.error("Discord alert failed:", e));
+              }).catch((e) => console.error("Discord alert webhook failed:", e));
             }
-
-            alertsFired++;
           }
         }
       } catch (e) {
@@ -591,91 +512,40 @@ export async function GET(req: Request) {
 
     const elapsed = Date.now() - startedAt;
 
-    // ── 10. Validate 30-day coverage + send Discord report ──────────────────
-    const discordCronWebhook = process.env.DISCORD_TAOPULSE_CRON_WEBHOOK;
-    const discordErrorWebhook = process.env.DISCORD_TAOPULSE_ERROR_WEBHOOK;
-    if (supabase && discordCronWebhook) {
-      try {
-        const today = new Date().toISOString().slice(0, 10);
-        const thirtyDaysAgo = new Date(Date.now() - 29 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+    // ── 10. Discord cron summary ─────────────────────────────────────────────
+    const cronWebhook = process.env.DISCORD_TAOPULSE_CRON_WEBHOOK;
+    if (cronWebhook) {
+      const accumSignalEmoji =
+        accumIndex.signal === "ACCUMULATING" ? "🟢" :
+        accumIndex.signal === "DISTRIBUTING" ? "🔴" : "⚪";
+      const netChangeFmt = accumIndex.net_change_24h >= 0
+        ? `+${accumIndex.net_change_24h.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
+        : accumIndex.net_change_24h.toLocaleString("en-US", { maximumFractionDigits: 0 });
+      const stakingPct = totalTao > 0 ? ((stakedTao / totalTao) * 100).toFixed(1) : "—";
+      const ts = Math.floor(Date.now() / 1000);
 
-        // Total distinct wallets in whale_snapshots
-        const { count: totalWallets } = await supabase
-          .from("whale_snapshots")
-          .select("*", { count: "exact", head: true });
-
-        // Wallets with < 30 days of data — query directly
-        let walletsWithGaps: number | "unknown" = "unknown";
-        try {
-          const { data: gapRows } = await supabase
-            .from("whale_snapshots")
-            .select("address, date")
-            .gte("date", thirtyDaysAgo);
-
-          if (gapRows) {
-            const countByAddress: Record<string, Set<string>> = {};
-            for (const row of gapRows) {
-              if (!countByAddress[row.address]) countByAddress[row.address] = new Set();
-              countByAddress[row.address].add(row.date);
-            }
-            walletsWithGaps = Object.values(countByAddress).filter((dates) => dates.size < 30).length;
-          }
-        } catch { /* leave as unknown */ }
-
-        // Count wallets upserted today
-        const { count: todayCount } = await supabase
-          .from("whale_snapshots")
-          .select("*", { count: "exact", head: true })
-          .eq("date", today);
-
-        const allGood = walletsWithGaps === 0 || walletsWithGaps === "unknown";
-        const statusEmoji = allGood ? "✅" : "⚠️";
-        const gapText = walletsWithGaps === "unknown"
-          ? "could not check"
-          : walletsWithGaps === 0
-          ? "0 ✅"
-          : `${walletsWithGaps} ⚠️`;
-
-        const discordPayload = {
-          username: "TaoPulse Bot",
+      await fetch(cronWebhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           embeds: [{
-            title: `${statusEmoji} TaoPulse Daily Cron Report`,
-            color: allGood ? 0x22c55e : 0xf59e0b,
+            title: "🐋 TaoPulse Cron — Snapshot Complete",
+            color: 0x7c3aed,
             fields: [
-              { name: "📅 Date", value: today, inline: true },
-              { name: "⏱️ Elapsed", value: `${(elapsed / 1000).toFixed(1)}s`, inline: true },
-              { name: "\u200b", value: "\u200b", inline: false },
-              { name: "🐋 Wallets upserted today", value: String(todayCount ?? "?"), inline: true },
-              { name: "🗄️ Total wallets in DB", value: String(totalWallets ?? "?"), inline: true },
-              { name: "📉 Wallets with <30 days", value: gapText, inline: true },
-              { name: "🔔 Alerts fired", value: String(alertsFired), inline: true },
-              { name: "📜 History prefetched", value: `${histPrefetched} (skipped: ${histSkipped}, failed: ${histFailed})`, inline: true },
+              { name: "Wallets fetched", value: `${whales.length}`, inline: true },
+              { name: "Elapsed", value: `${(elapsed / 1000).toFixed(1)}s`, inline: true },
+              { name: "Alerts fired", value: `${alertsFired}`, inline: true },
+              { name: `${accumSignalEmoji} Signal`, value: accumIndex.signal, inline: true },
+              { name: "Net 24h change (top 100)", value: `${netChangeFmt} τ`, inline: true },
+              { name: "Staking ratio (top 500)", value: `${stakingPct}%`, inline: true },
+              { name: "Buying / Selling", value: `${accumIndex.buying_count} 🟢 / ${accumIndex.selling_count} 🔴`, inline: true },
+              { name: "Hist prefetch", value: `${histPrefetched} fetched, ${histSkipped} skipped, ${histFailed} failed`, inline: false },
             ],
-            footer: { text: "taopulse.io cron" },
+            footer: { text: "taopulse.io" },
             timestamp: new Date().toISOString(),
           }],
-        };
-
-        // If gaps found, add an error ping
-        if (walletsWithGaps !== 0 && walletsWithGaps !== "unknown" && discordErrorWebhook) {
-          await fetch(discordErrorWebhook, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              username: "TaoPulse Bot",
-              content: `🚨 **Action needed:** ${walletsWithGaps} wallets missing history. Run backfill workflow.`,
-            }),
-          });
-        }
-
-        await fetch(discordCronWebhook, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(discordPayload),
-        });
-      } catch (e) {
-        console.error("Discord report failed:", e);
-      }
+        }),
+      }).catch((e) => console.error("Discord cron webhook failed:", e));
     }
 
     return NextResponse.json({
@@ -691,13 +561,30 @@ export async function GET(req: Request) {
         "analytics:concentration",
         "analytics:accumulation-index",
         "analytics:exchange-flow",
-        supabase ? "supabase:whale_snapshots" : "(supabase disabled)",
-        supabase ? "supabase:whale_transactions+delegations+alpha_balances" : "(supabase disabled)",
       ],
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("Cron snapshot failed:", err);
+
+    // Discord error alert
+    const errorWebhook = process.env.DISCORD_TAOPULSE_ERROR_WEBHOOK;
+    if (errorWebhook) {
+      await fetch(errorWebhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          embeds: [{
+            title: "🚨 TaoPulse Cron — FAILED",
+            color: 0xef4444,
+            description: `\`\`\`${msg}\`\`\``,
+            footer: { text: "taopulse.io" },
+            timestamp: new Date().toISOString(),
+          }],
+        }),
+      }).catch(() => {});
+    }
+
     return NextResponse.json({ error: "Snapshot failed", detail: msg }, { status: 500 });
   }
 }
