@@ -95,6 +95,42 @@ This is viable as a **nightly batch job** but not as a real-time or 30-min cron 
 
 ---
 
+## POC Results (2026-03-27)
+
+**Goal:** Benchmark whether we could replace TaoStats as the richlist source by querying the Bittensor chain directly — fetching all accounts, sorting by balance, and deriving the top 500 ourselves.
+
+**Why we explored this:** The one-time backfill for whale history was hitting TaoStats 429 rate limits hard. That raised the question — should we cut TaoStats dependency entirely and go chain-direct?
+
+### Approach
+
+Used `@polkadot/api` to connect to the public Bittensor RPC (`wss://entrypoint-finney.opentensor.ai:443`) and run:
+
+1. `api.query.system.account.entries()` — pull every account + free balance on chain
+2. `api.query.subtensorModule.totalColdkeyStake(address)` — pull staked balance per account
+3. Merge free + staked = total balance, sort descending, take top 10
+
+The problem with `entries()` in one shot is it tries to fetch hundreds of thousands of accounts over a public WebSocket — which either hangs or gets cut off. Switched to **paginated fetching** via `entriesPaged({ pageSize: 1000 })`, which chunked it reliably.
+
+### Benchmark Results
+
+| Metric | Result |
+|---|---|
+| Total accounts on chain | **462,504** |
+| Account fetch time | **1m 8s** |
+| Stake fetch time | **FAILED** |
+| Sort + merge time | 0.5s |
+| Total run time | ~1m 10s |
+
+### Findings
+
+- ✅ **Chain-direct richlist is viable** — 462k accounts in 1m 8s is well within GitHub Actions free tier budget for a nightly job
+- ❌ **Stake query failed** — module path `api.query.subtensorModule.totalColdkeyStake` was wrong. Likely `TotalColdkeyStake` (capital T) or different pallet path. Needs one fix to confirm.
+- ⚠️ **Not urgent** — daily TaoStats cron is within free limits. Only worth building out if the cron itself starts hitting rate limits regularly
+
+**One remaining task:** Find the correct `subtensorModule` storage key for total coldkey stake (enumerate `api.query.subtensorModule` methods or check Bittensor substrate runtime source).
+
+---
+
 ## Current Status (2026-03-27)
 - ❌ Not started
 - Backfill (using TaoStats) is running — will populate 30 days of history for top 100 wallets
