@@ -56,11 +56,19 @@ This is viable as a **nightly batch job** but not as a real-time or 30-min cron 
 - ✅ Flexible queries (top 500 by free balance, staked, etc.)
 - ✅ Cost: $0 (polkadot/api is open source, RPC is free)
 
+## Dependency Matrix (post-migration)
+
+| Data | Source | Notes |
+|------|--------|-------|
+| Richlist (top 500) | ✅ Chain (nightly scan) | `system.account.entries()` + stake merge |
+| Validator names | ✅ Chain (identity pallet) | `api.query.identity.identityOf(address)` — on-chain standard |
+| Balance history (24h/7d/30d) | ✅ Our Supabase snapshots | Built from nightly scan |
+| Alpha balances per subnet | ⚠️ Subnet pallet | Doable but complex — future phase |
+| Transfer history | ⚠️ TaoStats or block indexer | Only needed for wallet detail page (`/wallet/[address]`). Hard to replace — requires scanning every block. Keep TaoStats for this only. |
+
 ## What We Lose / Still Need TaoStats For
-- ❌ **Validator names/labels** — TaoStats enriches these; we'd maintain our own `known-wallets.json`
-- ❌ **Alpha balances per subnet** — subnet pallet data, more complex to pull
-- ❌ **Transfer history** — still need TaoStats or index blocks ourselves
-- ❌ **TaoStats 24hr balance fields** — we'd compute our own from snapshots
+- ⚠️ **Alpha balances per subnet** — subnet pallet data, more complex to pull (future phase)
+- ⚠️ **Transfer history** — only for wallet detail page; need to index blocks or keep TaoStats for this specifically
 
 ---
 
