@@ -18,7 +18,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
-const DELAY_MS = 4_000; // 4 seconds between wallets (~7 min for 100)
+const DELAY_MS = 6_000; // 6 seconds between wallets (~10 min for 100)
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -28,6 +28,25 @@ function toTao(raw: unknown): number {
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchWithRetry(url: string, opts: RequestInit, retries = 3): Promise<Response> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const res = await fetch(url, opts);
+    if (res.status === 429) {
+      const wait = attempt * 10_000; // 10s, 20s, 30s
+      log(`  429 rate limit hit — waiting ${wait / 1000}s before retry ${attempt}/${retries}`);
+      await sleep(wait);
+      continue;
+    }
+    if (!res.ok && attempt < retries) {
+      log(`  HTTP ${res.status} on attempt ${attempt}/${retries} — retrying...`);
+      await sleep(3_000);
+      continue;
+    }
+    return res;
+  }
+  throw new Error(`Failed after ${retries} attempts: ${url}`);
 }
 
 function log(msg: string) {
@@ -103,10 +122,11 @@ async function main() {
 
     try {
       // ── 2a. Balance history (30 days) ──────────────────────────────────────
-      const histRes = await fetch(
+      const histRes = await fetchWithRetry(
         `${TAOSTATS_BASE}/api/account/history/v1?address=${address}&limit=30&order=timestamp_desc`,
         fetchOpts
       ).then((r) => r.json());
+      log(`  history raw: status=${histRes.status_code ?? "ok"} count=${histRes.data?.length ?? 0}`);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const snapshots = (histRes.data ?? []).map((item: any) => {
@@ -133,7 +153,7 @@ async function main() {
 
       // ── 2b. Transfers ──────────────────────────────────────────────────────
       // TaoStats accepts both ?address= and ?coldkey= — try address first
-      const txRes = await fetch(
+      const txRes = await fetchWithRetry(
         `${TAOSTATS_BASE}/api/transfer/v1?address=${address}&limit=100&order=timestamp_desc`,
         fetchOpts
       ).then((r) => r.json());
@@ -171,7 +191,7 @@ async function main() {
       }
 
       // ── 2c. Delegations ────────────────────────────────────────────────────
-      const delRes = await fetch(
+      const delRes = await fetchWithRetry(
         `${TAOSTATS_BASE}/api/delegation/v1?coldkey=${address}&limit=100&order=timestamp_desc`,
         fetchOpts
       ).then((r) => r.json());
