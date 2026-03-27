@@ -18,7 +18,7 @@
 import { createClient } from "@supabase/supabase-js";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
-const DELAY_MS = 8_000; // 8 seconds between wallets
+const DELAY_MS = 4_000; // 4 seconds between wallets (~7 min for 100)
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -132,10 +132,12 @@ async function main() {
       }
 
       // ── 2b. Transfers ──────────────────────────────────────────────────────
+      // TaoStats accepts both ?address= and ?coldkey= — try address first
       const txRes = await fetch(
-        `${TAOSTATS_BASE}/api/transfer/v1?coldkey=${address}&limit=100&order=timestamp_desc`,
+        `${TAOSTATS_BASE}/api/transfer/v1?address=${address}&limit=100&order=timestamp_desc`,
         fetchOpts
       ).then((r) => r.json());
+      log(`  transfers raw: status=${txRes.status_code ?? "ok"} count=${txRes.data?.length ?? 0}`);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transactions = (txRes.data ?? []).map((item: any) => {
@@ -173,6 +175,7 @@ async function main() {
         `${TAOSTATS_BASE}/api/delegation/v1?coldkey=${address}&limit=100&order=timestamp_desc`,
         fetchOpts
       ).then((r) => r.json());
+      log(`  delegations raw: status=${delRes.status_code ?? "ok"} count=${delRes.data?.length ?? 0}`);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const delegations = (delRes.data ?? []).map((item: any) => {
