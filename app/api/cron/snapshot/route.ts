@@ -132,6 +132,64 @@ export async function GET(req: Request) {
     // ── 3. Store whales:current (main richlist cache) ────────────────────────
     await kv.set("whales:current", { data: whalesEnriched, fetched_at: Date.now() }, { ex: 35 * 60 });
 
+    // ── 3b. Pre-fetch 30-day balance history for top 100 wallets ────────────
+    let histPrefetched = 0, histSkipped = 0, histFailed = 0;
+    const HIST_BATCH_SIZE = 5;
+    const HIST_BATCH_DELAY = 300; // ms between batches
+    const histTop100 = whalesEnriched.slice(0, 100);
+
+    for (let i = 0; i < histTop100.length; i += HIST_BATCH_SIZE) {
+      const batch = histTop100.slice(i, i + HIST_BATCH_SIZE);
+      await Promise.all(batch.map(async (whale) => {
+        const cacheKey = `whale-history:${whale.address}`;
+        try {
+          const existing = await kv.get<{ cached_at: number }>(cacheKey);
+          if (existing && Date.now() - existing.cached_at < 22 * 3600 * 1000) {
+            histSkipped++;
+            return;
+          }
+          const res = await fetch(
+            `${TAOSTATS_BASE}/api/account/history/v1?address=${whale.address}&limit=30&order=timestamp_desc`,
+            fetchOpts
+          ).then((r) => r.json());
+
+          const points: Array<{
+            date: string;
+            balance_total: number;
+            balance_free: number;
+            balance_staked: number;
+            rank: number | null;
+            source: "taostats" | "kv_snapshot";
+          }> = [];
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          for (const item of (res.data ?? []) as any[]) {
+            const ts = item.timestamp ?? item.block_timestamp ?? item.date;
+            if (!ts) continue;
+            const date = new Date(ts).toISOString().slice(0, 10);
+            points.push({
+              date,
+              balance_total: toTao(item.balance_total ?? item.balance),
+              balance_free: toTao(item.balance_free ?? 0),
+              balance_staked: toTao(item.balance_staked ?? 0),
+              rank: item.rank ?? null,
+              source: "taostats",
+            });
+          }
+
+          points.sort((a, b) => a.date.localeCompare(b.date));
+          await kv.set(cacheKey, { points, cached_at: Date.now() }, { ex: 25 * 3600 });
+          histPrefetched++;
+        } catch {
+          histFailed++;
+        }
+      }));
+
+      if (i + HIST_BATCH_SIZE < histTop100.length) {
+        await new Promise((resolve) => setTimeout(resolve, HIST_BATCH_DELAY));
+      }
+    }
+
     // ── 4. Store today's balance snapshot (once per day) ────────────────────
     const todaySnap = todayKey();
     const hasToday = await kv.exists(todaySnap);
@@ -354,6 +412,7 @@ export async function GET(req: Request) {
       elapsed_ms: elapsed,
       wallets: whales.length,
       alerts_fired: alertsFired,
+      history_prefetch: { pre_fetched: histPrefetched, skipped: histSkipped, failed: histFailed },
       keys_updated: [
         "whales:current",
         hasToday ? "(snapshot already exists today)" : todaySnap,

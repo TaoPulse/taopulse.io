@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
-const CACHE_TTL = 2 * 60 * 60; // 2 hours
+const CACHE_TTL = 23 * 60 * 60; // 23 hours (daily cron keeps things warm)
 
 export const dynamic = "force-dynamic";
 
