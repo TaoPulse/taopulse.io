@@ -512,7 +512,64 @@ export async function GET(req: Request) {
 
     const elapsed = Date.now() - startedAt;
 
-    // ── 10. Discord cron summary ─────────────────────────────────────────────
+    // ── 10. Supabase validation — 30-day coverage check ──────────────────────
+    let validationSummary = "Supabase not configured";
+    let validationPass = false;
+    try {
+      const sbUrl = process.env.SUPABASE_URL;
+      const sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (sbUrl && sbKey) {
+        const supabase = createClient(sbUrl, sbKey);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        const cutoff = thirtyDaysAgo.toISOString().slice(0, 10);
+
+        // Count distinct wallets with ≥7 snapshots in last 30 days (proxy for coverage)
+        let coverageData = null, covErr: { message: string } | null = null;
+        try {
+          const res = await supabase
+            .rpc("whale_coverage_check", { cutoff_date: cutoff })
+            .single();
+          coverageData = res.data;
+          covErr = res.error as { message: string } | null;
+        } catch {
+          covErr = { message: "rpc not available" };
+        }
+
+        if (covErr) {
+          // Fallback: manual query
+          const { data: snapshotCounts, error: scErr } = await supabase
+            .from("whale_snapshots")
+            .select("address")
+            .gte("date", cutoff);
+
+          if (scErr) {
+            validationSummary = `❌ Supabase query failed: ${scErr.message}`;
+          } else {
+            const addressMap: Record<string, number> = {};
+            for (const row of snapshotCounts ?? []) {
+              addressMap[row.address] = (addressMap[row.address] ?? 0) + 1;
+            }
+            const totalTracked = Object.keys(addressMap).length;
+            const wellCovered = Object.values(addressMap).filter((c) => c >= 7).length;
+            const avgDays = totalTracked > 0
+              ? (Object.values(addressMap).reduce((s, c) => s + c, 0) / totalTracked).toFixed(1)
+              : "0";
+            validationPass = wellCovered >= 80; // pass if ≥80 of top 100 have ≥7 days
+            validationSummary = `${validationPass ? "✅" : "⚠️"} ${totalTracked} wallets tracked | ${wellCovered}/100 with ≥7 days coverage | avg ${avgDays} days`;
+          }
+        } else if (coverageData) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const d = coverageData as any;
+          validationPass = d.well_covered >= 80;
+          validationSummary = `${validationPass ? "✅" : "⚠️"} ${d.total_tracked} wallets | ${d.well_covered}/100 with ≥7 days | avg ${d.avg_days} days`;
+        }
+      }
+    } catch (ve) {
+      validationSummary = `❌ Validation error: ${ve instanceof Error ? ve.message : String(ve)}`;
+    }
+
+    // ── 11. Discord cron summary ─────────────────────────────────────────────
     const cronWebhook = process.env.DISCORD_TAOPULSE_CRON_WEBHOOK;
     if (cronWebhook) {
       const accumSignalEmoji =
@@ -540,6 +597,7 @@ export async function GET(req: Request) {
               { name: "Staking ratio (top 500)", value: `${stakingPct}%`, inline: true },
               { name: "Buying / Selling", value: `${accumIndex.buying_count} 🟢 / ${accumIndex.selling_count} 🔴`, inline: true },
               { name: "Hist prefetch", value: `${histPrefetched} fetched, ${histSkipped} skipped, ${histFailed} failed`, inline: false },
+              { name: "Supabase validation", value: validationSummary, inline: false },
             ],
             footer: { text: "taopulse.io" },
             timestamp: new Date().toISOString(),
