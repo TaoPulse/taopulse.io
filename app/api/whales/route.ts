@@ -97,10 +97,10 @@ export async function GET(req: Request) {
 
     // Serve from KV if fresh (cron keeps this warm every 30 min)
     const cached = bust ? null : await kv.get<{ data: Awaited<ReturnType<typeof fetchLive>>; fetched_at: number }>("whales:current");
-    if (cached?.data) {
+    if (cached?.data && cached.data.length > 0) {
       return NextResponse.json(cached.data, {
         headers: {
-          "Cache-Control": "s-maxage=1800, stale-while-revalidate=300",
+          "Cache-Control": "no-store",
           "X-Cache": "HIT",
           "X-Cached-At": new Date(cached.fetched_at).toISOString(),
         },
@@ -113,7 +113,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(whales, {
       headers: {
-        "Cache-Control": "s-maxage=1800, stale-while-revalidate=300",
+        "Cache-Control": "no-store",
         "X-Cache": "MISS",
       },
     });
