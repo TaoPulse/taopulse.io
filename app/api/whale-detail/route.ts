@@ -1,45 +1,47 @@
+/**
+ * /api/whale-detail?address=...
+ *
+ * Returns transfers + delegations for a wallet.
+ * Reads from Supabase (whale_transactions + whale_delegations).
+ * Cached in KV for 23 hours — data stays fresh from daily cron.
+ */
 import { NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
+import { getSupabaseAdmin } from "@/lib/supabase-server";
 
-const TAOSTATS_BASE = "https://api.taostats.io";
-const DETAIL_TTL = 15 * 60; // 15 minutes — balance detail changes less frequently than price
+const CACHE_TTL = 23 * 60 * 60; // 23 hours
 
 export const dynamic = "force-dynamic";
 
-function toTao(raw: unknown): number {
-  return parseFloat(String(raw ?? "0")) / 1e9;
-}
+type Transfer = {
+  from: string | null;
+  to: string | null;
+  amount: number;
+  counterparty: string | null;
+  timestamp: string | null;
+  block: number | null;
+  transaction_hash: string | null;
+  type: string;
+};
 
-function formatTs(ts: string | number | null | undefined): string | null {
-  if (!ts) return null;
-  const d = new Date(typeof ts === "number" ? ts * 1000 : ts);
-  return isNaN(d.getTime()) ? null : d.toISOString();
-}
+type Delegation = {
+  action: string;
+  amount: number;
+  hotkey: string;
+  delegate_name: string | null;
+  netuid: number | null;
+  timestamp: string | null;
+  block: number | null;
+};
 
 type WalletDetail = {
   address: string;
-  transfers: {
-    from: string;
-    to: string;
-    amount: number;
-    fee: number;
-    timestamp: string | null;
-    block: number | null;
-    extrinsic_id: string | null;
-  }[];
-  delegations: {
-    action: string;
-    amount: number;
-    hotkey: string;
-    coldkey: string;
-    netuid: number | null;
-    validator_name: string | null;
-    timestamp: string | null;
-    block: number | null;
-  }[];
+  transfers: Transfer[];
+  delegations: Delegation[];
   last_active: string | null;
   recently_unstaked: boolean;
   cached_at: number;
+  source: "supabase" | "empty";
 };
 
 export async function GET(req: Request) {
@@ -49,113 +51,107 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "address required" }, { status: 400 });
   }
 
-  const apiKey = process.env.TAOSTATS_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: "API key not configured" }, { status: 500 });
-  }
-
   const cacheKey = `whale-detail:${address}`;
   const bust = searchParams.get("bust") === "1";
 
   // 1. Try KV cache first
   try {
     const cached = !bust && await kv.get<WalletDetail>(cacheKey);
-    if (cached && (Date.now() - cached.cached_at) < DETAIL_TTL * 1000) {
+    if (cached && (Date.now() - cached.cached_at) < CACHE_TTL * 1000) {
       return NextResponse.json(cached, {
         headers: { "X-Cache": "HIT" },
       });
     }
   } catch {
-    // KV unavailable — fall through to live fetch
+    // KV unavailable — fall through
   }
 
-  // 2. Fetch live from TaoStats
-  const fetchOpts = { headers: { Authorization: apiKey }, cache: "no-store" as const };
-
-  try {
-    const [transfersRes, delegationsRes] = await Promise.all([
-      fetch(
-        `${TAOSTATS_BASE}/api/transfer/v1?address=${address}&limit=10&order=timestamp_desc`,
-        fetchOpts
-      ).then((r) => r.json()),
-      fetch(
-        `${TAOSTATS_BASE}/api/delegation/v1?coldkey=${address}&limit=10&order=block_number_desc`,
-        fetchOpts
-      ).then((r) => r.json()),
-    ]);
-
-    console.log("[whale-detail] transfersRes status_code:", transfersRes.status_code, "data count:", transfersRes.data?.length);
-    console.log("[whale-detail] delegationsRes status_code:", delegationsRes.status_code, "data count:", delegationsRes.data?.length);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const transfers = (transfersRes.data ?? []).map((t: any) => ({
-      from: typeof t.from === "object" ? (t.from?.ss58 ?? t.from) : t.from,
-      to: typeof t.to === "object" ? (t.to?.ss58 ?? t.to) : t.to,
-      amount: toTao(t.amount),
-      fee: toTao(t.fee),
-      timestamp: formatTs(t.timestamp ?? t.block_timestamp),
-      block: t.block_number ?? null,
-      extrinsic_id: t.extrinsic_id ?? null,
-    })).filter((t: { amount: number }) => t.amount >= 0.001); // filter out 0-TAO subnet token movements
-
-    // delegation/v1 uses nominator/delegate objects, not coldkey/hotkey strings
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const delegations = (delegationsRes.data ?? []).map((d: any) => {
-      const nominatorAddr = typeof d.nominator === "object" ? (d.nominator?.ss58 ?? "") : (d.nominator ?? "");
-      const delegateAddr = typeof d.delegate === "object" ? (d.delegate?.ss58 ?? "") : (d.delegate ?? "");
-      // For this wallet: if they are the nominator → they staked TO someone; if they are the delegate → someone staked TO them
-      const hotkey = nominatorAddr === address ? delegateAddr : nominatorAddr;
-      return {
-        action: d.action ?? "UNKNOWN",
-        amount: toTao(d.amount ?? 0),
-        hotkey,
-        coldkey: nominatorAddr,
-        netuid: d.netuid ?? null,
-        validator_name: d.delegate_name ?? d.validator_name ?? null,
-        timestamp: formatTs(d.timestamp ?? d.block_timestamp),
-        block: d.block_number ?? null,
-      };
-    });
-
-    // Last active: most recent timestamp across both
-    const allTimestamps = [
-      ...transfers.map((t: { timestamp: string | null }) => t.timestamp),
-      ...delegations.map((d: { timestamp: string | null }) => d.timestamp),
-    ].filter(Boolean).sort().reverse();
-
-    const last_active = allTimestamps[0] ?? null;
-
-    // Recently unstaked: any UNDELEGATE in last 7 days
-    const sevenDaysAgo = Date.now() - 7 * 24 * 3600 * 1000;
-    const recently_unstaked = delegations.some(
-      (d: { action: string; timestamp: string | null }) =>
-        d.action?.toUpperCase().includes("UNDELEGATE") &&
-        d.timestamp &&
-        new Date(d.timestamp).getTime() > sevenDaysAgo
+  // 2. Read from Supabase
+  const supabase = getSupabaseAdmin();
+  if (!supabase) {
+    return NextResponse.json(
+      { error: "Supabase not configured" },
+      { status: 500 }
     );
-
-    const result: WalletDetail = {
-      address,
-      transfers,
-      delegations,
-      last_active,
-      recently_unstaked,
-      cached_at: Date.now(),
-    };
-
-    // 3. Store in KV (TTL = 15 min + 2 min buffer)
-    try {
-      await kv.set(cacheKey, result, { ex: DETAIL_TTL + 120 });
-    } catch {
-      // KV write failed — still return the result, just not cached
-    }
-
-    return NextResponse.json(result, {
-      headers: { "X-Cache": "MISS" },
-    });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error("whale-detail error:", err);
-    return NextResponse.json({ error: "Failed to fetch wallet detail", detail: msg }, { status: 502 });
   }
+
+  const [txResult, delResult] = await Promise.all([
+    supabase
+      .from("whale_transactions")
+      .select("type, amount, counterparty, block_number, timestamp, transaction_hash")
+      .eq("address", address)
+      .order("timestamp", { ascending: false })
+      .limit(50),
+    supabase
+      .from("whale_delegations")
+      .select("action, amount, delegate, delegate_name, netuid, timestamp, block_number")
+      .eq("address", address)
+      .order("timestamp", { ascending: false })
+      .limit(50),
+  ]);
+
+  if (txResult.error) {
+    console.error("whale_transactions query error:", txResult.error.message);
+  }
+  if (delResult.error) {
+    console.error("whale_delegations query error:", delResult.error.message);
+  }
+
+  const transfers: Transfer[] = (txResult.data ?? []).map((row) => ({
+    from: row.type === "transfer_in" ? row.counterparty : address,
+    to: row.type === "transfer_in" ? address : row.counterparty,
+    amount: Number(row.amount),
+    counterparty: row.counterparty ?? null,
+    timestamp: row.timestamp ?? null,
+    block: row.block_number ?? null,
+    transaction_hash: row.transaction_hash ?? null,
+    type: row.type,
+  }));
+
+  const delegations: Delegation[] = (delResult.data ?? []).map((row) => ({
+    action: row.action,
+    amount: Number(row.amount),
+    hotkey: row.delegate,
+    delegate_name: row.delegate_name ?? null,
+    netuid: row.netuid ?? null,
+    timestamp: row.timestamp ?? null,
+    block: row.block_number ?? null,
+  }));
+
+  // Last active: most recent timestamp across both
+  const allTimestamps = [
+    ...transfers.map((t) => t.timestamp),
+    ...delegations.map((d) => d.timestamp),
+  ].filter(Boolean).sort().reverse();
+  const last_active = allTimestamps[0] ?? null;
+
+  // Recently unstaked: any UNDELEGATE in last 7 days
+  const sevenDaysAgo = Date.now() - 7 * 24 * 3600 * 1000;
+  const recently_unstaked = delegations.some(
+    (d) =>
+      d.action?.toUpperCase().includes("UNDELEGATE") &&
+      d.timestamp &&
+      new Date(d.timestamp).getTime() > sevenDaysAgo
+  );
+
+  const result: WalletDetail = {
+    address,
+    transfers,
+    delegations,
+    last_active,
+    recently_unstaked,
+    cached_at: Date.now(),
+    source: transfers.length > 0 || delegations.length > 0 ? "supabase" : "empty",
+  };
+
+  // 3. Store in KV
+  try {
+    await kv.set(cacheKey, result, { ex: CACHE_TTL + 300 });
+  } catch {
+    // KV write failed — still return the result
+  }
+
+  return NextResponse.json(result, {
+    headers: { "X-Cache": "MISS" },
+  });
 }
