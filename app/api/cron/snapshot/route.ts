@@ -567,6 +567,79 @@ export async function GET(req: Request) {
     }
 
     const elapsed = Date.now() - startedAt;
+
+    // ── 10. Validate 30-day coverage + send Telegram report ─────────────────
+    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+    const telegramChatId = "6908406744";
+    if (supabase && telegramToken) {
+      try {
+        const today = new Date().toISOString().slice(0, 10);
+        const thirtyDaysAgo = new Date(Date.now() - 29 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+
+        // Total distinct wallets in whale_snapshots
+        const { count: totalWallets } = await supabase
+          .from("whale_snapshots")
+          .select("*", { count: "exact", head: true });
+
+        // Wallets with < 30 days of data — query directly
+        let walletsWithGaps: number | "unknown" = "unknown";
+        try {
+          const { data: gapRows } = await supabase
+            .from("whale_snapshots")
+            .select("address, date")
+            .gte("date", thirtyDaysAgo);
+
+          if (gapRows) {
+            const countByAddress: Record<string, Set<string>> = {};
+            for (const row of gapRows) {
+              if (!countByAddress[row.address]) countByAddress[row.address] = new Set();
+              countByAddress[row.address].add(row.date);
+            }
+            walletsWithGaps = Object.values(countByAddress).filter((dates) => dates.size < 30).length;
+          }
+        } catch { /* leave as unknown */ }
+
+        // Fallback: raw query via count of wallets added today
+        const { count: todayCount } = await supabase
+          .from("whale_snapshots")
+          .select("*", { count: "exact", head: true })
+          .eq("date", today);
+
+        const allGood = walletsWithGaps === 0 || walletsWithGaps === "unknown";
+        const statusEmoji = allGood ? "✅" : "⚠️";
+
+        const message = [
+          `${statusEmoji} *TaoPulse Daily Cron Report*`,
+          `📅 ${today}`,
+          ``,
+          `*Whale Snapshots*`,
+          `• Wallets upserted today: ${todayCount ?? "?"}`,
+          `• Total wallets in DB: ${totalWallets ?? "?"}`,
+          `• Wallets with < 30 days: ${walletsWithGaps === "unknown" ? "could not check" : walletsWithGaps === 0 ? "0 ✅" : `${walletsWithGaps} ⚠️`}`,
+          ``,
+          `*Cron Stats*`,
+          `• Elapsed: ${(elapsed / 1000).toFixed(1)}s`,
+          `• Whale alerts fired: ${alertsFired}`,
+          `• History prefetched: ${histPrefetched} (skipped: ${histSkipped}, failed: ${histFailed})`,
+          walletsWithGaps !== 0 && walletsWithGaps !== "unknown"
+            ? `\n🚨 *Action needed:* ${walletsWithGaps} wallets missing history. Run backfill.`
+            : "",
+        ].filter(Boolean).join("\n");
+
+        await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: telegramChatId,
+            text: message,
+            parse_mode: "Markdown",
+          }),
+        });
+      } catch (e) {
+        console.error("Telegram report failed:", e);
+      }
+    }
+
     return NextResponse.json({
       ok: true,
       elapsed_ms: elapsed,
