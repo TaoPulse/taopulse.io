@@ -153,6 +153,14 @@ function ExpandedRow({ address, whale }: { address: string; whale: Whale }) {
     setError(null);
     fetch(`/api/whale-detail?address=${encodeURIComponent(address)}`)
       .then((r) => r.json())
+      .then((d) => {
+        // If cached result has empty transfers + delegations, bust the cache and retry
+        if (d.transfers?.length === 0 && d.delegations?.length === 0) {
+          return fetch(`/api/whale-detail?address=${encodeURIComponent(address)}&bust=1`)
+            .then((r2) => r2.json());
+        }
+        return d;
+      })
       .then((d) => { setDetail(d); setLoading(false); })
       .catch((e) => { setError(e.message); setLoading(false); });
   }, [address]);
