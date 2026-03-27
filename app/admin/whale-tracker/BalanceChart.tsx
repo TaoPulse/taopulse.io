@@ -24,7 +24,7 @@ function CustomTooltip({ active, payload, label }: any) {
         <p className="text-blue-400">{d.balance_staked.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ staked</p>
       )}
       {d.rank && <p className="text-gray-500">Rank #{d.rank}</p>}
-      {d.source === "kv_snapshot" && <p className="text-gray-700 italic">internal snapshot</p>}
+      {(d.source as string) === "kv_snapshot" && <p className="text-gray-700 italic">internal snapshot</p>}
     </div>
   );
 }
