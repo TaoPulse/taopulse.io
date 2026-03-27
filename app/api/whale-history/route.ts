@@ -6,8 +6,6 @@ import { NextResponse } from "next/server";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
 
-export const dynamic = "force-dynamic";
-
 function toTao(raw: unknown): number {
   return parseFloat(String(raw ?? "0")) / 1e9;
 }
@@ -32,7 +30,7 @@ export async function GET(req: Request) {
   try {
     const res = await fetch(
       `${TAOSTATS_BASE}/api/account/history/v1?address=${encodeURIComponent(address)}&limit=30`,
-      { headers: { Authorization: apiKey }, cache: "no-store" }
+      { headers: { Authorization: apiKey }, next: { revalidate: 3600 } }
     );
 
     if (!res.ok) {
