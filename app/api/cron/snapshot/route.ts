@@ -19,6 +19,7 @@ import { kv } from "@vercel/kv";
 import { readFileSync } from "fs";
 import path from "path";
 import { Resend } from "resend";
+import { getSupabaseAdmin } from "@/lib/supabase-server";
 
 const TAOSTATS_BASE = "https://api.taostats.io";
 
@@ -41,6 +42,15 @@ function todayKey() {
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+function isoTimestamp(ts: unknown): string | null {
+  if (!ts) return null;
+  try { return new Date(String(ts)).toISOString(); } catch { return null; }
+}
+
+function toTaoRaw(raw: unknown): number {
+  return parseFloat(String(raw ?? "0")) / 1e9;
 }
 
 export async function GET(req: Request) {
@@ -132,6 +142,26 @@ export async function GET(req: Request) {
     // ── 3. Store whales:current (main richlist cache) ────────────────────────
     await kv.set("whales:current", { data: whalesEnriched, fetched_at: Date.now() }, { ex: 35 * 60 });
 
+    // ── 3a. Upsert today's snapshot row into Supabase whale_snapshots ────────
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const today = new Date().toISOString().slice(0, 10);
+      const snapshotRows = whales.map((w) => ({
+        address: w.address,
+        date: today,
+        balance_total: w.balance_total,
+        balance_free: w.balance_free,
+        balance_staked: w.balance_staked,
+        rank: w.rank,
+      }));
+      try {
+        const { error: snapErr } = await supabase
+          .from("whale_snapshots")
+          .upsert(snapshotRows, { onConflict: "address,date" });
+        if (snapErr) console.error("whale_snapshots upsert error:", snapErr.message);
+      } catch (e) { console.error("whale_snapshots upsert threw:", e); }
+    }
+
     // ── 3b. Pre-fetch 30-day balance history for top 100 wallets ────────────
     let histPrefetched = 0, histSkipped = 0, histFailed = 0;
     const HIST_BATCH_SIZE = 5;
@@ -187,6 +217,136 @@ export async function GET(req: Request) {
 
       if (i + HIST_BATCH_SIZE < histTop100.length) {
         await new Promise((resolve) => setTimeout(resolve, HIST_BATCH_DELAY));
+      }
+    }
+
+    // ── 3c. Upsert top-100 transfers + delegations into Supabase ────────────
+    if (supabase) {
+      const today = new Date().toISOString().slice(0, 10);
+      const top100addrs = histTop100.map((w) => w.address);
+
+      // Fetch transfers + delegations in parallel batches of 5
+      const SUPABASE_BATCH = 5;
+      const SUPABASE_BATCH_DELAY = 500;
+
+      for (let i = 0; i < top100addrs.length; i += SUPABASE_BATCH) {
+        const batch = top100addrs.slice(i, i + SUPABASE_BATCH);
+
+        await Promise.all(batch.map(async (address) => {
+          try {
+            // Transfers
+            const txRes = await fetch(
+              `${TAOSTATS_BASE}/api/transfer/v1?coldkey=${address}&limit=50&order=timestamp_desc`,
+              fetchOpts
+            ).then((r) => r.json()).catch(() => ({ data: [] }));
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const txRows = (txRes.data ?? []).map((item: any) => {
+              const fromAddr = typeof item.from === "object" ? (item.from?.ss58 ?? "") : (item.from ?? "");
+              const toAddr   = typeof item.to   === "object" ? (item.to?.ss58   ?? "") : (item.to   ?? "");
+              const isInbound = toAddr === address;
+              const counterparty = isInbound ? fromAddr : toAddr;
+              const blockNum = item.block_number ?? item.block ?? null;
+              const txHash   = item.extrinsic_id ?? item.transaction_hash ?? item.hash ?? null;
+              return {
+                id: `${address}-${blockNum}-${txHash ?? ""}`,
+                address,
+                type: isInbound ? "transfer_in" : "transfer_out",
+                amount: toTaoRaw(item.amount),
+                counterparty: counterparty || null,
+                block_number: blockNum ? parseInt(String(blockNum), 10) : null,
+                timestamp: isoTimestamp(item.timestamp ?? item.block_timestamp),
+                transaction_hash: txHash ?? null,
+              };
+            });
+
+            if (txRows.length > 0) {
+              const { error } = await supabase
+                .from("whale_transactions")
+                .upsert(txRows, { onConflict: "id" });
+              if (error) console.error(`whale_transactions upsert (${address}):`, error.message);
+            }
+
+            // Delegations
+            const delRes = await fetch(
+              `${TAOSTATS_BASE}/api/delegation/v1?coldkey=${address}&limit=50&order=timestamp_desc`,
+              fetchOpts
+            ).then((r) => r.json()).catch(() => ({ data: [] }));
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const delRows = (delRes.data ?? []).map((item: any) => {
+              const delegate =
+                typeof item.delegate === "object"
+                  ? (item.delegate?.ss58 ?? item.delegate?.hotkey ?? "")
+                  : (item.delegate ?? item.hotkey ?? "");
+              const blockNum = item.block_number ?? item.block ?? null;
+              const netuid   = item.netuid ?? null;
+              const action   = (item.action ?? item.type ?? "DELEGATE").toUpperCase();
+              return {
+                id: `${address}-${blockNum}-${action}-${delegate}-${netuid ?? 0}`,
+                address,
+                action,
+                delegate: delegate || "",
+                delegate_name: item.delegate_name ?? item.validator_name ?? null,
+                netuid: netuid !== null ? parseInt(String(netuid), 10) : null,
+                amount: toTaoRaw(item.amount ?? item.tao ?? 0),
+                alpha: item.alpha != null ? toTaoRaw(item.alpha) : null,
+                usd: item.usd != null ? parseFloat(String(item.usd)) : null,
+                alpha_price_in_tao: item.alpha_price_in_tao != null ? parseFloat(String(item.alpha_price_in_tao)) : null,
+                alpha_price_in_usd: item.alpha_price_in_usd != null ? parseFloat(String(item.alpha_price_in_usd)) : null,
+                timestamp: isoTimestamp(item.timestamp ?? item.block_timestamp),
+                block_number: blockNum ? parseInt(String(blockNum), 10) : null,
+              };
+            });
+
+            if (delRows.length > 0) {
+              const { error } = await supabase
+                .from("whale_delegations")
+                .upsert(delRows, { onConflict: "id" });
+              if (error) console.error(`whale_delegations upsert (${address}):`, error.message);
+            }
+
+            // Alpha balances — derive from delegation data grouped by (netuid, delegate/hotkey)
+            // Use the most recent delegation snapshot to approximate current alpha holdings
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const alphaByNetuid: Map<string, any> = new Map();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            for (const item of (delRes.data ?? []) as any[]) {
+              const netuid = item.netuid ?? null;
+              if (netuid === null || item.alpha == null) continue;
+              const delegate =
+                typeof item.delegate === "object"
+                  ? (item.delegate?.ss58 ?? item.delegate?.hotkey ?? "")
+                  : (item.delegate ?? item.hotkey ?? "");
+              const key = `${netuid}-${delegate}`;
+              if (!alphaByNetuid.has(key)) {
+                alphaByNetuid.set(key, {
+                  address,
+                  date: today,
+                  netuid: parseInt(String(netuid), 10),
+                  hotkey: delegate || null,
+                  balance_alpha: toTaoRaw(item.alpha),
+                  balance_as_tao: toTaoRaw(item.amount ?? item.tao ?? 0),
+                  rank: null,
+                });
+              }
+            }
+
+            if (alphaByNetuid.size > 0) {
+              const alphaRows = Array.from(alphaByNetuid.values());
+              const { error } = await supabase
+                .from("whale_alpha_balances")
+                .upsert(alphaRows, { onConflict: "address,date,netuid" });
+              if (error) console.error(`whale_alpha_balances upsert (${address}):`, error.message);
+            }
+          } catch (e) {
+            console.error(`Supabase batch error for ${address}:`, e);
+          }
+        }));
+
+        if (i + SUPABASE_BATCH < top100addrs.length) {
+          await new Promise((resolve) => setTimeout(resolve, SUPABASE_BATCH_DELAY));
+        }
       }
     }
 
@@ -420,6 +580,8 @@ export async function GET(req: Request) {
         "analytics:concentration",
         "analytics:accumulation-index",
         "analytics:exchange-flow",
+        supabase ? "supabase:whale_snapshots" : "(supabase disabled)",
+        supabase ? "supabase:whale_transactions+delegations+alpha_balances" : "(supabase disabled)",
       ],
     });
   } catch (err) {
