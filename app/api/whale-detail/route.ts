@@ -55,10 +55,11 @@ export async function GET(req: Request) {
   }
 
   const cacheKey = `whale-detail:${address}`;
+  const bust = searchParams.get("bust") === "1";
 
   // 1. Try KV cache first
   try {
-    const cached = await kv.get<WalletDetail>(cacheKey);
+    const cached = !bust && await kv.get<WalletDetail>(cacheKey);
     if (cached && (Date.now() - cached.cached_at) < DETAIL_TTL * 1000) {
       return NextResponse.json(cached, {
         headers: { "X-Cache": "HIT" },
@@ -82,6 +83,9 @@ export async function GET(req: Request) {
         fetchOpts
       ).then((r) => r.json()),
     ]);
+
+    console.log("[whale-detail] transfersRes status_code:", transfersRes.status_code, "data count:", transfersRes.data?.length);
+    console.log("[whale-detail] delegationsRes status_code:", delegationsRes.status_code, "data count:", delegationsRes.data?.length);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transfers = (transfersRes.data ?? []).map((t: any) => ({
