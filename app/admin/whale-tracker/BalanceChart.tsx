@@ -34,19 +34,23 @@ export default function BalanceChart({ address }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = (addr: string) => {
     setLoading(true);
     setError(null);
-    fetch(`/api/whale-history?address=${encodeURIComponent(address)}`)
+    setPoints(null);
+    fetch(`/api/whale-history?address=${encodeURIComponent(addr)}`)
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) setPoints(data);
         else if (Array.isArray(data) && data.length === 0) setError("empty");
-        else setError(JSON.stringify(data));
+        else if (data?.error?.includes?.("429") || data?.error?.includes?.("Rate Limited")) setError("rate_limited");
+        else setError("failed");
         setLoading(false);
       })
       .catch((e) => { setError(e.message); setLoading(false); });
-  }, [address]);
+  };
+
+  useEffect(() => { load(address); }, [address]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (loading) {
     return (
@@ -64,10 +68,15 @@ export default function BalanceChart({ address }: Props) {
 
   if (error || !points || points.length === 0) {
     return (
-      <div className="h-28 flex items-center justify-center">
-        <p className="text-gray-700 text-xs italic">
-          {error && error !== "empty" ? `Error: ${error}` : "Balance history not yet available"}
+      <div className="h-28 flex items-center justify-center gap-3">
+        <p className="text-gray-600 text-xs italic">
+          {error === "rate_limited" ? "Rate limited — try again in a moment" : "Balance history unavailable"}
         </p>
+        {(error === "rate_limited" || error === "failed") && (
+          <button onClick={() => load(address)} className="text-xs text-purple-400 hover:text-purple-300 underline">
+            Retry
+          </button>
+        )}
       </div>
     );
   }
