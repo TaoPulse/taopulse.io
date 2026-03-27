@@ -41,9 +41,9 @@ export default function BalanceChart({ address }: Props) {
     fetch(`/api/whale-history?address=${encodeURIComponent(addr)}`)
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setPoints(data);
-        else if (Array.isArray(data) && data.length === 0) setError("empty");
-        else if (data?.error?.includes?.("429") || data?.error?.includes?.("Rate Limited")) setError("rate_limited");
+        if (data?.error?.includes?.("429") || data?.error?.includes?.("Rate Limited")) { setError("rate_limited"); }
+        else if (Array.isArray(data) && data.length > 2) setPoints(data);
+        else if (Array.isArray(data) && data.length <= 2) setError("building");
         else setError("failed");
         setLoading(false);
       })
@@ -67,11 +67,13 @@ export default function BalanceChart({ address }: Props) {
   }
 
   if (error || !points || points.length === 0) {
+    const msg =
+      error === "rate_limited" ? "Rate limited — try again in a moment" :
+      error === "building" ? "📈 History building — more data each day" :
+      "Balance history unavailable";
     return (
       <div className="h-28 flex items-center justify-center gap-3">
-        <p className="text-gray-600 text-xs italic">
-          {error === "rate_limited" ? "Rate limited — try again in a moment" : "Balance history unavailable"}
-        </p>
+        <p className="text-gray-600 text-xs italic">{msg}</p>
         {(error === "rate_limited" || error === "failed") && (
           <button onClick={() => load(address)} className="text-xs text-purple-400 hover:text-purple-300 underline">
             Retry
