@@ -558,6 +558,29 @@ export async function GET(req: Request) {
               `,
             }).catch((e: unknown) => console.error("Alert email failed:", e));
 
+            // Also post to Discord alerts channel
+            const discordAlertWebhook = process.env.DISCORD_TAOPULSE_ALERT_WEBHOOK;
+            if (discordAlertWebhook) {
+              fetch(discordAlertWebhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  username: "TaoPulse Bot",
+                  embeds: [{
+                    title: `🚨 Whale Alert — Large Balance Drop`,
+                    color: 0xef4444,
+                    fields: [
+                      { name: "Wallet", value: `[${whale.address.slice(0, 8)}...](https://taopulse.io/wallet/${whale.address})`, inline: false },
+                      { name: "24h Change", value: `−${dropTao} τ (${dropPctFmt}%)`, inline: true },
+                      { name: "Current Balance", value: `${whale.balance_total.toLocaleString("en-US", { maximumFractionDigits: 0 })} τ`, inline: true },
+                      { name: "Threshold", value: `${threshold}%`, inline: true },
+                    ],
+                    timestamp: new Date().toISOString(),
+                  }],
+                }),
+              }).catch((e: unknown) => console.error("Discord alert failed:", e));
+            }
+
             alertsFired++;
           }
         }
@@ -568,10 +591,10 @@ export async function GET(req: Request) {
 
     const elapsed = Date.now() - startedAt;
 
-    // ── 10. Validate 30-day coverage + send Telegram report ─────────────────
-    const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-    const telegramChatId = "6908406744";
-    if (supabase && telegramToken) {
+    // ── 10. Validate 30-day coverage + send Discord report ──────────────────
+    const discordCronWebhook = process.env.DISCORD_TAOPULSE_CRON_WEBHOOK;
+    const discordErrorWebhook = process.env.DISCORD_TAOPULSE_ERROR_WEBHOOK;
+    if (supabase && discordCronWebhook) {
       try {
         const today = new Date().toISOString().slice(0, 10);
         const thirtyDaysAgo = new Date(Date.now() - 29 * 24 * 3600 * 1000).toISOString().slice(0, 10);
@@ -599,7 +622,7 @@ export async function GET(req: Request) {
           }
         } catch { /* leave as unknown */ }
 
-        // Fallback: raw query via count of wallets added today
+        // Count wallets upserted today
         const { count: todayCount } = await supabase
           .from("whale_snapshots")
           .select("*", { count: "exact", head: true })
@@ -607,36 +630,51 @@ export async function GET(req: Request) {
 
         const allGood = walletsWithGaps === 0 || walletsWithGaps === "unknown";
         const statusEmoji = allGood ? "✅" : "⚠️";
+        const gapText = walletsWithGaps === "unknown"
+          ? "could not check"
+          : walletsWithGaps === 0
+          ? "0 ✅"
+          : `${walletsWithGaps} ⚠️`;
 
-        const message = [
-          `${statusEmoji} *TaoPulse Daily Cron Report*`,
-          `📅 ${today}`,
-          ``,
-          `*Whale Snapshots*`,
-          `• Wallets upserted today: ${todayCount ?? "?"}`,
-          `• Total wallets in DB: ${totalWallets ?? "?"}`,
-          `• Wallets with < 30 days: ${walletsWithGaps === "unknown" ? "could not check" : walletsWithGaps === 0 ? "0 ✅" : `${walletsWithGaps} ⚠️`}`,
-          ``,
-          `*Cron Stats*`,
-          `• Elapsed: ${(elapsed / 1000).toFixed(1)}s`,
-          `• Whale alerts fired: ${alertsFired}`,
-          `• History prefetched: ${histPrefetched} (skipped: ${histSkipped}, failed: ${histFailed})`,
-          walletsWithGaps !== 0 && walletsWithGaps !== "unknown"
-            ? `\n🚨 *Action needed:* ${walletsWithGaps} wallets missing history. Run backfill.`
-            : "",
-        ].filter(Boolean).join("\n");
+        const discordPayload = {
+          username: "TaoPulse Bot",
+          embeds: [{
+            title: `${statusEmoji} TaoPulse Daily Cron Report`,
+            color: allGood ? 0x22c55e : 0xf59e0b,
+            fields: [
+              { name: "📅 Date", value: today, inline: true },
+              { name: "⏱️ Elapsed", value: `${(elapsed / 1000).toFixed(1)}s`, inline: true },
+              { name: "\u200b", value: "\u200b", inline: false },
+              { name: "🐋 Wallets upserted today", value: String(todayCount ?? "?"), inline: true },
+              { name: "🗄️ Total wallets in DB", value: String(totalWallets ?? "?"), inline: true },
+              { name: "📉 Wallets with <30 days", value: gapText, inline: true },
+              { name: "🔔 Alerts fired", value: String(alertsFired), inline: true },
+              { name: "📜 History prefetched", value: `${histPrefetched} (skipped: ${histSkipped}, failed: ${histFailed})`, inline: true },
+            ],
+            footer: { text: "taopulse.io cron" },
+            timestamp: new Date().toISOString(),
+          }],
+        };
 
-        await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        // If gaps found, add an error ping
+        if (walletsWithGaps !== 0 && walletsWithGaps !== "unknown" && discordErrorWebhook) {
+          await fetch(discordErrorWebhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: "TaoPulse Bot",
+              content: `🚨 **Action needed:** ${walletsWithGaps} wallets missing history. Run backfill workflow.`,
+            }),
+          });
+        }
+
+        await fetch(discordCronWebhook, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: telegramChatId,
-            text: message,
-            parse_mode: "Markdown",
-          }),
+          body: JSON.stringify(discordPayload),
         });
       } catch (e) {
-        console.error("Telegram report failed:", e);
+        console.error("Discord report failed:", e);
       }
     }
 
