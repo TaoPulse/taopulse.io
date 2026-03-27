@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
-import BalanceChart from "./BalanceChart";
 import WatchModal from "./WatchModal";
 
 type Whale = {
@@ -222,7 +221,7 @@ function ExpandedRow({ address, whale }: { address: string; whale: Whale }) {
 
             {/* Balance history chart (Phase 3) */}
             <div className="bg-white/[0.02] rounded-xl border border-white/5 p-3">
-              <BalanceChart address={address} />
+{/* TP-040 Phase 3: Balance history chart — backlogged */}
             </div>
 
             {/* Transfer + Delegation side-by-side */}
