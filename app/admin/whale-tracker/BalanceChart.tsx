@@ -40,8 +40,9 @@ export default function BalanceChart({ address }: Props) {
     fetch(`/api/whale-history?address=${encodeURIComponent(address)}`)
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data)) setPoints(data);
-        else setError("No data");
+        if (Array.isArray(data) && data.length > 0) setPoints(data);
+        else if (Array.isArray(data) && data.length === 0) setError("empty");
+        else setError(JSON.stringify(data));
         setLoading(false);
       })
       .catch((e) => { setError(e.message); setLoading(false); });
@@ -64,7 +65,9 @@ export default function BalanceChart({ address }: Props) {
   if (error || !points || points.length === 0) {
     return (
       <div className="h-28 flex items-center justify-center">
-        <p className="text-gray-700 text-xs italic">Balance history not yet available</p>
+        <p className="text-gray-700 text-xs italic">
+          {error && error !== "empty" ? `Error: ${error}` : "Balance history not yet available"}
+        </p>
       </div>
     );
   }
