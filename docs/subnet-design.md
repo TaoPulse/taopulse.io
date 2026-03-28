@@ -14,6 +14,7 @@ _Created: 2026-03-28_
 - Decided APY to be added later (needs emission data)
 - Priority: Performance/Value + Activity metrics first
 - Validator/miner count deferred (low priority for staking decisions)
+- Discovery section added: name/description/links via curated static JSON, trending via whale_delegations net flow (day 1) + TVL change % (after history builds)
 
 ---
 
@@ -47,6 +48,25 @@ _Created: 2026-03-28_
 | Active miner count | `subtensorModule.keys(netuid)` | ⏳ Deferred — low priority |
 
 **Key insight:** Net stake flow is the momentum indicator — shows which subnets whales are piling into vs pulling out of. High signal for staking decisions. Raw data is already being captured in `whale_delegations` from the nightly block scan.
+
+---
+
+## Discovery Metrics
+
+| Metric | Source | Notes |
+|--------|--------|-------|
+| Subnet name | On-chain: `subtensorModule.subnetNames` | |
+| Description + what it does | Curated static `data/subnets.json` in repo | Not on-chain. Seeded from `top-25-subnets.md`. We own/maintain it |
+| GitHub / website link | Curated static `data/subnets.json` | Same file as above |
+| Trending (biggest stake increase %) | Two sources: | |
+| → Day 1+ | `whale_delegations` net flow by netuid | Works immediately, no history needed |
+| → After history builds | `(today_tvl - yesterday_tvl) / yesterday_tvl` from `subnet_snapshots` | More accurate, available after first day of data |
+
+**Data strategy for static metadata:**
+- `data/subnets.json` — keyed by `netuid`, fields: `name`, `description`, `tags`, `github`, `website`
+- Seeded from existing `docs/top-25-subnets.md`
+- Updated manually as subnets evolve
+- Future: subnet owners can submit PRs or a form
 
 ---
 
