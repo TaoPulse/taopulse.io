@@ -18,6 +18,8 @@ _Built: 2026-03-27 | Last updated: 2026-03-28_
 - **Going forward:** design changes are appended as dated changelog entries — nothing gets overwritten
 - **Balance history chart: deferred** — TaoStats backfill abandoned (rate limits too aggressive, 2 days of attempts yielded only 14 days × 72 wallets). Existing `whale_snapshots` data (Feb 25–Mar 10) is stale and incomplete — will be truncated. History builds naturally via nightly chain scan starting today. Chart will be built once there's enough data (~2-4 weeks).
 - **Data plan for all 4 tables:** truncate everything, start clean, chain-direct nightly from today. No TaoStats dependency going forward.
+- **subnet_snapshots design update:** add `subnet_alpha_out` + `market_cap_tao` columns. Market cap formula: `subnetAlphaOut × (subnetTAO / subnetAlphaIn)` = circulating alpha supply × alpha price in TAO. MC in USD computed at render time. Source: `subtensorModule.subnetAlphaOut.entries()` (one extra chain query). UI will show per-subnet market cap once table is built.
+- **Doc rule:** changelog only — append new entries, never overwrite existing content.
 
 ---
 
@@ -285,19 +287,10 @@ Add a `subnet_snapshots` table. Nightly scan writes one row per subnet per day a
 |--------|------|-------|
 | `netuid` | int | Subnet ID |
 | `date` | date | |
-| `subnet_tao` | numeric | Total TAO locked in subnet pool |
-| `subnet_alpha_in` | numeric | Alpha tokens inside the pool |
-| `subnet_alpha_out` | numeric | Alpha tokens in circulation (outside pool) |
-| `price_ratio` | numeric | `subnetTAO / subnetAlphaIn` — alpha price in TAO |
-| `market_cap_tao` | numeric | `subnetAlphaOut × price_ratio` — subnet MC in TAO |
+| `subnet_tao` | numeric | Total TAO locked in subnet |
+| `subnet_alpha_in` | numeric | Total alpha issued |
+| `price_ratio` | numeric | `subnetTAO / subnetAlphaIn` — alpha→TAO conversion rate |
 | `total_staked_tao` | numeric | Total TAO equivalent staked across all validators |
-
-**Market cap formula:** `market_cap_tao = subnet_alpha_out × (subnet_tao / subnet_alpha_in)`
-MC in USD = `market_cap_tao × tao_price` (computed at render time, not stored)
-
-**Chain source:** `subtensorModule.subnetAlphaOut.entries()` — one extra query alongside the existing `subnetTAO` + `subnetAlphaIn` fetch. No TaoStats needed.
-
-**UI plan:** Subnets page will show market cap per subnet once this table is built and has data.
 
 **Storage:** ~64 subnets × 365 days = ~23k rows/year. Negligible.
 
