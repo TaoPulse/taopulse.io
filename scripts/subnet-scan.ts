@@ -30,7 +30,7 @@ function toTao(raw: bigint | number | string): number {
  */
 export async function runSubnetScan(
   api: ApiPromise,
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   today: string
 ): Promise<{ written: number; validationPassed: boolean }> {
   const t0 = Date.now();
@@ -79,6 +79,46 @@ export async function runSubnetScan(
   }
   console.log(`  ✅ networkRegisteredAt: ${regBlockMap.size} subnets`);
 
+  // ── Per-subnet neuron counts (parallel batch) ─────────────────────────────────
+  // For each subnet: total_neurons, validator_count, miner_count, active_miner_count
+  console.log(`  Fetching neuron counts for ${subnetTaoMap.size} subnets (parallel)...`);
+
+  interface NeuronCounts {
+    total_neurons: number;
+    validator_count: number;
+    miner_count: number;
+    active_miner_count: number;
+  }
+  const neuronCountMap = new Map<number, NeuronCounts>();
+
+  const allNetuidsForCounts = [...subnetTaoMap.keys()];
+  const CONCURRENCY = 10;
+  for (let i = 0; i < allNetuidsForCounts.length; i += CONCURRENCY) {
+    const batch = allNetuidsForCounts.slice(i, i + CONCURRENCY);
+    await Promise.all(batch.map(async (netuid) => {
+      try {
+        const [keysEntries, validatorPermitRaw, incentiveRaw] = await Promise.all([
+          (api.query as any).subtensorModule.keys.entries(netuid),
+          (api.query as any).subtensorModule.validatorPermit(netuid),
+          (api.query as any).subtensorModule.incentive(netuid),
+        ]);
+
+        const permits: boolean[] = validatorPermitRaw.toJSON() as boolean[] ?? [];
+        const incentives: number[] = incentiveRaw.toJSON() as number[] ?? [];
+
+        const total_neurons = keysEntries.length;
+        const validator_count = permits.filter(Boolean).length;
+        const miner_count = total_neurons - validator_count;
+        const active_miner_count = incentives.filter(v => v > 0).length;
+
+        neuronCountMap.set(netuid, { total_neurons, validator_count, miner_count, active_miner_count });
+      } catch (err: any) {
+        console.warn(`  ⚠ neuron counts failed for SN${netuid}: ${err.message}`);
+      }
+    }));
+  }
+  console.log(`  ✅ neuron counts: ${neuronCountMap.size}/${allNetuidsForCounts.length} subnets`);
+
   // ── Build rows ────────────────────────────────────────────────────────────────
   console.log(`\n[SUBNET] Writing subnet_snapshots to Supabase...`);
 
@@ -106,6 +146,7 @@ export async function runSubnetScan(
     // market_cap_tao = circulating alpha × price
     const market_cap_tao = price_ratio != null ? subnet_alpha_out * price_ratio : null;
 
+    const counts = neuronCountMap.get(netuid);
     rows.push({
       netuid,
       date: today,
@@ -116,6 +157,10 @@ export async function runSubnetScan(
       market_cap_tao,
       emission_rate: emissionMap.get(netuid) ?? null,
       registration_block: regBlockMap.get(netuid) ?? null,
+      total_neurons: counts?.total_neurons ?? null,
+      validator_count: counts?.validator_count ?? null,
+      miner_count: counts?.miner_count ?? null,
+      active_miner_count: counts?.active_miner_count ?? null,
     });
   }
 
