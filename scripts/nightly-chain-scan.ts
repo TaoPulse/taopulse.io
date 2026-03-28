@@ -21,6 +21,7 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { createClient } from '@supabase/supabase-js';
+import { runSubnetScan } from './subnet-scan';
 
 const RPC_ENDPOINT = 'wss://entrypoint-finney.opentensor.ai:443';
 const TOP_N = 500;
@@ -426,12 +427,22 @@ async function main() {
   }
   console.log(`  ✅ whale_alpha_balances: ${alphaWritten} rows`);
 
+  // ── Subnet snapshots ─────────────────────────────────────────────────────────
+  console.log('\n[5/6] Running subnet scan...');
+  let subnetSnapshotsWritten = 0;
+  try {
+    const subnetResult = await runSubnetScan(api, supabase, today);
+    subnetSnapshotsWritten = subnetResult.written;
+  } catch (err: any) {
+    console.error(`  ✗ Subnet scan failed: ${err.message}`);
+  }
+
   // ── Block scan for whale_transactions + whale_delegations ────────────────────
   let txnsWritten = 0, delegationsWritten = 0;
   if (skipBlocks) {
-    console.log('\n[5/5] Skipping block scan (--skip-blocks flag set)');
+    console.log('\n[6/6] Skipping block scan (--skip-blocks flag set)');
   } else {
-    console.log('\n[5/5] Scanning last 24h of blocks for transactions + delegations...');
+    console.log('\n[6/6] Scanning last 24h of blocks for transactions + delegations...');
     ({ txnsWritten, delegationsWritten } = await scanRecentBlocks(api, top500Addrs, subnetRatio, supabase, today));
   }
 
@@ -553,6 +564,7 @@ async function main() {
   console.log(`Staking coldkeys  : ${stakedTao.size.toLocaleString()}`);
   console.log(`whale_snapshots   : ${snapshotsWritten} rows (today)`);
   console.log(`whale_alpha_balances: ${alphaWritten} rows (today)`);
+  console.log(`subnet_snapshots  : ${subnetSnapshotsWritten} rows (today)`);
   console.log(`whale_transactions : ${txnsWritten} rows (today)`);
   console.log(`whale_delegations  : ${delegationsWritten} rows (today)`);
   console.log(`Validation        : ${validationErrors.length === 0 ? '✅ PASSED' : `⚠️  ${validationErrors.length} warnings`}`);
