@@ -199,6 +199,38 @@ Writes top 500 balances + alpha positions to `whale_snapshots` and `whale_alpha_
 1. **Remove step 3a from `/api/cron/snapshot`** — it still upserts to `whale_snapshots` + `whale_alpha_balances` from TaoStats when falling back. Chain scan owns those tables now. (Not built yet — confirm before building)
 2. **Refactor `/api/whale-detail`** → read from `whale_transactions` + `whale_delegations` instead of hitting TaoStats
 3. **Fix `whale_alpha_balances` PK migration** → `ALTER TABLE` to change PK from `(address, date, netuid)` to `(address, date, netuid, hotkey)` in prod Supabase
+4. **Add `subnet_snapshots` table** — see below
+
+---
+
+## Future: `subnet_snapshots` Table
+
+### Why
+
+To get total staked per subnet, you might think to aggregate `whale_alpha_balances` — but that only covers the top 500 wallets. Smaller wallets staking to subnets wouldn't be counted, so totals would be understated.
+
+The chain already has exact subnet-level totals natively. The nightly scan already fetches `subnetTAO` and `subnetAlphaIn` per netuid (to compute the alpha→TAO conversion ratio) — but currently throws them away after use.
+
+### Design
+
+Add a `subnet_snapshots` table. Nightly scan writes one row per subnet per day alongside the wallet data.
+
+**Proposed schema — PK: `(netuid, date)`**
+| Column | Type | Notes |
+|--------|------|-------|
+| `netuid` | int | Subnet ID |
+| `date` | date | |
+| `subnet_tao` | numeric | Total TAO locked in subnet |
+| `subnet_alpha_in` | numeric | Total alpha issued |
+| `price_ratio` | numeric | `subnetTAO / subnetAlphaIn` — alpha→TAO conversion rate |
+| `total_staked_tao` | numeric | Total TAO equivalent staked across all validators |
+
+**Storage:** ~64 subnets × 365 days = ~23k rows/year. Negligible.
+
+**No TaoStats needed** — all data comes from chain directly, already fetched by the nightly scan.
+
+### Status
+❌ Not built yet — confirm before building
 
 ---
 
