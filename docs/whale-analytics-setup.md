@@ -2,6 +2,9 @@
 
 _Built: 2026-03-27 | Last updated: 2026-03-28_
 
+> ⚠️ **EDITING RULE: Append only. Never overwrite or rewrite existing content.**
+> All changes go in the Changelog as a new dated entry. Schema sections, decisions, and notes below the changelog are permanent reference — do not touch them.
+
 ---
 
 ## Changelog
