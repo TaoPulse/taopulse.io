@@ -122,6 +122,17 @@ No manual action needed after Step 3.
 
 ---
 
+## Design Decision — 2026-03-28
+
+**Going forward, nightly chain scan is the sole writer to `whale_snapshots` and `whale_alpha_balances`. TaoStats is no longer used for these two tables.**
+
+- The one-time backfill (2026-03-27) seeded 30 days of historical data from TaoStats — that's done, won't run again
+- The nightly chain scan (`scripts/nightly-chain-scan.ts`, runs 4 AM UTC daily) takes over from here
+- Step 3a in the 30-min TaoStats cron (which also upserted to these tables) will be removed — **TODO: not built yet**
+- `whale_transactions` and `whale_delegations` remain backfill-only for now (no ongoing job writes to them)
+
+---
+
 ## Troubleshooting
 
 **Backfill fails on wallet X:** Script logs the error and continues. Re-run after fixing — upserts are idempotent, no duplicates.
