@@ -235,12 +235,28 @@ Writes top 500 balances + alpha positions to `whale_snapshots` and `whale_alpha_
 
 ---
 
-## Open TODOs
+## Next Build Phase — Stop TaoStats, Go Chain-Direct
 
-1. **Remove step 3a from `/api/cron/snapshot`** — it still upserts to `whale_snapshots` + `whale_alpha_balances` from TaoStats when falling back. Chain scan owns those tables now. (Not built yet — confirm before building)
-2. **Refactor `/api/whale-detail`** → read from `whale_transactions` + `whale_delegations` instead of hitting TaoStats
-3. **Fix `whale_alpha_balances` PK migration** → `ALTER TABLE` to change PK from `(address, date, netuid)` to `(address, date, netuid, hotkey)` in prod Supabase
-4. **Add `subnet_snapshots` table** — see below
+**Decision (2026-03-28):** Stop all jobs loading data into the 4 tables from TaoStats. Replace with chain-direct jobs.
+
+### Jobs to stop / modify
+| Job | Current behavior | Action needed |
+|-----|-----------------|---------------|
+| `/api/cron/snapshot` (30-min) | Step 3a upserts to `whale_snapshots` + `whale_alpha_balances` from TaoStats | Remove step 3a entirely |
+| `scripts/backfill-whale-data.ts` | One-time TaoStats backfill | Already done — don't run again |
+
+### Chain-direct jobs to build
+| Job | What it does | Frequency |
+|-----|-------------|-----------|
+| `scripts/nightly-chain-scan.ts` (extend) | Already writes `whale_snapshots` + `whale_alpha_balances`. **Extend to also:** scan last 24h of blocks for transfer + delegation events → write `whale_transactions` + `whale_delegations` | Nightly, 4 AM UTC |
+
+### Also needed
+- **Fix `whale_alpha_balances` write logic** — currently writes top 500 by total TAO only. Change to union: top 500 by total TAO + top 25 per subnet
+- **Fix `whale_alpha_balances` PK** — `ALTER TABLE` migration in prod Supabase: `(address, date, netuid)` → `(address, date, netuid, hotkey)`
+- **Add KV cache step** — after nightly scan completes, compute per-subnet rank via window function and cache in KV (24h TTL)
+
+### ⚠️ Do not build until confirmed
+All items above are designed and ready — waiting for go-ahead.
 
 ---
 
