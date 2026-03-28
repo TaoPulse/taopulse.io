@@ -7,9 +7,10 @@
     "emission": 0.001,
     "activeMiners": 1024,
     "activeValidators": 64,
-    "website": "https://taostats.io/subnets/1",
+    "website": "https://macrocosmos.ai/sn1",
     "status": "active",
-    "howToMine": "Deploy a high-performance GPU server running frontier LLMs such as LLaMA-3 70B or Mistral. Register your hotkey on SN1 via the Bittensor CLI, configure the miner template from the bittensor-subnet-1 repo, and maintain high uptime. Validators score responses on coherence, accuracy, and latency."
+    "howToMine": "Deploy a high-performance GPU server running frontier LLMs such as LLaMA-3 70B or Mistral. Register your hotkey on SN1 via the Bittensor CLI, configure the miner template from the bittensor-subnet-1 repo, and maintain high uptime. Validators score responses on coherence, accuracy, and latency.",
+    "github": "https://github.com/macrocosm-os/apex"
   },
   {
     "id": 2,
@@ -21,7 +22,8 @@
     "activeValidators": 45,
     "website": "https://omron.ai",
     "status": "active",
-    "howToMine": "Install the Omron miner package and connect a GPU with at least 24GB VRAM. Submit verified inference runs using the cryptographic proof framework and keep your node online for steady emissions. Higher throughput and proof quality earn larger reward multipliers."
+    "howToMine": "Install the Omron miner package and connect a GPU with at least 24GB VRAM. Submit verified inference runs using the cryptographic proof framework and keep your node online for steady emissions. Higher throughput and proof quality earn larger reward multipliers.",
+    "github": "https://github.com/inference-labs-inc/subnet-2"
   },
   {
     "id": 3,
@@ -31,9 +33,10 @@
     "emission": 0.028,
     "activeMiners": 890,
     "activeValidators": 48,
-    "website": "https://tplr.ai",
+    "website": "https://myshell.ai",
     "status": "active",
-    "howToMine": "Set up a node with at least one high-end GPU (RTX 4090 or A100 recommended) and install the Templar miner. Contribute gradient computations during distributed training rounds. Your reward scales with the quality and quantity of valid gradient contributions submitted per epoch."
+    "howToMine": "Set up a node with at least one high-end GPU (RTX 4090 or A100 recommended) and install the Templar miner. Contribute gradient computations during distributed training rounds. Your reward scales with the quality and quantity of valid gradient contributions submitted per epoch.",
+    "github": "https://github.com/MyShell-ai"
   },
   {
     "id": 4,
@@ -45,7 +48,8 @@
     "activeValidators": 52,
     "website": "https://targon.com",
     "status": "active",
-    "howToMine": "Register on Targon and deploy a GPU server running supported inference backends. Pass the validator benchmark suite by demonstrating deterministic outputs and low latency. Higher throughput earns proportionally larger emission shares."
+    "howToMine": "Register on Targon and deploy a GPU server running supported inference backends. Pass the validator benchmark suite by demonstrating deterministic outputs and low latency. Higher throughput earns proportionally larger emission shares.",
+    "github": "https://github.com/manifold-inc/targon"
   },
   {
     "id": 5,
@@ -57,7 +61,8 @@
     "activeValidators": 32,
     "website": "https://openkaito.ai",
     "status": "active",
-    "howToMine": "Deploy the OpenKaito miner with access to social media APIs and configure crawling targets. Index quality is scored by validators on freshness, relevance, and deduplication. Consistent indexing of high-signal content maximizes your emission allocation."
+    "howToMine": "Deploy the OpenKaito miner with access to social media APIs and configure crawling targets. Index quality is scored by validators on freshness, relevance, and deduplication. Consistent indexing of high-signal content maximizes your emission allocation.",
+    "github": "https://github.com/unconst/ImageSubnet"
   },
   {
     "id": 6,
@@ -69,7 +74,8 @@
     "activeValidators": 28,
     "website": "https://nousresearch.com",
     "status": "active",
-    "howToMine": "Fine-tune a capable base model using the Nous dataset protocol and register it on SN6. Validators score your model on a held-out benchmark suite testing instruction-following, truthfulness, and helpfulness. Top-ranked models earn the largest emission share."
+    "howToMine": "Fine-tune a capable base model using the Nous dataset protocol and register it on SN6. Validators score your model on a held-out benchmark suite testing instruction-following, truthfulness, and helpfulness. Top-ranked models earn the largest emission share.",
+    "github": "https://github.com/NousResearch/finetuning-subnet"
   },
   {
     "id": 7,
@@ -81,7 +87,8 @@
     "activeValidators": 36,
     "website": "https://subvortex.info",
     "status": "active",
-    "howToMine": "Register a GPU node and run the Subvortex miner software. Your node will receive routed compute tasks, and you are rewarded based on throughput, reliability, and latency. Datacenter-grade hardware with guaranteed uptime earns maximum rewards."
+    "howToMine": "Register a GPU node and run the Subvortex miner software. Your node will receive routed compute tasks, and you are rewarded based on throughput, reliability, and latency. Datacenter-grade hardware with guaranteed uptime earns maximum rewards.",
+    "github": "https://github.com/eclipsevortex/SubVortex"
   },
   {
     "id": 8,
@@ -93,7 +100,8 @@
     "activeValidators": 24,
     "website": "https://taoshi.io",
     "status": "active",
-    "howToMine": "Develop a trading signal model and register it on SN8 via the Taoshi miner template. Submit trade signals for BTC, ETH, and other assets. Your returns are evaluated against live market data, and top performers by Sharpe ratio earn disproportionate emissions."
+    "howToMine": "Develop a trading signal model and register it on SN8 via the Taoshi miner template. Submit trade signals for BTC, ETH, and other assets. Your returns are evaluated against live market data, and top performers by Sharpe ratio earn disproportionate emissions.",
+    "github": "https://github.com/taoshidev/vanta-network"
   },
   {
     "id": 9,
@@ -103,9 +111,10 @@
     "emission": 0.022,
     "activeMiners": 340,
     "activeValidators": 40,
-    "website": "https://github.com/opentensor/pretraining",
+    "website": "https://macrocosmos.ai/sn9",
     "status": "active",
-    "howToMine": "Train a language model from scratch using the subnet's dataset corpus and upload checkpoints to the validator-accessible endpoint. Models are ranked on validation perplexity. Access to multi-GPU clusters is strongly recommended for competitive training."
+    "howToMine": "Train a language model from scratch using the subnet's dataset corpus and upload checkpoints to the validator-accessible endpoint. Models are ranked on validation perplexity. Access to multi-GPU clusters is strongly recommended for competitive training.",
+    "github": "https://github.com/macrocosm-os/pretraining"
   },
   {
     "id": 10,
@@ -117,7 +126,8 @@
     "activeValidators": 18,
     "website": "https://sturdy.finance",
     "status": "active",
-    "howToMine": "Build and deploy a DeFi yield optimization model using Sturdy's allocation interface. Your strategy is benchmarked against live DeFi protocol data for risk-adjusted returns. Strong quantitative finance and on-chain analytics skills are required."
+    "howToMine": "Build and deploy a DeFi yield optimization model using Sturdy's allocation interface. Your strategy is benchmarked against live DeFi protocol data for risk-adjusted returns. Strong quantitative finance and on-chain analytics skills are required.",
+    "github": "https://github.com/Sturdy-subnet/sturdy-subnet"
   },
   {
     "id": 11,
@@ -127,9 +137,10 @@
     "emission": 0.013,
     "activeMiners": 680,
     "activeValidators": 42,
-    "website": "https://celium.net",
+    "website": "https://dippy.ai",
     "status": "active",
-    "howToMine": "Register your GPUs on Celium and install the miner daemon. Your hardware specs, uptime, and job completion rate determine your emission score. High-VRAM GPUs and datacenter connectivity earn premium rewards."
+    "howToMine": "Register your GPUs on Celium and install the miner daemon. Your hardware specs, uptime, and job completion rate determine your emission score. High-VRAM GPUs and datacenter connectivity earn premium rewards.",
+    "github": "https://github.com/impel-intelligence/dippy-bittensor-subnet"
   },
   {
     "id": 12,
@@ -141,7 +152,8 @@
     "activeValidators": 20,
     "website": "https://computehorde.io",
     "status": "low-activity",
-    "howToMine": "Install the Horde-compatible miner and point it to an LLM backend (KoboldCPP, Aphrodite, etc.). Throughput in tokens-per-second and model diversity score determine your emissions. Consumer GPUs with 16GB VRAM can participate."
+    "howToMine": "Install the Horde-compatible miner and point it to an LLM backend (KoboldCPP, Aphrodite, etc.). Throughput in tokens-per-second and model diversity score determine your emissions. Consumer GPUs with 16GB VRAM can participate.",
+    "github": null
   },
   {
     "id": 13,
@@ -153,7 +165,8 @@
     "activeValidators": 26,
     "website": "https://macrocosmos.ai",
     "status": "active",
-    "howToMine": "Contribute curated datasets to the Dataverse registry. Validators assess quality metrics including deduplication ratio, annotation accuracy, and coverage breadth. Unique, high-signal data earns the most emissions."
+    "howToMine": "Contribute curated datasets to the Dataverse registry. Validators assess quality metrics including deduplication ratio, annotation accuracy, and coverage breadth. Unique, high-signal data earns the most emissions.",
+    "github": "https://github.com/macrocosm-os/data-universe"
   },
   {
     "id": 14,
@@ -163,9 +176,10 @@
     "emission": 0.004,
     "activeMiners": 78,
     "activeValidators": 15,
-    "website": null,
+    "website": "https://palaidn.com",
     "status": "low-activity",
-    "howToMine": "Develop LLM defense modules including prompt injection detectors and output classifiers. Submit your defenses to the validator pipeline and earn rewards proportional to detection accuracy on the evolving attack benchmark."
+    "howToMine": "Develop LLM defense modules including prompt injection detectors and output classifiers. Submit your defenses to the validator pipeline and earn rewards proportional to detection accuracy on the evolving attack benchmark.",
+    "github": "https://github.com/palaidn/palaidn_subnet"
   },
   {
     "id": 15,
@@ -177,7 +191,8 @@
     "activeValidators": 18,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Run an archive node for one or more supported blockchains and connect it to the Blockchain Insights indexer. Submit structured data extractions and earn rewards based on data freshness, completeness, and accuracy."
+    "howToMine": "Run an archive node for one or more supported blockchains and connect it to the Blockchain Insights indexer. Submit structured data extractions and earn rewards based on data freshness, completeness, and accuracy.",
+    "github": "https://github.com/blockchain-insights/blockchain-data-subnet"
   },
   {
     "id": 16,
@@ -189,7 +204,8 @@
     "activeValidators": 12,
     "website": "https://bitads.ai",
     "status": "low-activity",
-    "howToMine": "Deploy a BitAds attribution node and connect it to publisher endpoints. Traffic quality is measured by fraud detection scoring. Verified high-quality traffic flows earn proportional TAO emissions."
+    "howToMine": "Deploy a BitAds attribution node and connect it to publisher endpoints. Traffic quality is measured by fraud detection scoring. Verified high-quality traffic flows earn proportional TAO emissions.",
+    "github": null
   },
   {
     "id": 17,
@@ -199,9 +215,10 @@
     "emission": 0.006,
     "activeMiners": 95,
     "activeValidators": 16,
-    "website": null,
+    "website": "https://404.xyz",
     "status": "active",
-    "howToMine": "Deploy a 3D generation model (e.g., Shap-E, One-2-3-45) on a GPU node and register on SN17. Validators score your 3D outputs on geometric quality and prompt consistency. High-VRAM GPUs are required for competitive quality."
+    "howToMine": "Deploy a 3D generation model (e.g., Shap-E, One-2-3-45) on a GPU node and register on SN17. Validators score your 3D outputs on geometric quality and prompt consistency. High-VRAM GPUs are required for competitive quality.",
+    "github": "https://github.com/404-Repo/three-gen-subnet"
   },
   {
     "id": 18,
@@ -211,9 +228,10 @@
     "emission": 0.012,
     "activeMiners": 330,
     "activeValidators": 38,
-    "website": "https://cortex.t.ai",
+    "website": "https://corcel.io",
     "status": "active",
-    "howToMine": "Register as a Cortex.t provider and deploy inference endpoints for supported modalities. Your API response quality, latency, and uptime are continuously scored. Serving multiple modalities expands your emission share."
+    "howToMine": "Register as a Cortex.t provider and deploy inference endpoints for supported modalities. Your API response quality, latency, and uptime are continuously scored. Serving multiple modalities expands your emission share.",
+    "github": "https://github.com/Corcel-API"
   },
   {
     "id": 19,
@@ -223,9 +241,10 @@
     "emission": 0.007,
     "activeMiners": 142,
     "activeValidators": 22,
-    "website": "https://nineteen.ai",
+    "website": "https://dojo.network",
     "status": "active",
-    "howToMine": "Deploy state-of-the-art vision models (ViT, DINO, SAM) on a GPU node. Register on SN19 and respond to validator classification and detection challenges. Model accuracy and inference speed jointly determine your reward."
+    "howToMine": "Deploy state-of-the-art vision models (ViT, DINO, SAM) on a GPU node. Register on SN19 and respond to validator classification and detection challenges. Model accuracy and inference speed jointly determine your reward.",
+    "github": "https://github.com/tensorplex-labs/dojo"
   },
   {
     "id": 20,
@@ -237,7 +256,8 @@
     "activeValidators": 28,
     "website": "https://bitagent.ai",
     "status": "active",
-    "howToMine": "Build an autonomous agent using frameworks like AutoGPT or LangChain and register on SN20. Your agent is tasked with complex goal-directed problems. Performance on benchmark tasks determines your emission share."
+    "howToMine": "Build an autonomous agent using frameworks like AutoGPT or LangChain and register on SN20. Your agent is tasked with complex goal-directed problems. Performance on benchmark tasks determines your emission share.",
+    "github": null
   },
   {
     "id": 21,
@@ -247,9 +267,10 @@
     "emission": 0.008,
     "activeMiners": 390,
     "activeValidators": 30,
-    "website": null,
+    "website": "https://anycompute.io",
     "status": "active",
-    "howToMine": "Provide hard disk storage capacity and run the FileTAO miner daemon. Validators issue periodic storage challenges that you must answer cryptographically. More storage capacity and high reliability earns proportionally more emissions."
+    "howToMine": "Provide hard disk storage capacity and run the FileTAO miner daemon. Validators issue periodic storage challenges that you must answer cryptographically. More storage capacity and high reliability earns proportionally more emissions.",
+    "github": null
   },
   {
     "id": 22,
@@ -261,7 +282,8 @@
     "activeValidators": 16,
     "website": "https://desearch.ai",
     "status": "low-activity",
-    "howToMine": "Run a web crawler with AI-powered relevance ranking and connect it to the Meta Search subnet. Validator queries test result freshness and relevance. A scalable crawling infrastructure and strong NLP pipeline are key to high scores."
+    "howToMine": "Run a web crawler with AI-powered relevance ranking and connect it to the Meta Search subnet. Validator queries test result freshness and relevance. A scalable crawling infrastructure and strong NLP pipeline are key to high scores.",
+    "github": "https://github.com/Desearch-ai/subnet-22"
   },
   {
     "id": 23,
@@ -271,9 +293,10 @@
     "emission": 0.006,
     "activeMiners": 175,
     "activeValidators": 20,
-    "website": null,
+    "website": "https://studio.nichetensor.com",
     "status": "active",
-    "howToMine": "Deploy Stable Diffusion or fine-tuned image generation models on a GPU node with at least 16GB VRAM. Connect to SN23 and respond to generation requests. Image quality is scored by CLIP similarity and human-preference metrics."
+    "howToMine": "Deploy Stable Diffusion or fine-tuned image generation models on a GPU node with at least 16GB VRAM. Connect to SN23 and respond to generation requests. Image quality is scored by CLIP similarity and human-preference metrics.",
+    "github": "https://github.com/SocialTensor/SocialTensorSubnet"
   },
   {
     "id": 24,
@@ -285,7 +308,8 @@
     "activeValidators": 25,
     "website": "https://omega-labs.ai",
     "status": "active",
-    "howToMine": "Build scrapers for video and multimodal content using the Omega Labs data protocol. Submit data batches to the validator scoring pipeline. Data uniqueness, metadata quality, and content diversity are the key scoring factors."
+    "howToMine": "Build scrapers for video and multimodal content using the Omega Labs data protocol. Submit data batches to the validator scoring pipeline. Data uniqueness, metadata quality, and content diversity are the key scoring factors.",
+    "github": null
   },
   {
     "id": 25,
@@ -297,7 +321,8 @@
     "activeValidators": 30,
     "website": "https://folding.ai",
     "status": "active",
-    "howToMine": "Join the Hivemind swarm by running a peer node with at least one GPU. Your node participates in synchronous gradient averaging rounds. Higher GPU throughput and stable connectivity earn proportionally larger emission shares."
+    "howToMine": "Join the Hivemind swarm by running a peer node with at least one GPU. Your node participates in synchronous gradient averaging rounds. Higher GPU throughput and stable connectivity earn proportionally larger emission shares.",
+    "github": "https://github.com/bit-current/DistributedTraining"
   },
   {
     "id": 26,
@@ -309,7 +334,8 @@
     "activeValidators": 18,
     "website": "https://storb.io",
     "status": "low-activity",
-    "howToMine": "Deploy high-quality image generation models including SDXL or Flux. Validators score outputs on aesthetic quality, prompt adherence, and resolution. Fine-tuned models with distinctive artistic styles can outperform generic base models."
+    "howToMine": "Deploy high-quality image generation models including SDXL or Flux. Validators score outputs on aesthetic quality, prompt adherence, and resolution. Fine-tuned models with distinctive artistic styles can outperform generic base models.",
+    "github": null
   },
   {
     "id": 27,
@@ -321,7 +347,8 @@
     "activeValidators": 35,
     "website": null,
     "status": "active",
-    "howToMine": "Register your GPU hardware on SN27 and run the compute miner daemon. Accept compute jobs dispatched by the scheduler. Performance metrics include job throughput, latency, and reliability. Enterprise-grade hardware earns maximum rewards."
+    "howToMine": "Register your GPU hardware on SN27 and run the compute miner daemon. Accept compute jobs dispatched by the scheduler. Performance metrics include job throughput, latency, and reliability. Enterprise-grade hardware earns maximum rewards.",
+    "github": "https://github.com/neuralinternet/compute-subnet"
   },
   {
     "id": 28,
@@ -333,7 +360,8 @@
     "activeValidators": 14,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Connect to financial data APIs and deploy the Foundry oracle miner. Submit price feeds for tracked assets. Your reward is proportional to accuracy vs. the consensus price and update frequency. Low-latency data access is essential."
+    "howToMine": "Connect to financial data APIs and deploy the Foundry oracle miner. Submit price feeds for tracked assets. Your reward is proportional to accuracy vs. the consensus price and update frequency. Low-latency data access is essential.",
+    "github": "https://github.com/foundryservices/snpOracle"
   },
   {
     "id": 29,
@@ -345,7 +373,8 @@
     "activeValidators": 18,
     "website": null,
     "status": "active",
-    "howToMine": "Train small-to-medium language models on the Coldint dataset specification and submit checkpoints. Validators evaluate on a hidden benchmark. Efficiency in parameter count versus performance earns bonus scoring."
+    "howToMine": "Train small-to-medium language models on the Coldint dataset specification and submit checkpoints. Validators evaluate on a hidden benchmark. Efficiency in parameter count versus performance earns bonus scoring.",
+    "github": null
   },
   {
     "id": 30,
@@ -355,9 +384,10 @@
     "emission": 0.007,
     "activeMiners": 145,
     "activeValidators": 22,
-    "website": "https://bettensor.com",
+    "website": "https://dream.ai",
     "status": "active",
-    "howToMine": "Build specialized agent modules compatible with the Swarms orchestration protocol. Register on SN30 and participate in multi-agent task pipelines. Your module's contribution quality and reliability in collaborative tasks determines your emission."
+    "howToMine": "Build specialized agent modules compatible with the Swarms orchestration protocol. Register on SN30 and participate in multi-agent task pipelines. Your module's contribution quality and reliability in collaborative tasks determines your emission.",
+    "github": "https://github.com/womboai/wombo-bittensor-subnet"
   },
   {
     "id": 31,
@@ -369,7 +399,8 @@
     "activeValidators": 12,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Implement NAS algorithms compatible with the NAS Chain protocol and register a miner node. Submit discovered architectures evaluated on benchmark tasks. Novel, efficient architectures earn the highest rewards."
+    "howToMine": "Implement NAS algorithms compatible with the NAS Chain protocol and register a miner node. Submit discovered architectures evaluated on benchmark tasks. Novel, efficient architectures earn the highest rewards.",
+    "github": null
   },
   {
     "id": 32,
@@ -381,7 +412,8 @@
     "activeValidators": 20,
     "website": null,
     "status": "active",
-    "howToMine": "Build enterprise automation agents using the It AI task specification. Register on SN32 and demonstrate reliable task completion across workflow benchmarks. Agents with high success rates on novel tasks earn more emissions."
+    "howToMine": "Build enterprise automation agents using the It AI task specification. Register on SN32 and demonstrate reliable task completion across workflow benchmarks. Agents with high success rates on novel tasks earn more emissions.",
+    "github": null
   },
   {
     "id": 33,
@@ -393,7 +425,8 @@
     "activeValidators": 20,
     "website": null,
     "status": "active",
-    "howToMine": "Deploy video generation models (e.g., AnimateDiff, Wan) on high-VRAM GPU nodes. Respond to validator video generation challenges. Quality is scored on temporal coherence, prompt adherence, and resolution. A100-class GPUs are required."
+    "howToMine": "Deploy video generation models (e.g., AnimateDiff, Wan) on high-VRAM GPU nodes. Respond to validator video generation challenges. Quality is scored on temporal coherence, prompt adherence, and resolution. A100-class GPUs are required.",
+    "github": null
   },
   {
     "id": 34,
@@ -405,7 +438,8 @@
     "activeValidators": 14,
     "website": "https://bitmind.ai",
     "status": "low-activity",
-    "howToMine": "Train deepfake detection models using the BitMind benchmark dataset. Register on SN34 and submit your detector. Validators test it against a continuously updated adversarial test set. Higher detection accuracy on novel attacks earns more emissions."
+    "howToMine": "Train deepfake detection models using the BitMind benchmark dataset. Register on SN34 and submit your detector. Validators test it against a continuously updated adversarial test set. Higher detection accuracy on novel attacks earns more emissions.",
+    "github": "https://github.com/BitMind-AI/bitmind-subnet"
   },
   {
     "id": 35,
@@ -417,7 +451,8 @@
     "activeValidators": 16,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Fine-tune or prompt-engineer a reasoning model capable of solving formal logic and mathematical problems. Register on SN35 and compete on the validator reasoning benchmark. Chain-of-thought quality and accuracy are primary scoring factors."
+    "howToMine": "Fine-tune or prompt-engineer a reasoning model capable of solving formal logic and mathematical problems. Register on SN35 and compete on the validator reasoning benchmark. Chain-of-thought quality and accuracy are primary scoring factors.",
+    "github": null
   },
   {
     "id": 36,
@@ -429,7 +464,8 @@
     "activeValidators": 18,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Register as a human labeler on SN36 and complete annotation tasks. Your accuracy is verified against gold-standard labels and inter-annotator agreement. High-quality consistent annotations earn the most TAO."
+    "howToMine": "Register as a human labeler on SN36 and complete annotation tasks. Your accuracy is verified against gold-standard labels and inter-annotator agreement. High-quality consistent annotations earn the most TAO.",
+    "github": null
   },
   {
     "id": 37,
@@ -441,7 +477,8 @@
     "activeValidators": 10,
     "website": "https://fhe.org",
     "status": "low-activity",
-    "howToMine": "Deploy FHE-capable compute nodes with high memory bandwidth. Install the FHE.org miner and process encrypted inference requests. FHE operations are memory-intensive; server-grade CPUs with large RAM are required."
+    "howToMine": "Deploy FHE-capable compute nodes with high memory bandwidth. Install the FHE.org miner and process encrypted inference requests. FHE operations are memory-intensive; server-grade CPUs with large RAM are required.",
+    "github": null
   },
   {
     "id": 38,
@@ -453,7 +490,8 @@
     "activeValidators": 24,
     "website": null,
     "status": "active",
-    "howToMine": "Register a GPU node and join the distributed training pool. Your reward scales with valid gradient contributions per training round. High-bandwidth GPU interconnects improve performance significantly."
+    "howToMine": "Register a GPU node and join the distributed training pool. Your reward scales with valid gradient contributions per training round. High-bandwidth GPU interconnects improve performance significantly.",
+    "github": null
   },
   {
     "id": 39,
@@ -465,7 +503,8 @@
     "activeValidators": 16,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Develop model optimization pipelines including quantization, pruning, and distillation. Submit optimized models to the benchmark suite targeting ONNX and TFLite runtimes. Models achieving the best accuracy/latency tradeoff earn the most emissions."
+    "howToMine": "Develop model optimization pipelines including quantization, pruning, and distillation. Submit optimized models to the benchmark suite targeting ONNX and TFLite runtimes. Models achieving the best accuracy/latency tradeoff earn the most emissions.",
+    "github": null
   },
   {
     "id": 40,
@@ -477,7 +516,8 @@
     "activeValidators": 20,
     "website": null,
     "status": "active",
-    "howToMine": "Deploy an embedding and chunking pipeline using models like BGE or E5. Register on SN40 and process validator document batches. Chunking quality is scored by retrieval accuracy on a held-out QA benchmark."
+    "howToMine": "Deploy an embedding and chunking pipeline using models like BGE or E5. Register on SN40 and process validator document batches. Chunking quality is scored by retrieval accuracy on a held-out QA benchmark.",
+    "github": null
   },
   {
     "id": 41,
@@ -489,7 +529,8 @@
     "activeValidators": 16,
     "website": "https://sportstensor.com",
     "status": "low-activity",
-    "howToMine": "Develop statistical or ML-based sports prediction models and register on SN41. Submit probability forecasts for upcoming fixtures. Your Brier score on resolved predictions determines your emission share. Access to historical sports data is essential."
+    "howToMine": "Develop statistical or ML-based sports prediction models and register on SN41. Submit probability forecasts for upcoming fixtures. Your Brier score on resolved predictions determines your emission share. Access to historical sports data is essential.",
+    "github": null
   },
   {
     "id": 42,
@@ -501,7 +542,8 @@
     "activeValidators": 14,
     "website": "https://masa.ai",
     "status": "low-activity",
-    "howToMine": "Build probabilistic score prediction models and register on SN42. Submit detailed outcome distributions and earn rewards proportional to log-likelihood on resolved events. Granular match data and Poisson-based models are commonly used."
+    "howToMine": "Build probabilistic score prediction models and register on SN42. Submit detailed outcome distributions and earn rewards proportional to log-likelihood on resolved events. Granular match data and Poisson-based models are commonly used.",
+    "github": null
   },
   {
     "id": 43,
@@ -513,7 +555,8 @@
     "activeValidators": 24,
     "website": null,
     "status": "active",
-    "howToMine": "Deploy SDXL, Flux, or Midjourney-equivalent models on GPU nodes with 24GB+ VRAM. Connect to SN43 and respond to generation challenges. Images are scored by CLIP similarity, FID, and human aesthetic preference."
+    "howToMine": "Deploy SDXL, Flux, or Midjourney-equivalent models on GPU nodes with 24GB+ VRAM. Connect to SN43 and respond to generation challenges. Images are scored by CLIP similarity, FID, and human aesthetic preference.",
+    "github": null
   },
   {
     "id": 44,
@@ -525,7 +568,8 @@
     "activeValidators": 28,
     "website": "https://dojo.network",
     "status": "active",
-    "howToMine": "Operate a preference data collection pipeline through the Dojo interface. Recruit quality annotators and implement quality control to ensure consistent preference labels. Data quality and volume both factor into your emission allocation."
+    "howToMine": "Operate a preference data collection pipeline through the Dojo interface. Recruit quality annotators and implement quality control to ensure consistent preference labels. Data quality and volume both factor into your emission allocation.",
+    "github": null
   },
   {
     "id": 45,
@@ -537,7 +581,8 @@
     "activeValidators": 16,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Deploy 3D rendering or generative model pipelines to produce labeled synthetic images. Register on SN45 and submit batches. Validators assess domain coverage, annotation accuracy, and visual diversity. Procedural generation pipelines scale well."
+    "howToMine": "Deploy 3D rendering or generative model pipelines to produce labeled synthetic images. Register on SN45 and submit batches. Validators assess domain coverage, annotation accuracy, and visual diversity. Procedural generation pipelines scale well.",
+    "github": null
   },
   {
     "id": 46,
@@ -549,7 +594,8 @@
     "activeValidators": 10,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Implement consensus protocol clients compatible with the Nakamoto subnet specification. Register and participate in consensus validation rounds. Protocol correctness and latency are primary scoring metrics."
+    "howToMine": "Implement consensus protocol clients compatible with the Nakamoto subnet specification. Register and participate in consensus validation rounds. Protocol correctness and latency are primary scoring metrics.",
+    "github": null
   },
   {
     "id": 47,
@@ -561,7 +607,8 @@
     "activeValidators": 18,
     "website": "https://condenses.ai",
     "status": "low-activity",
-    "howToMine": "Deploy a document summarization system using LLMs or extractive methods. Register on SN47 and process validator document batches. Summary quality is scored on ROUGE metrics and human factuality evaluations."
+    "howToMine": "Deploy a document summarization system using LLMs or extractive methods. Register on SN47 and process validator document batches. Summary quality is scored on ROUGE metrics and human factuality evaluations.",
+    "github": null
   },
   {
     "id": 48,
@@ -573,7 +620,8 @@
     "activeValidators": 12,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Build real estate valuation models using the NextPlace property dataset. Register on SN48 and submit price predictions for queried properties. Models are scored by RMSE on verified sale prices. Integration with geospatial data improves accuracy."
+    "howToMine": "Build real estate valuation models using the NextPlace property dataset. Register on SN48 and submit price predictions for queried properties. Models are scored by RMSE on verified sale prices. Integration with geospatial data improves accuracy.",
+    "github": null
   },
   {
     "id": 49,
@@ -585,7 +633,8 @@
     "activeValidators": 15,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Implement AutoML search algorithms including Bayesian optimization or evolutionary search. Register on SN49 and run trials on the benchmark tasks. Best trial accuracy vs. compute budget earns emission rewards."
+    "howToMine": "Implement AutoML search algorithms including Bayesian optimization or evolutionary search. Register on SN49 and run trials on the benchmark tasks. Best trial accuracy vs. compute budget earns emission rewards.",
+    "github": null
   },
   {
     "id": 50,
@@ -597,7 +646,8 @@
     "activeValidators": 10,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Fine-tune NLI classification models on the Contradiction benchmark dataset. Submit models to SN50 validators who evaluate entailment, contradiction, and neutral classification accuracy. Multi-genre NLI data improves generalization."
+    "howToMine": "Fine-tune NLI classification models on the Contradiction benchmark dataset. Submit models to SN50 validators who evaluate entailment, contradiction, and neutral classification accuracy. Multi-genre NLI data improves generalization.",
+    "github": null
   },
   {
     "id": 51,
@@ -609,7 +659,8 @@
     "activeValidators": 28,
     "website": "https://lium.io",
     "status": "active",
-    "howToMine": "Deploy a high-performance LLM serving stack (vLLM, TGI, or equivalent) and register on SN51. Serve API requests routed by validators. Throughput in tokens/second and p95 latency determine your emission score."
+    "howToMine": "Deploy a high-performance LLM serving stack (vLLM, TGI, or equivalent) and register on SN51. Serve API requests routed by validators. Throughput in tokens/second and p95 latency determine your emission score.",
+    "github": null
   },
   {
     "id": 52,
@@ -621,7 +672,8 @@
     "activeValidators": 8,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 53,
@@ -633,7 +685,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 54,
@@ -645,7 +698,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 55,
@@ -657,7 +711,8 @@
     "activeValidators": 7,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 56,
@@ -669,7 +724,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 57,
@@ -681,7 +737,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 58,
@@ -693,7 +750,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 59,
@@ -705,7 +763,8 @@
     "activeValidators": 7,
     "website": "https://masa.ai",
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 60,
@@ -717,7 +776,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 61,
@@ -729,7 +789,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 62,
@@ -741,7 +802,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 63,
@@ -753,7 +815,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 64,
@@ -765,7 +828,8 @@
     "activeValidators": 60,
     "website": "https://chutes.ai",
     "status": "active",
-    "howToMine": "Register GPU compute capacity on Chutes and install the Manifold Labs miner daemon. Emission rates may change in future governance cycles. The large stake pool makes this subnet worth monitoring closely for emission announcements."
+    "howToMine": "Register GPU compute capacity on Chutes and install the Manifold Labs miner daemon. Emission rates may change in future governance cycles. The large stake pool makes this subnet worth monitoring closely for emission announcements.",
+    "github": null
   },
   {
     "id": 65,
@@ -777,7 +841,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 66,
@@ -789,7 +854,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 67,
@@ -801,7 +867,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 68,
@@ -813,7 +880,8 @@
     "activeValidators": 48,
     "website": null,
     "status": "active",
-    "howToMine": "Register on SN68 and provide GPU compute resources per the subnet miner specification. Given the high emission rate, competition is intense. Monitor the official subnet GitHub for the latest miner software and scoring criteria."
+    "howToMine": "Register on SN68 and provide GPU compute resources per the subnet miner specification. Given the high emission rate, competition is intense. Monitor the official subnet GitHub for the latest miner software and scoring criteria.",
+    "github": null
   },
   {
     "id": 69,
@@ -825,7 +893,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 70,
@@ -837,7 +906,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 71,
@@ -849,7 +919,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 72,
@@ -861,7 +932,8 @@
     "activeValidators": 7,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 73,
@@ -873,7 +945,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 74,
@@ -885,7 +958,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 75,
@@ -897,7 +971,8 @@
     "activeValidators": 32,
     "website": null,
     "status": "active",
-    "howToMine": "Register on SN75 and deploy inference infrastructure per the subnet miner specification. The high emission rate draws competitive miners. Check the official subnet repo for hardware requirements and scoring methodology."
+    "howToMine": "Register on SN75 and deploy inference infrastructure per the subnet miner specification. The high emission rate draws competitive miners. Check the official subnet repo for hardware requirements and scoring methodology.",
+    "github": null
   },
   {
     "id": 76,
@@ -909,7 +984,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 77,
@@ -921,7 +997,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 78,
@@ -933,7 +1010,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 79,
@@ -945,7 +1023,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 80,
@@ -957,7 +1036,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 81,
@@ -969,7 +1049,8 @@
     "activeValidators": 42,
     "website": null,
     "status": "active",
-    "howToMine": "Register on SN81 and contribute GPU compute for training workloads per the subnet specification. Given the high emission rate, competition requires high-performance GPUs. Monitor the subnet repo for the latest scoring and task updates."
+    "howToMine": "Register on SN81 and contribute GPU compute for training workloads per the subnet specification. Given the high emission rate, competition requires high-performance GPUs. Monitor the subnet repo for the latest scoring and task updates.",
+    "github": null
   },
   {
     "id": 82,
@@ -981,7 +1062,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 83,
@@ -993,7 +1075,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 84,
@@ -1005,7 +1088,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 85,
@@ -1017,7 +1101,8 @@
     "activeValidators": 38,
     "website": null,
     "status": "active",
-    "howToMine": "Register on SN85 and deploy language model infrastructure per the subnet miner specification. The competitive emission rate attracts skilled LLM miners. Review the subnet documentation for scoring methodology and benchmark details."
+    "howToMine": "Register on SN85 and deploy language model infrastructure per the subnet miner specification. The competitive emission rate attracts skilled LLM miners. Review the subnet documentation for scoring methodology and benchmark details.",
+    "github": null
   },
   {
     "id": 86,
@@ -1029,7 +1114,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 87,
@@ -1041,7 +1127,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 88,
@@ -1053,7 +1140,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 89,
@@ -1065,7 +1153,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 90,
@@ -1077,7 +1166,8 @@
     "activeValidators": 7,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 91,
@@ -1089,7 +1179,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 92,
@@ -1101,7 +1192,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 93,
@@ -1113,7 +1205,8 @@
     "activeValidators": 35,
     "website": null,
     "status": "active",
-    "howToMine": "Register on SN93 and deploy autonomous agent systems per the subnet specification. The competitive emission pool rewards agents with high task completion rates and reliability. Review the latest benchmark tasks in the subnet repository."
+    "howToMine": "Register on SN93 and deploy autonomous agent systems per the subnet specification. The competitive emission pool rewards agents with high task completion rates and reliability. Review the latest benchmark tasks in the subnet repository.",
+    "github": null
   },
   {
     "id": 94,
@@ -1125,7 +1218,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 95,
@@ -1137,7 +1231,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 96,
@@ -1149,7 +1244,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 97,
@@ -1161,7 +1257,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 98,
@@ -1173,7 +1270,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 99,
@@ -1185,7 +1283,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 100,
@@ -1197,7 +1296,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 101,
@@ -1209,7 +1309,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 102,
@@ -1221,7 +1322,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 103,
@@ -1233,7 +1335,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 104,
@@ -1245,7 +1348,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 105,
@@ -1257,7 +1361,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 106,
@@ -1269,7 +1374,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 107,
@@ -1281,7 +1387,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 108,
@@ -1293,7 +1400,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 109,
@@ -1305,7 +1413,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 110,
@@ -1317,7 +1426,8 @@
     "activeValidators": 6,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 111,
@@ -1329,7 +1439,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 112,
@@ -1341,7 +1452,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 113,
@@ -1353,7 +1465,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 114,
@@ -1365,7 +1478,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 115,
@@ -1377,7 +1491,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 116,
@@ -1389,7 +1504,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 117,
@@ -1401,7 +1517,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 118,
@@ -1413,7 +1530,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 119,
@@ -1425,7 +1543,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 120,
@@ -1437,7 +1556,8 @@
     "activeValidators": 30,
     "website": null,
     "status": "active",
-    "howToMine": "Register on SN120 and contribute to the data pipeline per the subnet specification. The competitive emission pool rewards high-quality, unique data contributions. Review the subnet repository for current data format requirements and scoring."
+    "howToMine": "Register on SN120 and contribute to the data pipeline per the subnet specification. The competitive emission pool rewards high-quality, unique data contributions. Review the subnet repository for current data format requirements and scoring.",
+    "github": null
   },
   {
     "id": 121,
@@ -1449,7 +1569,8 @@
     "activeValidators": 4,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 122,
@@ -1461,7 +1582,8 @@
     "activeValidators": 5,
     "website": null,
     "status": "low-activity",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 123,
@@ -1473,7 +1595,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 124,
@@ -1485,7 +1608,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 125,
@@ -1497,7 +1621,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 126,
@@ -1509,7 +1634,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 127,
@@ -1521,7 +1647,8 @@
     "activeValidators": 3,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   },
   {
     "id": 128,
@@ -1533,6 +1660,7 @@
     "activeValidators": 2,
     "website": null,
     "status": "inactive",
-    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions."
+    "howToMine": "Refer to the official Bittensor documentation and the subnet's GitHub repository for miner setup instructions.",
+    "github": null
   }
 ]
