@@ -314,7 +314,8 @@ async function main() {
   const t0 = Date.now();
   const dateArg = process.argv.find(a => /^\d{4}-\d{2}-\d{2}$/.test(a));
   const today = dateArg ?? new Date().toISOString().split('T')[0];
-  console.log(`\n🔗 Nightly chain scan — ${today}${dateArg ? ' (custom date)' : ''}`);
+  const skipBlocks = process.argv.includes('--skip-blocks');
+  console.log(`\n🔗 Nightly chain scan — ${today}${dateArg ? ' (custom date)' : ''}${skipBlocks ? ' [skip-blocks]' : ''}`);
 
   // ── Supabase client ──────────────────────────────────────────────────────────
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -422,8 +423,13 @@ async function main() {
   console.log(`  ✅ whale_alpha_balances: ${alphaWritten} rows`);
 
   // ── Block scan for whale_transactions + whale_delegations ────────────────────
-  console.log('\n[5/5] Scanning last 24h of blocks for transactions + delegations...');
-  const { txnsWritten, delegationsWritten } = await scanRecentBlocks(api, top500Addrs, subnetRatio, supabase, today);
+  let txnsWritten = 0, delegationsWritten = 0;
+  if (skipBlocks) {
+    console.log('\n[5/5] Skipping block scan (--skip-blocks flag set)');
+  } else {
+    console.log('\n[5/5] Scanning last 24h of blocks for transactions + delegations...');
+    ({ txnsWritten, delegationsWritten } = await scanRecentBlocks(api, top500Addrs, subnetRatio, supabase, today));
+  }
 
   await api.disconnect();
 
