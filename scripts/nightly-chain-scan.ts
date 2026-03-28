@@ -247,11 +247,15 @@ async function scanRecentBlocks(
             ) {
               const coldkey = event.data[0].toString();
               const hotkey = event.data[1].toString();
-              const amountRaw = event.data[2].toString();
-              const netuId = Number(event.data[3].toString());
+              // StakeAdded/StakeRemoved event layout (6 fields):
+              // data[0]=coldkey, data[1]=hotkey, data[2]=tao_amount, data[3]=alpha_amount, data[4]=netuid, data[5]=extra
+              const taoAmountRaw = event.data[2].toString();
+              const alphaAmountRaw = event.data[3].toString();
+              const netuId = Number(event.data[4].toString());
               if (top500Addrs.has(coldkey)) {
-                const alphaVal = Number(BigInt(amountRaw)) / 1e9;
-                const ratio = subnetRatio.get(netuId) ?? 1.0;
+                const taoVal = Number(BigInt(taoAmountRaw)) / 1e9;
+                const alphaVal = Number(BigInt(alphaAmountRaw)) / 1e9;
+                const ratio = netuId === 0 ? 1.0 : (subnetRatio.get(netuId) ?? 1.0);
                 delegationRows.push({
                   id: `${blockNum}-${idx}-${method}-${coldkey}`,
                   address: coldkey,
@@ -260,7 +264,7 @@ async function scanRecentBlocks(
                   delegate_name: null,
                   netuid: netuId,
                   alpha: alphaVal,
-                  amount: alphaVal * ratio,
+                  amount: taoVal,
                   alpha_price_in_tao: ratio,
                   timestamp: isoString,
                   block_number: blockNum,
