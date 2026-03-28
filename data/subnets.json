@@ -59,7 +59,7 @@
     "emission": 0.009,
     "activeMiners": 256,
     "activeValidators": 32,
-    "website": "https://openkaito.ai",
+    "website": null,
     "status": "active",
     "howToMine": "Deploy the OpenKaito miner with access to social media APIs and configure crawling targets. Index quality is scored by validators on freshness, relevance, and deduplication. Consistent indexing of high-signal content maximizes your emission allocation.",
     "github": "https://github.com/unconst/ImageSubnet"
@@ -85,7 +85,7 @@
     "emission": 0.011,
     "activeMiners": 512,
     "activeValidators": 36,
-    "website": "https://subvortex.info",
+    "website": null,
     "status": "active",
     "howToMine": "Register a GPU node and run the Subvortex miner software. Your node will receive routed compute tasks, and you are rewarded based on throughput, reliability, and latency. Datacenter-grade hardware with guaranteed uptime earns maximum rewards.",
     "github": "https://github.com/eclipsevortex/SubVortex"
@@ -140,7 +140,7 @@
     "website": "https://dippy.ai",
     "status": "active",
     "howToMine": "Register your GPUs on Celium and install the miner daemon. Your hardware specs, uptime, and job completion rate determine your emission score. High-VRAM GPUs and datacenter connectivity earn premium rewards.",
-    "github": "https://github.com/impel-intelligence/dippy-bittensor-subnet"
+    "github": null
   },
   {
     "id": 12,
@@ -176,7 +176,7 @@
     "emission": 0.004,
     "activeMiners": 78,
     "activeValidators": 15,
-    "website": "https://palaidn.com",
+    "website": null,
     "status": "low-activity",
     "howToMine": "Develop LLM defense modules including prompt injection detectors and output classifiers. Submit your defenses to the validator pipeline and earn rewards proportional to detection accuracy on the evolving attack benchmark.",
     "github": "https://github.com/palaidn/palaidn_subnet"
@@ -228,10 +228,10 @@
     "emission": 0.012,
     "activeMiners": 330,
     "activeValidators": 38,
-    "website": "https://corcel.io",
+    "website": null,
     "status": "active",
     "howToMine": "Register as a Cortex.t provider and deploy inference endpoints for supported modalities. Your API response quality, latency, and uptime are continuously scored. Serving multiple modalities expands your emission share.",
-    "github": "https://github.com/Corcel-API"
+    "github": null
   },
   {
     "id": 19,
@@ -267,7 +267,7 @@
     "emission": 0.008,
     "activeMiners": 390,
     "activeValidators": 30,
-    "website": "https://anycompute.io",
+    "website": null,
     "status": "active",
     "howToMine": "Provide hard disk storage capacity and run the FileTAO miner daemon. Validators issue periodic storage challenges that you must answer cryptographically. More storage capacity and high reliability earns proportionally more emissions.",
     "github": null
@@ -293,7 +293,7 @@
     "emission": 0.006,
     "activeMiners": 175,
     "activeValidators": 20,
-    "website": "https://studio.nichetensor.com",
+    "website": "https://nichetensor.com",
     "status": "active",
     "howToMine": "Deploy Stable Diffusion or fine-tuned image generation models on a GPU node with at least 16GB VRAM. Connect to SN23 and respond to generation requests. Image quality is scored by CLIP similarity and human-preference metrics.",
     "github": "https://github.com/SocialTensor/SocialTensorSubnet"
@@ -348,7 +348,7 @@
     "website": null,
     "status": "active",
     "howToMine": "Register your GPU hardware on SN27 and run the compute miner daemon. Accept compute jobs dispatched by the scheduler. Performance metrics include job throughput, latency, and reliability. Enterprise-grade hardware earns maximum rewards.",
-    "github": "https://github.com/neuralinternet/compute-subnet"
+    "github": null
   },
   {
     "id": 28,
