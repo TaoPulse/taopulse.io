@@ -152,10 +152,11 @@ The problem with `entries()` in one shot is it tries to fetch hundreds of thousa
 | `whale_transactions` | 3,962 | One-time backfill (2026-03-27) |
 | `whale_delegations` | 220 | One-time backfill (2026-03-27) |
 
-### Phase 3 — Switch cron richlist source to Supabase ❌ Not done
-- 30-min cron (`/api/cron/snapshot`) still fetches richlist from TaoStats
-- Not urgent — cron is within TaoStats free limits
-- Revisit if cron starts hitting 429s
+### Phase 3 — Switch cron richlist source to Supabase ✅ Complete (2026-03-28)
+- Cron now reads richlist from Supabase `whale_snapshots` (today's date, ≥100 rows = use it)
+- Falls back to TaoStats automatically if nightly job hasn't run yet
+- Discord summary shows which source was used each run
+- Validators + network stats still fetched from TaoStats (no chain alternative yet)
 
 ### Phase 4 — Reduce TaoStats dependency further ❌ Not started
 - Low priority
