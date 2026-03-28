@@ -3,7 +3,6 @@
 # Skips block scan (txns/delegations) — use --skip-blocks flag in scan script.
 # Usage: bash scripts/backfill-historical.sh [days=30]
 
-set -e
 cd "$(dirname "$0")/.."
 export $(grep -v '^#' .env.local | xargs)
 
@@ -29,7 +28,7 @@ for i in $(seq 1 $DAYS); do
 
   # Run scan, capture all output (stdout + stderr) to log and screen
   set +e
-  OUTPUT=$(npx ts-node --project tsconfig.scripts.json scripts/nightly-chain-scan.ts "$DATE" --skip-blocks 2>&1)
+  OUTPUT=$(npx ts-node --project tsconfig.scripts.json --transpile-only scripts/nightly-chain-scan.ts "$DATE" --skip-blocks 2>&1)
   EXIT_CODE=$?
   set -e
 
