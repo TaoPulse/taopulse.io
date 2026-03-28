@@ -61,19 +61,50 @@ export async function GET(req: Request) {
   const startedAt = Date.now();
 
   try {
-    // ── 1. Fetch top 500 wallets (3 pages × 200) + validators ──────────────
-    const [pageResults, validatorsRes, networkRes] = await Promise.all([
-      Promise.all(
+    // ── 1. Fetch top 500 wallets — try Supabase first (Phase 3), fall back to TaoStats ──
+    const sbUrl = process.env.SUPABASE_URL;
+    const sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabase = sbUrl && sbKey ? createClient(sbUrl, sbKey) : null;
+
+    let richlistSource: "supabase" | "taostats" = "taostats";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let allAccounts: any[] = [];
+
+    if (supabase) {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const { data: sbRows, error: sbErr } = await supabase
+        .from("whale_snapshots")
+        .select("address, balance_total, balance_free, balance_staked, rank")
+        .eq("date", todayStr)
+        .order("rank", { ascending: true })
+        .limit(500);
+
+      if (!sbErr && sbRows && sbRows.length >= 100) {
+        richlistSource = "supabase";
+        allAccounts = sbRows; // shape: { address, balance_total, balance_free, balance_staked, rank }
+      } else {
+        console.log(`Supabase richlist unavailable (${sbErr?.message ?? `only ${sbRows?.length ?? 0} rows`}), falling back to TaoStats`);
+      }
+    }
+
+    // Still need validators + network stats from TaoStats regardless of richlist source
+    const [validatorsRes, networkRes] = await Promise.all([
+      fetch(`${TAOSTATS_BASE}/api/validator/latest/v1?limit=200&netuid=0`, fetchOpts).then((r) => r.json()),
+      fetch(`${TAOSTATS_BASE}/api/stat/latest/v1`, fetchOpts).then((r) => r.json()).catch(() => null),
+    ]);
+
+    // If Supabase didn't have enough data, fetch richlist from TaoStats
+    if (richlistSource === "taostats") {
+      const pageResults = await Promise.all(
         [1, 2, 3].map((page) =>
           fetch(
             `${TAOSTATS_BASE}/api/account/latest/v1?order_by=balance_total_desc&limit=200&page=${page}`,
             fetchOpts
           ).then((r) => r.json())
         )
-      ),
-      fetch(`${TAOSTATS_BASE}/api/validator/latest/v1?limit=200&netuid=0`, fetchOpts).then((r) => r.json()),
-      fetch(`${TAOSTATS_BASE}/api/stat/latest/v1`, fetchOpts).then((r) => r.json()).catch(() => null),
-    ]);
+      );
+      allAccounts = pageResults.flatMap((p) => p.data ?? []).slice(0, 500);
+    }
 
     // Validator name map
     const validatorMap: Record<string, string> = {};
@@ -89,18 +120,18 @@ export async function GET(req: Request) {
       knownWallets = JSON.parse(readFileSync(p, "utf-8"));
     } catch { /* ignore */ }
 
-    // Flatten + enrich 500 wallets
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const allAccounts: any[] = pageResults.flatMap((p) => p.data ?? []).slice(0, 500);
-
+    // Build whales array — handles both Supabase and TaoStats shapes
     const whales = allAccounts.map((account, i) => {
       const address =
         typeof account.address === "object" ? (account.address?.ss58 ?? "") : (account.address ?? "");
 
-      const balance_total = toTao(account.balance_total);
-      const balance_free = toTao(account.balance_free);
-      const balance_staked = toTao(account.balance_staked);
-      const taostats_24hr = account.balance_total_24hr_ago != null ? toTao(account.balance_total_24hr_ago) : null;
+      const balance_total = richlistSource === "supabase" ? (account.balance_total ?? 0) : toTao(account.balance_total);
+      const balance_free  = richlistSource === "supabase" ? (account.balance_free ?? 0)  : toTao(account.balance_free);
+      const balance_staked = richlistSource === "supabase" ? (account.balance_staked ?? 0) : toTao(account.balance_staked);
+      // taostats_24hr only available when source is TaoStats
+      const taostats_24hr = richlistSource === "taostats" && account.balance_total_24hr_ago != null
+        ? toTao(account.balance_total_24hr_ago)
+        : null;
 
       let label: "validator" | "exchange" | "foundation" | "unknown" = "unknown";
       let label_name: string | null = null;
@@ -134,11 +165,9 @@ export async function GET(req: Request) {
     await kv.set("whales:current", { data: whalesEnriched, fetched_at: Date.now() }, { ex: 25 * 60 * 60 });
 
     // ── 3a. Upsert today's snapshots + alpha balances into Supabase ──────────
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (supabaseUrl && supabaseServiceKey) {
+    // Skip snapshot upsert when source is Supabase (already there); still do alpha upsert if TaoStats was used
+    if (supabase && richlistSource === "taostats") {
       try {
-        const supabase = createClient(supabaseUrl, supabaseServiceKey);
         const todayStr = new Date().toISOString().slice(0, 10);
         const top100 = whalesEnriched.slice(0, 100);
 
@@ -596,6 +625,7 @@ export async function GET(req: Request) {
               { name: "Net 24h change (top 100)", value: `${netChangeFmt} τ`, inline: true },
               { name: "Staking ratio (top 500)", value: `${stakingPct}%`, inline: true },
               { name: "Buying / Selling", value: `${accumIndex.buying_count} 🟢 / ${accumIndex.selling_count} 🔴`, inline: true },
+              { name: "Richlist source", value: richlistSource === "supabase" ? "✅ Supabase (chain)" : "⚠️ TaoStats (fallback)", inline: false },
               { name: "Hist prefetch", value: `${histPrefetched} fetched, ${histSkipped} skipped, ${histFailed} failed`, inline: false },
               { name: "Supabase validation", value: validationSummary, inline: false },
             ],
@@ -609,6 +639,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       ok: true,
       elapsed_ms: elapsed,
+      richlist_source: richlistSource,
       wallets: whales.length,
       alerts_fired: alertsFired,
       history_prefetch: { pre_fetched: histPrefetched, skipped: histSkipped, failed: histFailed },
