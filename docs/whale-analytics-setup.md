@@ -95,15 +95,21 @@ Wallets in both sets get one row (PK deduplication handles it naturally). This m
 | `address` | text | Coldkey |
 | `action` | text | DELEGATE / UNDELEGATE |
 | `delegate` | text | Hotkey being staked to |
-| `delegate_name` | text | Validator name if known |
+| `delegate_name` | text | Null — validator names not on chain (see TODO) |
 | `netuid` | int | |
 | `amount` | numeric | TAO |
 | `alpha` | numeric | Alpha tokens |
-| `usd` | numeric | USD equivalent |
-| `alpha_price_in_tao` | numeric | |
-| `alpha_price_in_usd` | numeric | |
+| `alpha_price_in_tao` | numeric | Subnet ratio at time of event (subnetTAO/subnetAlphaIn) |
 | `timestamp` | timestamptz | |
 | `block_number` | bigint | |
+
+> **USD columns dropped** (`usd`, `alpha_price_in_usd`) — UI converts to USD using current TAO price at render time.
+
+**Write strategy:**
+- **Ongoing (nightly, chain-direct):** Same block scan as `whale_transactions` — scan last 24h of blocks, extract stake/unstake events for top 500 wallets. Same pass, no extra chain calls.
+- **Existing rows:** 220 rows from one-time TaoStats backfill (4 wallets only) — legacy, won't be re-fetched
+- **No TaoStats dependency going forward**
+- **`delegate_name`:** Validator names are not stored on chain. Left null for now — future option: maintain a separate `validator_names` lookup table
 
 ---
 
