@@ -131,12 +131,34 @@ The problem with `entries()` in one shot is it tries to fetch hundreds of thousa
 
 ---
 
-## Current Status (2026-03-27)
-- ❌ Not started
-- Backfill (using TaoStats) is running — will populate 30 days of history for top 100 wallets
-- 429 rate limits only hit on the one-time backfill's transfer endpoint; normal cron is within free limits
-- **Decision:** Stay on TaoStats for now. Revisit if cron itself starts hitting rate limits.
-- **Next step when ready:** Write the benchmark POC script first before committing to this architecture.
+## Current Status (2026-03-28) — Updated
+
+### Phase 1 — POC ✅ Complete (2026-03-27)
+- Script: `scripts/poc-chain-richlist.ts`
+- 462,707 accounts fetched in 1m 10s — well within budget
+- Alpha/stake query fixed: bits field needs `.toJSON()?.bits`, right-shift 64 bits for RAO integer
+
+### Phase 2 — Nightly GH Actions job ✅ Complete (2026-03-27)
+- Workflow: `.github/workflows/nightly-chain-scan.yml` — runs at `0 4 * * *` UTC
+- Script: `scripts/nightly-chain-scan.ts`
+- First successful run: 2026-03-27 ~11:54 PM ET — 462,720 accounts, 500 rows → Supabase, 173s runtime
+- Writes to `whale_snapshots` table (same schema as TaoStats cron)
+
+### Supabase tables (as of 2026-03-28)
+| Table | Rows | Source |
+|---|---|---|
+| `whale_snapshots` | 3,169 | Nightly chain scan + 30-min TaoStats cron |
+| `whale_alpha_balances` | 4,150 | 30-min TaoStats cron (upserted every run) |
+| `whale_transactions` | 3,962 | One-time backfill (2026-03-27) |
+| `whale_delegations` | 220 | One-time backfill (2026-03-27) |
+
+### Phase 3 — Switch cron richlist source to Supabase ❌ Not done
+- 30-min cron (`/api/cron/snapshot`) still fetches richlist from TaoStats
+- Not urgent — cron is within TaoStats free limits
+- Revisit if cron starts hitting 429s
+
+### Phase 4 — Reduce TaoStats dependency further ❌ Not started
+- Low priority
 
 ---
 
