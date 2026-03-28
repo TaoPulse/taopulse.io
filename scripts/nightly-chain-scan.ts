@@ -312,8 +312,9 @@ async function scanRecentBlocks(
 
 async function main() {
   const t0 = Date.now();
-  const today = new Date().toISOString().split('T')[0];
-  console.log(`\n🔗 Nightly chain scan — ${today}`);
+  const dateArg = process.argv.find(a => /^\d{4}-\d{2}-\d{2}$/.test(a));
+  const today = dateArg ?? new Date().toISOString().split('T')[0];
+  console.log(`\n🔗 Nightly chain scan — ${today}${dateArg ? ' (custom date)' : ''}`);
 
   // ── Supabase client ──────────────────────────────────────────────────────────
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
