@@ -5,6 +5,7 @@ _Last updated: 2026-03-24_
 1. **QA every page after changes.** Check the live URL. Catch issues before the user does.
 2. **No static data.** If real-time data is unavailable: show "—", "data unavailable", or "~est." — never hardcode numbers that look live. Never use fake fallback values.
 3. **Trust but verify.** Block numbers, dates, API endpoints, wallet URLs — verify against live sources. Don't rely on training data for current facts.
+4. **Design docs are append-only.** Never overwrite or rewrite existing content in `docs/`. All changes go as new dated changelog entries. Read the doc, then append — never replace.
 
 ## What It Is
 A beginner-friendly TAO/Bittensor analytics and education site. Target audience: crypto investors who are new to Bittensor and want to understand TAO, buy it, store it safely, stake it, and explore subnets. Built by Thiyaghu, maintained by Veera.
