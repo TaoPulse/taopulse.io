@@ -3,7 +3,9 @@
  *
  * Nightly GitHub Actions job: fetch all Bittensor accounts + alpha stakes
  * directly from chain, compute top 500 by total TAO, write daily snapshot
- * to Supabase whale_snapshots table.
+ * to Supabase:
+ *   - whale_snapshots       (top 500 total TAO per address)
+ *   - whale_alpha_balances  (per-subnet alpha positions for top 500)
  *
  * No TaoStats dependency — fully chain-direct.
  *
@@ -84,12 +86,26 @@ async function fetchSubnetRatios(api: ApiPromise): Promise<Map<number, number>> 
   return ratios;
 }
 
+interface AlphaEntry {
+  hotkey: string;
+  netuid: number;
+  balanceAlpha: number;  // raw alpha shares (in TAO units after /1e9)
+  balanceAsTao: number;  // converted to TAO via subnet ratio
+}
+
+/**
+ * Fetch all alpha stakes.
+ * Returns:
+ *   stakedTao: coldkey → total TAO staked (summed across all subnets)
+ *   alphaDetail: coldkey → array of per-subnet entries (for whale_alpha_balances)
+ */
 async function fetchAlphaStakes(
   api: ApiPromise,
   subnetRatio: Map<number, number>
-): Promise<Map<string, number>> {
+): Promise<{ stakedTao: Map<string, number>; alphaDetail: Map<string, AlphaEntry[]> }> {
   console.log('  Fetching alpha stakes...');
   const stakedTao = new Map<string, number>();
+  const alphaDetail = new Map<string, AlphaEntry[]>();
   let alphaStart: string | undefined;
   let alphaCount = 0;
   let retries = 0;
@@ -112,14 +128,23 @@ async function fetchAlphaStakes(
       retries = 0;
 
       for (const [key, val] of page) {
-        const [_hotkey, coldkey, netuid] = key.args.map((a: any) => a.toString());
+        const [hotkey, coldkey, netuIdStr] = key.args.map((a: any) => a.toString());
+        const netuid = parseInt(netuIdStr);
         const bitsVal = (val as any).toJSON()?.bits;
         const alphaTaoShares = alphaToTao(bitsVal);
         alphaStart = key.toString();
         if (!alphaTaoShares) continue;
 
-        const ratio = subnetRatio.get(parseInt(netuid)) ?? 1.0;
-        stakedTao.set(coldkey, (stakedTao.get(coldkey) ?? 0) + alphaTaoShares * ratio);
+        const ratio = subnetRatio.get(netuid) ?? 1.0;
+        const asTao = alphaTaoShares * ratio;
+
+        // Sum total staked per coldkey
+        stakedTao.set(coldkey, (stakedTao.get(coldkey) ?? 0) + asTao);
+
+        // Store per-subnet detail
+        if (!alphaDetail.has(coldkey)) alphaDetail.set(coldkey, []);
+        alphaDetail.get(coldkey)!.push({ hotkey, netuid, balanceAlpha: alphaTaoShares, balanceAsTao: asTao });
+
         alphaCount++;
       }
 
@@ -143,7 +168,7 @@ async function fetchAlphaStakes(
   }
 
   console.log(`  ✅ ${alphaCount.toLocaleString()} alpha entries, ${stakedTao.size.toLocaleString()} staking coldkeys`);
-  return stakedTao;
+  return { stakedTao, alphaDetail };
 }
 
 async function main() {
@@ -173,7 +198,7 @@ async function main() {
   console.log('\n[3/4] Fetching subnet ratios + alpha stakes...');
   const subnetRatio = await fetchSubnetRatios(api);
   console.log(`  ✅ ${subnetRatio.size} subnet ratios`);
-  const stakedTao = await fetchAlphaStakes(api, subnetRatio);
+  const { stakedTao, alphaDetail } = await fetchAlphaStakes(api, subnetRatio);
 
   await api.disconnect();
 
@@ -193,8 +218,10 @@ async function main() {
 
   console.log(`  Top ${TOP_N} built. Writing to Supabase...`);
 
-  // ── Write to Supabase in batches ─────────────────────────────────────────────
-  const rows = top500.map((w, i) => ({
+  const BATCH = 50;
+
+  // ── Write whale_snapshots ────────────────────────────────────────────────────
+  const snapshotRows = top500.map((w, i) => ({
     address: w.address,
     date: today,
     balance_total: w.total,
@@ -203,19 +230,58 @@ async function main() {
     rank: i + 1,
   }));
 
-  const BATCH = 50;
-  let written = 0;
-  for (let i = 0; i < rows.length; i += BATCH) {
-    const batch = rows.slice(i, i + BATCH);
+  let snapshotsWritten = 0;
+  for (let i = 0; i < snapshotRows.length; i += BATCH) {
+    const batch = snapshotRows.slice(i, i + BATCH);
     const { error } = await supabase
       .from('whale_snapshots')
       .upsert(batch, { onConflict: 'address,date' });
-    if (error) {
-      console.error(`  ✗ Supabase error (batch ${i}):`, error.message);
-    } else {
-      written += batch.length;
+    if (error) console.error(`  ✗ whale_snapshots batch ${i}: ${error.message}`);
+    else snapshotsWritten += batch.length;
+  }
+  console.log(`  ✅ whale_snapshots: ${snapshotsWritten} rows`);
+
+  // ── Write whale_alpha_balances (per-subnet aggregated, top 500 only) ─────────
+  // Aggregate multiple hotkeys per (address, netuid) into one row (sum alpha+tao, keep first hotkey)
+  const top500Addrs = new Set(top500.map(w => w.address));
+  const alphaRows: any[] = [];
+  for (const [address, entries] of alphaDetail) {
+    if (!top500Addrs.has(address)) continue;
+    const rank = top500.findIndex(w => w.address === address) + 1;
+    // Aggregate by netuid
+    const byNetuid = new Map<number, { balance_alpha: number; balance_as_tao: number; hotkey: string }>();
+    for (const e of entries) {
+      const existing = byNetuid.get(e.netuid);
+      if (existing) {
+        existing.balance_alpha += e.balanceAlpha;
+        existing.balance_as_tao += e.balanceAsTao;
+      } else {
+        byNetuid.set(e.netuid, { balance_alpha: e.balanceAlpha, balance_as_tao: e.balanceAsTao, hotkey: e.hotkey });
+      }
+    }
+    for (const [netuid, agg] of byNetuid) {
+      alphaRows.push({
+        address,
+        date: today,
+        netuid,
+        hotkey: agg.hotkey,
+        balance_alpha: agg.balance_alpha,
+        balance_as_tao: agg.balance_as_tao,
+        rank,
+      });
     }
   }
+
+  let alphaWritten = 0;
+  for (let i = 0; i < alphaRows.length; i += BATCH) {
+    const batch = alphaRows.slice(i, i + BATCH);
+    const { error } = await supabase
+      .from('whale_alpha_balances')
+      .upsert(batch, { onConflict: 'address,date,netuid' });
+    if (error) console.error(`  ✗ whale_alpha_balances batch ${i}: ${error.message}`);
+    else alphaWritten += batch.length;
+  }
+  console.log(`  ✅ whale_alpha_balances: ${alphaWritten} rows`);
 
   // ── Summary ──────────────────────────────────────────────────────────────────
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
@@ -224,12 +290,14 @@ async function main() {
   console.log(`${'='.repeat(50)}`);
   console.log(`Date              : ${today}`);
   console.log(`Total accounts    : ${freeBalances.size.toLocaleString()}`);
-  console.log(`Alpha entries     : staking coldkeys ${stakedTao.size.toLocaleString()}`);
-  console.log(`Top ${TOP_N} written   : ${written} rows to Supabase`);
+  console.log(`Staking coldkeys  : ${stakedTao.size.toLocaleString()}`);
+  console.log(`whale_snapshots   : ${snapshotsWritten} rows`);
+  console.log(`whale_alpha_balances: ${alphaWritten} rows`);
   console.log(`Total time        : ${elapsed}s`);
   console.log(`\nTop 10:`);
   top500.slice(0, 10).forEach((w, i) => {
-    console.log(`  ${String(i+1).padStart(3)}. ${w.address.slice(0,12)}...  total=${w.total.toFixed(2)} TAO  (free=${w.free.toFixed(2)}, staked=${w.staked.toFixed(2)})`);
+    const subnets = alphaDetail.get(w.address)?.length ?? 0;
+    console.log(`  ${String(i+1).padStart(3)}. ${w.address.slice(0,12)}...  total=${w.total.toFixed(2)} TAO  (free=${w.free.toFixed(2)}, staked=${w.staked.toFixed(2)}, subnets=${subnets})`);
   });
 }
 
