@@ -132,14 +132,14 @@ Wallets in both sets get one row (PK deduplication handles it naturally). This m
 
 ## Current Data Status (as of 2026-03-28)
 
-| Table | Rows | Wallets | Days |
-|-------|------|---------|------|
-| `whale_snapshots` | 3,169 | 102 | 31 (2026-02-25 → 2026-03-27) |
-| `whale_alpha_balances` | 4,150 | 34 | 1 (today only — nightly scan, 34 wallets have alpha positions) |
-| `whale_transactions` | 3,962 | 20 | historical (2022-10 → 2026-03-27) |
-| `whale_delegations` | 220 | 4 | historical |
+All 4 tables truncated 2026-03-28. Starting fresh — chain-direct only from today.
 
-> `whale_alpha_balances` has 34 wallets because only 34 of the top 500 have alpha staking positions on chain. The rest hold free TAO only — this is correct, not a bug.
+| Table | Rows | Notes |
+|-------|------|-------|
+| `whale_snapshots` | 0 → grows daily | Nightly scan writes top 500 per day |
+| `whale_alpha_balances` | 0 → grows daily | Nightly scan writes per-subnet alpha positions |
+| `whale_transactions` | 0 → grows daily | Block scan writes last 24h transfers (in progress) |
+| `whale_delegations` | 0 → grows daily | Block scan writes last 24h stake events (in progress) |
 
 ---
 
@@ -149,11 +149,10 @@ Wallets in both sets get one row (PK deduplication handles it naturally). This m
 |-------|--------|-----------|--------|
 | `whale_snapshots` | Nightly chain scan | Daily, 4 AM UTC | Bittensor chain direct |
 | `whale_alpha_balances` | Nightly chain scan | Daily, 4 AM UTC | Bittensor chain direct |
-| `whale_transactions` | One-time backfill | Done (2026-03-27) | TaoStats |
-| `whale_delegations` | One-time backfill | Done (2026-03-27) | TaoStats |
+| `whale_transactions` | Nightly chain scan (block scan) | Daily, 4 AM UTC | Bittensor chain direct |
+| `whale_delegations` | Nightly chain scan (block scan) | Daily, 4 AM UTC | Bittensor chain direct |
 
-**The 30-min TaoStats cron (`/api/cron/snapshot`) no longer writes to any of these 4 tables.**
-> TODO: Remove step 3a from the cron (the upsert to `whale_snapshots` + `whale_alpha_balances`) — not built yet.
+**The 30-min TaoStats cron (`/api/cron/snapshot`) no longer writes to any of these 4 tables.** Step 3a + 3b removed 2026-03-28.
 
 ---
 
@@ -257,8 +256,15 @@ Writes top 500 balances + alpha positions to `whale_snapshots` and `whale_alpha_
 - **Fix `whale_alpha_balances` PK** — `ALTER TABLE` migration in prod Supabase: `(address, date, netuid)` → `(address, date, netuid, hotkey)`
 - **Add KV cache step** — after nightly scan completes, compute per-subnet rank via window function and cache in KV (24h TTL)
 
-### ⚠️ Do not build until confirmed
-All items above are designed and ready — waiting for go-ahead.
+### Status
+- ✅ Step 3a + 3b removed from `/api/cron/snapshot` (2026-03-28)
+- ✅ `backfill-whales.yml` deleted (2026-03-28)
+- ✅ All 4 tables truncated (2026-03-28)
+- ✅ Validation step added to nightly scan (2026-03-28)
+- 🔨 Block scan for `whale_transactions` + `whale_delegations` — in progress
+- ⏳ Fix `whale_alpha_balances` write logic (union Set A + Set B) — not built yet
+- ⏳ Fix `whale_alpha_balances` PK migration in prod Supabase — not built yet
+- ⏳ Add KV cache step for per-subnet rank — not built yet
 
 ---
 
