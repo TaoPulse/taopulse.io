@@ -174,11 +174,31 @@ Writes top 500 balances + alpha positions to `whale_snapshots` and `whale_alpha_
 
 ---
 
+## Design Decisions
+
+### 2026-03-28 — `whale_alpha_balances` primary key fix
+**Decision:** Add `hotkey` to the primary key of `whale_alpha_balances`.
+
+**Why:** A coldkey can stake to multiple validators (hotkeys) on the same subnet. With the old PK of `(address, date, netuid)`, a second upsert for the same wallet+date+subnet would overwrite the first row — silently losing one validator position. The correct PK is `(address, date, netuid, hotkey)`.
+
+**Action needed:** The prod Supabase schema still has the old PK. Needs an `ALTER TABLE` migration before data loss can occur (currently low risk since only 34 wallets have alpha positions).
+
+---
+
+### 2026-03-28 — Chain scan is sole writer for balance tables
+**Decision:** Nightly chain scan (`scripts/nightly-chain-scan.ts`) is the only job that writes to `whale_snapshots` and `whale_alpha_balances`. TaoStats is no longer used for these two tables.
+
+**Why:** The one-time backfill (2026-03-27) seeded 30 days of history from TaoStats. That's done. The chain scan runs daily and adds a new day, giving us a growing history with no TaoStats dependency.
+
+**Action needed:** Remove step 3a from `/api/cron/snapshot` — it still upserts to these tables as a side effect. (Confirmed design, not built yet.)
+
+---
+
 ## Open TODOs
 
 1. **Remove step 3a from `/api/cron/snapshot`** — it still upserts to `whale_snapshots` + `whale_alpha_balances` from TaoStats when falling back. Chain scan owns those tables now. (Not built yet — confirm before building)
 2. **Refactor `/api/whale-detail`** → read from `whale_transactions` + `whale_delegations` instead of hitting TaoStats
-3. **Fix `whale_alpha_balances` migration** → add `hotkey` to the primary key (`(address, date, netuid, hotkey)` instead of `(address, date, netuid)`). Current prod schema has the old PK — needs an `ALTER TABLE` migration.
+3. **Fix `whale_alpha_balances` PK migration** → `ALTER TABLE` to change PK from `(address, date, netuid)` to `(address, date, netuid, hotkey)` in prod Supabase
 
 ---
 
