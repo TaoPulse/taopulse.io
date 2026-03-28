@@ -228,7 +228,7 @@
     "emission": 0.012,
     "activeMiners": 330,
     "activeValidators": 38,
-    "website": null,
+    "website": "https://playground.corcel.io",
     "status": "active",
     "howToMine": "Register as a Cortex.t provider and deploy inference endpoints for supported modalities. Your API response quality, latency, and uptime are continuously scored. Serving multiple modalities expands your emission share.",
     "github": null
@@ -345,7 +345,7 @@
     "emission": 0.01,
     "activeMiners": 445,
     "activeValidators": 35,
-    "website": null,
+    "website": "https://neuralinternet.ai",
     "status": "active",
     "howToMine": "Register your GPU hardware on SN27 and run the compute miner daemon. Accept compute jobs dispatched by the scheduler. Performance metrics include job throughput, latency, and reliability. Enterprise-grade hardware earns maximum rewards.",
     "github": null
