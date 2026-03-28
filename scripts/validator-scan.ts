@@ -155,7 +155,7 @@ export async function runValidatorScan(
 
   // ── Write to Supabase ─────────────────────────────────────────────────────────
   console.log(`\n[VALIDATOR] Writing ${rows.length} rows to validator_snapshots...`);
-  const BATCH = 100;
+  const BATCH = 500;
   let written = 0;
   for (let i = 0; i < rows.length; i += BATCH) {
     const batch = rows.slice(i, i + BATCH);
