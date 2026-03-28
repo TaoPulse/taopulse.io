@@ -109,6 +109,41 @@ _Created: 2026-03-28_
 
 ---
 
+## Risk Signal Metrics
+
+| Metric | Source | Notes |
+|--------|--------|-------|
+| Stake concentration | `top3_stake / total_subnet_stake` from `whale_alpha_balances` | No new data needed — derive from existing table |
+| Emission rate | `subtensorModule.emissionValues(netuid)` | TAO/block earned by subnet from root network |
+| Subnet age | `subtensorModule.networkRegisteredAt(netuid)` | Registration block → compute days since launch |
+
+**Interpretation:**
+- High concentration (>80% held by top 3 validators) = centralization risk
+- Low emission + high market cap = potentially overvalued signal
+- Newer subnet = less track record, higher risk
+
+**Data strategy:**
+- Concentration: computable day 1 from `whale_alpha_balances`
+- Emission rate: add to `subnet_snapshots` schema — useful for APY later too
+- Subnet age: static, store in `subnets.json` (one-time lookup)
+
+---
+
+### 2026-03-28 (update) — Risk Signals + `subnet_snapshots` schema revision
+
+- Risk signals section added: concentration, emission rate, subnet age
+- `subnet_snapshots` schema updated to include `emission_rate` and `registration_block`
+- `emission_rate` covers both risk signals and future APY calculation in one field
+
+**Updated `subnet_snapshots` schema additions:**
+
+| Column | Type | Source | Notes |
+|--------|------|--------|-------|
+| `emission_rate` | numeric | `subtensorModule.emissionValues(netuid)` | TAO/block from root network; enables APY later |
+| `registration_block` | bigint | `subtensorModule.networkRegisteredAt(netuid)` | Subnet age — one-time fetch, rarely changes |
+
+---
+
 ## Build Order
 
 1. **`subnet_snapshots` table + nightly scan integration** — fetch `subnetAlphaOut`, compute market cap, store alongside existing price/TVL data
