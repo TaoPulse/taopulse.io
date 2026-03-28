@@ -4,6 +4,21 @@ _Built: 2026-03-27 | Last updated: 2026-03-28_
 
 ---
 
+## Changelog
+
+### 2026-03-28
+- Rewrote doc to reflect current state (all 4 tables live, nightly chain scan running)
+- Documented `hotkey` must be in `whale_alpha_balances` PK — needs ALTER TABLE migration in prod
+- Decided nightly chain scan is sole writer for `whale_snapshots` + `whale_alpha_balances` (TaoStats no longer used for these)
+- `whale_alpha_balances` write strategy: union of Set A (top 500 by total TAO) + Set B (top 25 per subnet). Top 25 chosen — most subnets have far fewer stakers, covers signal without bloat
+- Rank not stored in `whale_alpha_balances` — computed via window function after nightly scan, cached in KV at 24h TTL
+- `whale_transactions` + `whale_delegations`: nightly block scan (last 24h, ~7,200 blocks), chain-direct, no TaoStats going forward. History builds naturally day by day
+- `whale_delegations`: dropped `usd` + `alpha_price_in_usd` columns — UI converts at render time using current TAO price. `delegate_name` left null (not on chain)
+- Added 2 future tables: `subnet_snapshots` (total staked per subnet/day) + `validator_snapshots` (stake + delegator count per validator/subnet/day)
+- **Going forward:** design changes are appended as dated changelog entries — nothing gets overwritten
+
+---
+
 ## Overview
 
 4 Supabase tables store whale wallet data:
