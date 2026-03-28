@@ -83,6 +83,12 @@ Wallets in both sets get one row (PK deduplication handles it naturally). This m
 | `timestamp` | timestamptz | |
 | `transaction_hash` | text | |
 
+**Write strategy:**
+- **Ongoing (nightly, chain-direct):** Scan last 24h of blocks (~7,200 blocks at ~12s/block), extract all transfer events involving top 500 wallets, write to this table. History builds naturally over time.
+- **Existing rows:** 3,962 rows from one-time TaoStats backfill (2026-03-27) — historical data, won't be re-fetched
+- **No TaoStats dependency going forward**
+- **No historical backfill needed** — start from today, accumulate day by day
+
 **`whale_delegations`** — PK: `id`, unique `(address, block_number, action, delegate, netuid)`
 | Column | Type | Notes |
 |--------|------|-------|
