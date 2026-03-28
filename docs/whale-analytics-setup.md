@@ -234,6 +234,38 @@ Add a `subnet_snapshots` table. Nightly scan writes one row per subnet per day a
 
 ---
 
+## Future: `validator_snapshots` Table
+
+### Why
+
+The nightly scan already fetches all alpha entries as `(coldkey, hotkey, netuid) → stake`. Currently we group by coldkey to build the wallet richlist. Grouping by **hotkey + netuid** instead gives total stake per validator per subnet — no extra chain calls needed.
+
+This answers questions like:
+- Which validators have the most stake on subnet X?
+- How has a validator's stake grown over time?
+- How many delegators does a validator have?
+
+### Design
+
+**Proposed schema — PK: `(hotkey, netuid, date)`**
+| Column | Type | Notes |
+|--------|------|-------|
+| `hotkey` | text | Validator address |
+| `netuid` | int | Subnet ID |
+| `date` | date | |
+| `total_staked_alpha` | numeric | Sum of all coldkey stakes to this hotkey on this subnet |
+| `total_staked_tao` | numeric | Alpha → TAO equivalent |
+| `delegator_count` | int | Number of unique coldkeys staking to this validator |
+
+**Storage:** ~few hundred validators × ~64 subnets × 365 days ≈ 500k rows/year. Still tiny.
+
+**No extra chain calls** — same `subtensorModule.alpha.entries()` fetch the nightly scan already does, just aggregated differently before writing to Supabase.
+
+### Status
+❌ Not built yet — confirm before building
+
+---
+
 ## Troubleshooting
 
 **`whale_alpha_balances` shows fewer wallets than expected:** Only wallets with active alpha staking positions appear. Wallets holding free TAO only won't have rows here. This is correct.
