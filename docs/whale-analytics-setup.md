@@ -16,6 +16,8 @@ _Built: 2026-03-27 | Last updated: 2026-03-28_
 - `whale_delegations`: dropped `usd` + `alpha_price_in_usd` columns — UI converts at render time using current TAO price. `delegate_name` left null (not on chain)
 - Added 2 future tables: `subnet_snapshots` (total staked per subnet/day) + `validator_snapshots` (stake + delegator count per validator/subnet/day)
 - **Going forward:** design changes are appended as dated changelog entries — nothing gets overwritten
+- **Balance history chart: deferred** — TaoStats backfill abandoned (rate limits too aggressive, 2 days of attempts yielded only 14 days × 72 wallets). Existing `whale_snapshots` data (Feb 25–Mar 10) is stale and incomplete — will be truncated. History builds naturally via nightly chain scan starting today. Chart will be built once there's enough data (~2-4 weeks).
+- **Data plan for all 4 tables:** truncate everything, start clean, chain-direct nightly from today. No TaoStats dependency going forward.
 
 ---
 
