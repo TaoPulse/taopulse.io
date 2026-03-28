@@ -45,7 +45,7 @@ interface ValidatorAgg {
  */
 export async function runValidatorScan(
   api: ApiPromise,
-  supabase: ReturnType<typeof createClient>,
+  supabase: any,
   today: string,
   // Pre-fetched from nightly scan: coldkey → [{hotkey, netuid, balanceAlpha, balanceAsTao}]
   alphaDetailMap?: Map<string, Array<{ hotkey: string; netuid: number; balanceAlpha: number; balanceAsTao: number }>>,
