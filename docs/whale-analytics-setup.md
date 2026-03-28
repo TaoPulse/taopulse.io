@@ -285,10 +285,19 @@ Add a `subnet_snapshots` table. Nightly scan writes one row per subnet per day a
 |--------|------|-------|
 | `netuid` | int | Subnet ID |
 | `date` | date | |
-| `subnet_tao` | numeric | Total TAO locked in subnet |
-| `subnet_alpha_in` | numeric | Total alpha issued |
-| `price_ratio` | numeric | `subnetTAO / subnetAlphaIn` — alpha→TAO conversion rate |
+| `subnet_tao` | numeric | Total TAO locked in subnet pool |
+| `subnet_alpha_in` | numeric | Alpha tokens inside the pool |
+| `subnet_alpha_out` | numeric | Alpha tokens in circulation (outside pool) |
+| `price_ratio` | numeric | `subnetTAO / subnetAlphaIn` — alpha price in TAO |
+| `market_cap_tao` | numeric | `subnetAlphaOut × price_ratio` — subnet MC in TAO |
 | `total_staked_tao` | numeric | Total TAO equivalent staked across all validators |
+
+**Market cap formula:** `market_cap_tao = subnet_alpha_out × (subnet_tao / subnet_alpha_in)`
+MC in USD = `market_cap_tao × tao_price` (computed at render time, not stored)
+
+**Chain source:** `subtensorModule.subnetAlphaOut.entries()` — one extra query alongside the existing `subnetTAO` + `subnetAlphaIn` fetch. No TaoStats needed.
+
+**UI plan:** Subnets page will show market cap per subnet once this table is built and has data.
 
 **Storage:** ~64 subnets × 365 days = ~23k rows/year. Negligible.
 
