@@ -171,6 +171,145 @@ async function fetchAlphaStakes(
   return { stakedTao, alphaDetail };
 }
 
+async function scanRecentBlocks(
+  api: ApiPromise,
+  top500Addrs: Set<string>,
+  subnetRatio: Map<number, number>,
+  supabase: any,
+  today: string
+): Promise<{ txnsWritten: number; delegationsWritten: number }> {
+  try {
+    const header = await api.rpc.chain.getHeader();
+    const currentBlock = header.number.toNumber();
+    const BLOCKS_PER_DAY = 7200;
+    const startBlock = currentBlock - BLOCKS_PER_DAY;
+    const BATCH_SIZE = 50;
+
+    console.log(`  Scanning blocks ${startBlock} → ${currentBlock} (${BLOCKS_PER_DAY} blocks)`);
+
+    const txnRows: any[] = [];
+    const delegationRows: any[] = [];
+    let scanned = 0;
+
+    for (let b = startBlock; b <= currentBlock; b += BATCH_SIZE) {
+      const end = Math.min(b + BATCH_SIZE - 1, currentBlock);
+      const blockNums = Array.from({ length: end - b + 1 }, (_, i) => b + i);
+
+      await Promise.all(blockNums.map(async (blockNum) => {
+        try {
+          const blockHash = await api.rpc.chain.getBlockHash(blockNum);
+          const [eventsCodec, tsCodec] = await Promise.all([
+            (api.query as any).system.events.at(blockHash),
+            (api.query as any).timestamp.now.at(blockHash),
+          ]);
+          const timestamp = tsCodec.toNumber();
+          const isoString = new Date(timestamp).toISOString();
+          const events: any[] = eventsCodec.toArray ? eventsCodec.toArray() : Array.from(eventsCodec as any);
+
+          events.forEach((record: any, idx: number) => {
+            const { event } = record;
+            const section: string = event.section.toString();
+            const method: string = event.method.toString();
+
+            if (section === 'balances' && method === 'Transfer') {
+              const from = event.data[0].toString();
+              const to = event.data[1].toString();
+              const amountRaw = event.data[2].toString();
+              const fromIsWhale = top500Addrs.has(from);
+              const toIsWhale = top500Addrs.has(to);
+              if (fromIsWhale) {
+                txnRows.push({
+                  id: `${blockNum}-${idx}-OUT-${from}`,
+                  address: from,
+                  type: 'OUT',
+                  amount: Number(BigInt(amountRaw)) / 1e9,
+                  counterparty: to,
+                  block_number: blockNum,
+                  timestamp: isoString,
+                  transaction_hash: null,
+                });
+              }
+              if (toIsWhale) {
+                txnRows.push({
+                  id: `${blockNum}-${idx}-IN-${to}`,
+                  address: to,
+                  type: 'IN',
+                  amount: Number(BigInt(amountRaw)) / 1e9,
+                  counterparty: from,
+                  block_number: blockNum,
+                  timestamp: isoString,
+                  transaction_hash: null,
+                });
+              }
+            } else if (
+              section === 'subtensorModule' &&
+              (method === 'StakeAdded' || method === 'StakeRemoved')
+            ) {
+              const coldkey = event.data[0].toString();
+              const hotkey = event.data[1].toString();
+              const amountRaw = event.data[2].toString();
+              const netuId = Number(event.data[3].toString());
+              if (top500Addrs.has(coldkey)) {
+                const alphaVal = Number(BigInt(amountRaw)) / 1e9;
+                const ratio = subnetRatio.get(netuId) ?? 1.0;
+                delegationRows.push({
+                  id: `${blockNum}-${idx}-${method}-${coldkey}`,
+                  address: coldkey,
+                  action: method === 'StakeAdded' ? 'DELEGATE' : 'UNDELEGATE',
+                  delegate: hotkey,
+                  delegate_name: null,
+                  netuid: netuId,
+                  alpha: alphaVal,
+                  amount: alphaVal * ratio,
+                  alpha_price_in_tao: ratio,
+                  timestamp: isoString,
+                  block_number: blockNum,
+                });
+              }
+            }
+          });
+        } catch (err: any) {
+          console.warn(`  ⚠ Block ${blockNum} error: ${err.message}`);
+        }
+      }));
+
+      scanned += blockNums.length;
+      if (scanned % 500 === 0 || scanned >= BLOCKS_PER_DAY) {
+        console.log(`  ... scanned ${scanned} blocks`);
+      }
+      if (end < currentBlock) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+
+    console.log(`  Block scan complete: ${txnRows.length} transfer events, ${delegationRows.length} delegation events`);
+
+    const BATCH = 50;
+    let txnsWritten = 0;
+    for (let i = 0; i < txnRows.length; i += BATCH) {
+      const batch = txnRows.slice(i, i + BATCH);
+      const { error } = await (supabase as any).from('whale_transactions').upsert(batch, { onConflict: 'id' });
+      if (error) console.error(`  ✗ whale_transactions batch ${i}: ${error.message}`);
+      else txnsWritten += batch.length;
+    }
+
+    let delegationsWritten = 0;
+    for (let i = 0; i < delegationRows.length; i += BATCH) {
+      const batch = delegationRows.slice(i, i + BATCH);
+      const { error } = await (supabase as any)
+        .from('whale_delegations')
+        .upsert(batch, { onConflict: 'address,block_number,action,delegate,netuid' });
+      if (error) console.error(`  ✗ whale_delegations batch ${i}: ${error.message}`);
+      else delegationsWritten += batch.length;
+    }
+
+    return { txnsWritten, delegationsWritten };
+  } catch (err: any) {
+    console.error(`  ✗ scanRecentBlocks failed: ${err.message}`);
+    return { txnsWritten: 0, delegationsWritten: 0 };
+  }
+}
+
 async function main() {
   const t0 = Date.now();
   const today = new Date().toISOString().split('T')[0];
@@ -199,8 +338,6 @@ async function main() {
   const subnetRatio = await fetchSubnetRatios(api);
   console.log(`  ✅ ${subnetRatio.size} subnet ratios`);
   const { stakedTao, alphaDetail } = await fetchAlphaStakes(api, subnetRatio);
-
-  await api.disconnect();
 
   // ── Build richlist ───────────────────────────────────────────────────────────
   console.log('\n[4/4] Merging, sorting, writing to Supabase...');
@@ -283,6 +420,12 @@ async function main() {
   }
   console.log(`  ✅ whale_alpha_balances: ${alphaWritten} rows`);
 
+  // ── Block scan for whale_transactions + whale_delegations ────────────────────
+  console.log('\n[5/5] Scanning last 24h of blocks for transactions + delegations...');
+  const { txnsWritten, delegationsWritten } = await scanRecentBlocks(api, top500Addrs, subnetRatio, supabase, today);
+
+  await api.disconnect();
+
   // ── Validation ───────────────────────────────────────────────────────────────
   console.log('\n[VALIDATION] Checking table counts...');
   const validationErrors: string[] = [];
@@ -356,6 +499,20 @@ async function main() {
   const uniqueSubnetCount = new Set(distinctSubnets?.map(r => r.netuid) ?? []).size;
   console.log(`  ✅ whale_alpha_balances: ${uniqueSubnetCount} distinct subnets represented today`);
 
+  // whale_transactions today
+  const { count: txnCount } = await supabase
+    .from('whale_transactions')
+    .select('*', { count: 'exact', head: true })
+    .gte('timestamp', today + 'T00:00:00Z');
+  console.log(`  ✅ whale_transactions: ${txnCount ?? 0} rows for today`);
+
+  // whale_delegations today
+  const { count: delCount } = await supabase
+    .from('whale_delegations')
+    .select('*', { count: 'exact', head: true })
+    .gte('timestamp', today + 'T00:00:00Z');
+  console.log(`  ✅ whale_delegations: ${delCount ?? 0} rows for today`);
+
   // Total row counts across all tables (for history tracking)
   const tables = ['whale_snapshots', 'whale_alpha_balances', 'whale_transactions', 'whale_delegations'] as const;
   const totalCounts: Record<string, number> = {};
@@ -385,6 +542,8 @@ async function main() {
   console.log(`Staking coldkeys  : ${stakedTao.size.toLocaleString()}`);
   console.log(`whale_snapshots   : ${snapshotsWritten} rows (today)`);
   console.log(`whale_alpha_balances: ${alphaWritten} rows (today)`);
+  console.log(`whale_transactions : ${txnsWritten} rows (today)`);
+  console.log(`whale_delegations  : ${delegationsWritten} rows (today)`);
   console.log(`Validation        : ${validationErrors.length === 0 ? '✅ PASSED' : `⚠️  ${validationErrors.length} warnings`}`);
   console.log(`Total time        : ${elapsed}s`);
   console.log(`\nTop 10:`);
