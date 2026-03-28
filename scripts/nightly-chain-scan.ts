@@ -283,6 +283,98 @@ async function main() {
   }
   console.log(`  ✅ whale_alpha_balances: ${alphaWritten} rows`);
 
+  // ── Validation ───────────────────────────────────────────────────────────────
+  console.log('\n[VALIDATION] Checking table counts...');
+  const validationErrors: string[] = [];
+
+  // whale_snapshots: expect exactly TOP_N rows for today
+  const { count: snapCount, error: snapCountErr } = await supabase
+    .from('whale_snapshots')
+    .select('*', { count: 'exact', head: true })
+    .eq('date', today);
+  if (snapCountErr) {
+    validationErrors.push(`whale_snapshots count error: ${snapCountErr.message}`);
+  } else if ((snapCount ?? 0) < TOP_N * 0.95) {
+    validationErrors.push(`whale_snapshots: expected ~${TOP_N} rows for ${today}, got ${snapCount}`);
+  } else {
+    console.log(`  ✅ whale_snapshots: ${snapCount} rows for ${today} (expected ${TOP_N})`);
+  }
+
+  // whale_alpha_balances: expect at least some rows for today
+  const { count: alphaCount2, error: alphaCountErr } = await supabase
+    .from('whale_alpha_balances')
+    .select('*', { count: 'exact', head: true })
+    .eq('date', today);
+  if (alphaCountErr) {
+    validationErrors.push(`whale_alpha_balances count error: ${alphaCountErr.message}`);
+  } else if ((alphaCount2 ?? 0) === 0) {
+    validationErrors.push(`whale_alpha_balances: 0 rows for ${today} — expected at least some alpha stakes`);
+  } else {
+    console.log(`  ✅ whale_alpha_balances: ${alphaCount2} rows for ${today}`);
+  }
+
+  // whale_snapshots: spot-check rank 1 has the highest balance
+  const { data: topTwo } = await supabase
+    .from('whale_snapshots')
+    .select('address, rank, balance_total')
+    .eq('date', today)
+    .order('rank', { ascending: true })
+    .limit(2);
+  if (topTwo && topTwo.length >= 2) {
+    if (topTwo[0].balance_total >= topTwo[1].balance_total) {
+      console.log(`  ✅ rank order check: #1 (${topTwo[0].balance_total.toFixed(0)} TAO) > #2 (${topTwo[1].balance_total.toFixed(0)} TAO)`);
+    } else {
+      validationErrors.push(`rank order broken: rank #1 has less TAO than rank #2`);
+    }
+  }
+
+  // whale_snapshots: check no null addresses
+  const { count: nullAddrCount } = await supabase
+    .from('whale_snapshots')
+    .select('*', { count: 'exact', head: true })
+    .eq('date', today)
+    .is('address', null);
+  if ((nullAddrCount ?? 0) > 0) {
+    validationErrors.push(`whale_snapshots: ${nullAddrCount} rows with null address`);
+  } else {
+    console.log(`  ✅ no null addresses in whale_snapshots`);
+  }
+
+  // whale_alpha_balances: distinct wallets count
+  const { data: distinctWallets } = await supabase
+    .from('whale_alpha_balances')
+    .select('address')
+    .eq('date', today);
+  const uniqueWalletCount = new Set(distinctWallets?.map(r => r.address) ?? []).size;
+  console.log(`  ✅ whale_alpha_balances: ${uniqueWalletCount} distinct wallets with alpha positions today`);
+
+  // whale_alpha_balances: distinct subnets count
+  const { data: distinctSubnets } = await supabase
+    .from('whale_alpha_balances')
+    .select('netuid')
+    .eq('date', today);
+  const uniqueSubnetCount = new Set(distinctSubnets?.map(r => r.netuid) ?? []).size;
+  console.log(`  ✅ whale_alpha_balances: ${uniqueSubnetCount} distinct subnets represented today`);
+
+  // Total row counts across all tables (for history tracking)
+  const tables = ['whale_snapshots', 'whale_alpha_balances', 'whale_transactions', 'whale_delegations'] as const;
+  const totalCounts: Record<string, number> = {};
+  for (const t of tables) {
+    const { count } = await supabase.from(t).select('*', { count: 'exact', head: true });
+    totalCounts[t] = count ?? 0;
+  }
+  console.log(`\n  Table totals (all-time):`);
+  for (const [t, c] of Object.entries(totalCounts)) {
+    console.log(`    ${t}: ${c.toLocaleString()} rows`);
+  }
+
+  if (validationErrors.length > 0) {
+    console.error(`\n  ⚠️  VALIDATION WARNINGS (${validationErrors.length}):`);
+    for (const e of validationErrors) console.error(`    ✗ ${e}`);
+  } else {
+    console.log(`\n  ✅ All validation checks passed`);
+  }
+
   // ── Summary ──────────────────────────────────────────────────────────────────
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
   console.log(`\n${'='.repeat(50)}`);
@@ -291,8 +383,9 @@ async function main() {
   console.log(`Date              : ${today}`);
   console.log(`Total accounts    : ${freeBalances.size.toLocaleString()}`);
   console.log(`Staking coldkeys  : ${stakedTao.size.toLocaleString()}`);
-  console.log(`whale_snapshots   : ${snapshotsWritten} rows`);
-  console.log(`whale_alpha_balances: ${alphaWritten} rows`);
+  console.log(`whale_snapshots   : ${snapshotsWritten} rows (today)`);
+  console.log(`whale_alpha_balances: ${alphaWritten} rows (today)`);
+  console.log(`Validation        : ${validationErrors.length === 0 ? '✅ PASSED' : `⚠️  ${validationErrors.length} warnings`}`);
   console.log(`Total time        : ${elapsed}s`);
   console.log(`\nTop 10:`);
   top500.slice(0, 10).forEach((w, i) => {
