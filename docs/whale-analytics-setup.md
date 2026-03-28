@@ -66,6 +66,12 @@ Wallets in both sets get one row (PK deduplication handles it naturally). This m
 
 **Storage estimate:** 128 subnets × 25 wallets max = 3,200 rows/day worst case for Set B. Reality is lower — most subnets have far fewer than 25 stakers. Combined with Set A: ~200k–400k rows/year total.
 
+**Rank column:** No `rank` column stored in the table. Rank is ambiguous in a union (a Set A wallet could rank 40th on a subnet, breaking the "top 25" expectation). Instead:
+- Rank is computed once per day via window function: `RANK() OVER (PARTITION BY netuid ORDER BY balance_as_tao DESC)`
+- Result is cached in KV with 24h TTL immediately after the nightly scan completes
+- API reads from KV — no Supabase query, no computation at request time
+- Stale until 4 AM UTC next day, which is fine since data is chain-sourced and only updates nightly
+
 **`whale_transactions`** — PK: `id`, unique `(address, block_number, tx_hash)`
 | Column | Type | Notes |
 |--------|------|-------|
