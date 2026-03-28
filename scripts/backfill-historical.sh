@@ -39,7 +39,12 @@ log "  Existing: $EXISTING_DATES"
 log ""
 
 for i in $(seq 1 $DAYS); do
-  DATE=$(date -v-${i}d +%Y-%m-%d)
+  # Cross-platform date: macOS uses -v, Linux uses -d
+  if date -v-1d +%Y-%m-%d > /dev/null 2>&1; then
+    DATE=$(date -v-${i}d +%Y-%m-%d)
+  else
+    DATE=$(date -d "${i} days ago" +%Y-%m-%d)
+  fi
 
   # Skip if already in Supabase
   if echo "$EXISTING_DATES" | grep -qw "$DATE"; then
