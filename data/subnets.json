@@ -267,10 +267,10 @@
     "emission": 0.008,
     "activeMiners": 390,
     "activeValidators": 30,
-    "website": null,
+    "website": "https://www.omega.inc",
     "status": "active",
     "howToMine": "Provide hard disk storage capacity and run the FileTAO miner daemon. Validators issue periodic storage challenges that you must answer cryptographically. More storage capacity and high reliability earns proportionally more emissions.",
-    "github": null
+    "github": "https://github.com/omegalabsinc/omegalabs-bittensor-subnet"
   },
   {
     "id": 22,
