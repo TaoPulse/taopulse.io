@@ -58,6 +58,14 @@ TaoStats is **no longer used** for these 4 tables. The nightly chain scan is the
 
 > **Note:** `hotkey` is part of the primary key. One coldkey can stake to multiple validators on the same subnet — without `hotkey` in the PK, upserts would overwrite and lose data.
 
+**Write strategy — union of two sets (deduped by PK):**
+- **Set A:** All alpha positions for the top 500 wallets by total TAO → answers "where do the big whales stake?"
+- **Set B:** Top 25 wallets per subnet by `balance_as_tao` → answers "who are the biggest stakers on subnet X?"
+
+Wallets in both sets get one row (PK deduplication handles it naturally). This makes the table work for both whale profiling and per-subnet staking analysis from a single query.
+
+**Storage estimate:** 128 subnets × 25 wallets max = 3,200 rows/day worst case for Set B. Reality is lower — most subnets have far fewer than 25 stakers. Combined with Set A: ~200k–400k rows/year total.
+
 **`whale_transactions`** — PK: `id`, unique `(address, block_number, tx_hash)`
 | Column | Type | Notes |
 |--------|------|-------|
