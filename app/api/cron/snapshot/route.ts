@@ -164,137 +164,15 @@ export async function GET(req: Request) {
     // ── 3. Store whales:current (main richlist cache) ────────────────────────
     await kv.set("whales:current", { data: whalesEnriched, fetched_at: Date.now() }, { ex: 25 * 60 * 60 });
 
-    // ── 3a. Upsert today's snapshots + alpha balances into Supabase ──────────
-    // Skip snapshot upsert when source is Supabase (already there); still do alpha upsert if TaoStats was used
-    if (supabase && richlistSource === "taostats") {
-      try {
-        const todayStr = new Date().toISOString().slice(0, 10);
-        const top100 = whalesEnriched.slice(0, 100);
+    // ── 3a. REMOVED — Supabase upsert via TaoStats (2026-03-28)
+    // whale_snapshots + whale_alpha_balances are now written exclusively by
+    // the nightly chain scan (scripts/nightly-chain-scan.ts).
+    // TaoStats is no longer used for these tables.
 
-        // Build snapshot rows
-        const snapshotRows = top100.map((w) => ({
-          address: w.address,
-          date: todayStr,
-          balance_total: w.balance_total,
-          balance_free: w.balance_free,
-          balance_staked: w.balance_staked,
-          rank: w.rank,
-        }));
-
-        const { error: snapErr } = await supabase
-          .from("whale_snapshots")
-          .upsert(snapshotRows, { onConflict: "address,date" });
-        if (snapErr) console.error("Supabase snapshot upsert error:", snapErr.message);
-
-        // Build alpha balance rows from the raw accounts (need to look up from allAccounts)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const alphaRows: any[] = [];
-        for (let i = 0; i < allAccounts.length && i < 100; i++) {
-          const account = allAccounts[i];
-          const address =
-            typeof account.address === "object"
-              ? (account.address?.ss58 ?? "")
-              : (account.address ?? "");
-          if (!address) continue;
-          const rank = account.rank ?? i + 1;
-
-          // Root stake
-          const rootStake = toTao(account.balance_staked_root ?? 0);
-          if (rootStake > 0) {
-            alphaRows.push({
-              address,
-              date: todayStr,
-              netuid: 0,
-              hotkey: null,
-              balance_alpha: 0,
-              balance_as_tao: rootStake,
-              rank,
-            });
-          }
-
-          // Per-subnet alpha
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          for (const ab of (account.alpha_balances ?? []) as any[]) {
-            alphaRows.push({
-              address,
-              date: todayStr,
-              netuid: ab.netuid,
-              hotkey: ab.hotkey ?? null,
-              balance_alpha: toTao(ab.balance),
-              balance_as_tao: toTao(ab.balance_as_tao),
-              rank,
-            });
-          }
-        }
-
-        if (alphaRows.length > 0) {
-          const { error: alphaErr } = await supabase
-            .from("whale_alpha_balances")
-            .upsert(alphaRows, { onConflict: "address,date,netuid,hotkey" });
-          if (alphaErr) console.error("Supabase alpha upsert error:", alphaErr.message);
-        }
-      } catch (e) {
-        console.error("Supabase upsert failed (non-fatal):", e);
-      }
-    }
-
-    // ── 3b. Pre-fetch 30-day balance history for top 100 wallets ────────────
-    let histPrefetched = 0, histSkipped = 0, histFailed = 0;
-    const HIST_BATCH_SIZE = 5;
-    const HIST_BATCH_DELAY = 300; // ms between batches
-    const histTop100 = whalesEnriched.slice(0, 100);
-
-    for (let i = 0; i < histTop100.length; i += HIST_BATCH_SIZE) {
-      const batch = histTop100.slice(i, i + HIST_BATCH_SIZE);
-      await Promise.all(batch.map(async (whale) => {
-        const cacheKey = `whale-history:${whale.address}`;
-        try {
-          const existing = await kv.get<{ cached_at: number }>(cacheKey);
-          if (existing && Date.now() - existing.cached_at < 22 * 3600 * 1000) {
-            histSkipped++;
-            return;
-          }
-          const res = await fetch(
-            `${TAOSTATS_BASE}/api/account/history/v1?address=${whale.address}&limit=30&order=timestamp_desc`,
-            fetchOpts
-          ).then((r) => r.json());
-
-          const points: Array<{
-            date: string;
-            balance_total: number;
-            balance_free: number;
-            balance_staked: number;
-            rank: number | null;
-            source: "taostats" | "kv_snapshot";
-          }> = [];
-
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          for (const item of (res.data ?? []) as any[]) {
-            const ts = item.timestamp ?? item.block_timestamp ?? item.date;
-            if (!ts) continue;
-            const date = new Date(ts).toISOString().slice(0, 10);
-            points.push({
-              date,
-              balance_total: toTao(item.balance_total ?? item.balance),
-              balance_free: toTao(item.balance_free ?? 0),
-              balance_staked: toTao(item.balance_staked ?? 0),
-              rank: item.rank ?? null,
-              source: "taostats",
-            });
-          }
-
-          points.sort((a, b) => a.date.localeCompare(b.date));
-          await kv.set(cacheKey, { points, cached_at: Date.now() }, { ex: 25 * 3600 });
-          histPrefetched++;
-        } catch {
-          histFailed++;
-        }
-      }));
-
-      if (i + HIST_BATCH_SIZE < histTop100.length) {
-        await new Promise((resolve) => setTimeout(resolve, HIST_BATCH_DELAY));
-      }
-    }
+    // ── 3b. REMOVED — TaoStats balance history prefetch (2026-03-28)
+    // Balance history chart deferred — no data to prefetch.
+    // History will build naturally via nightly chain scan.
+    const histPrefetched = 0, histSkipped = 0, histFailed = 0;
 
     // ── 4. Store today's balance snapshot (once per day) ────────────────────
     const todaySnap = todayKey();
